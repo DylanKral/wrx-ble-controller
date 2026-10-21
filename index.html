@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1120">
+  <title>WRX Dream BLE Lab</title>
+  <style>
+    :root{color-scheme:dark;--bg:#0b1120;--panel:#151e30;--line:#303b50;--txt:#eff5ff;--muted:#9facbf;--blue:#66b1ff;--red:#ff767c;--green:#57dcad}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 90% 0%,#192c47 0%,var(--bg) 52%);font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--txt)}
+    main{max-width:550px;margin:auto;padding:calc(22px + env(safe-area-inset-top)) 18px calc(35px + env(safe-area-inset-bottom))}
+    h1{font-size:26px;letter-spacing:-.7px;line-height:1.1;margin:5px 0 8px}h2{font-size:16px;margin:0 0 15px;letter-spacing:.1px}p{margin:7px 0 0;color:var(--muted);font-size:14px}
+    .kicker{font-weight:700;text-transform:uppercase;letter-spacing:1.8px;color:var(--blue);font-size:11px}.panel{border:1px solid var(--line);background:linear-gradient(160deg,#192337,#121b2c);border-radius:18px;padding:18px;margin-top:16px}
+    .device{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}.device:first-of-type{border-top:0;padding-top:0}.device strong{display:block;font-size:14px}.status{display:flex;gap:7px;align-items:center;font-size:12px;color:var(--muted);margin-top:4px}.dot{width:7px;height:7px;border-radius:50%;background:#65748a}.dot.on{background:var(--green);box-shadow:0 0 10px #57dcad77}
+    button{background:#294261;border:1px solid #375477;color:var(--txt);font-size:14px;font-weight:650;padding:12px 14px;border-radius:11px;cursor:pointer;touch-action:manipulation}button.primary{background:#1974d2;border-color:#3992f1}button.danger{background:#542b39;border-color:#965165}button:disabled{opacity:.43;cursor:not-allowed}button:focus-visible,input:focus-visible{outline:2px solid #8ac3ff;outline-offset:2px}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions.single{grid-template-columns:1fr}.actions button{min-height:48px}.meta{color:var(--muted);font-size:13px}.range-row{display:flex;align-items:center;justify-content:space-between;gap:10px}input[type=range]{width:100%;accent-color:#6dbaff;height:34px;margin-top:8px}input[type=color]{width:58px;height:44px;padding:3px;background:transparent;border:1px solid var(--line);border-radius:8px}
+    .color-row{display:flex;gap:10px;align-items:center;margin-bottom:13px}.color-row label{flex:1;font-size:14px}.log{font-size:12px;line-height:1.5;color:#c1cfe1;overflow-wrap:anywhere;min-height:25px;max-height:178px;overflow:auto;white-space:pre-line}small{font-size:12px;color:var(--muted)}
+    .pill{font-size:12px;display:inline-flex;align-items:center;padding:5px 9px;border-radius:25px;background:#24344a;color:#abc9ef;border:1px solid #3a5272}.note{font-size:13px;color:#c7b8a9;background:#362c29;border:1px solid #665046;padding:11px 13px;border-radius:11px;margin-top:15px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.section-head h2{margin:0 0 13px}
+  </style>
+</head>
+<body>
+<main>
+  <div class="kicker">Subaru WRX · Proof of concept</div>
+  <h1>Dream BLE Lab</h1>
+  <p>Control your two Archaic RGB tail lights directly from your iPhone. No server, accounts, analytics, or firmware changes.</p>
+  <div class="note"><b>Parked testing only.</b> Keep the original brake, turn and reverse lighting systems untouched. Do not use custom lighting effects on public roads. Browser looping may stop when iOS locks or backgrounds the page.</div>
+
+  <section class="panel">
+    <div class="section-head"><h2>Bluetooth connections</h2><span id="support" class="pill">Checking browser</span></div>
+    <div class="device">
+      <div><strong>Left tail light</strong><span id="left-status" class="status"><i class="dot"></i>Dream-CF4B · Disconnected</span></div>
+      <button id="connect-left" type="button">Connect</button>
+    </div>
+    <div class="device">
+      <div><strong>Right tail light</strong><span id="right-status" class="status"><i class="dot"></i>Dream-A90F · Disconnected</span></div>
+      <button id="connect-right" type="button">Connect</button>
+    </div>
+    <p>Connect one at a time. When the Bluetooth chooser appears, select the matching Dream device.</p>
+  </section>
+
+  <section class="panel">
+    <div class="section-head"><h2>Mode 4 · Chase</h2><span id="loop-status" class="pill">Stopped</span></div>
+    <div class="range-row"><label for="interval">Repeat interval</label><strong id="interval-value">2.5 s</strong></div>
+    <input id="interval" type="range" min="1000" max="10000" step="100" value="2500" aria-label="Repeat interval in milliseconds">
+    <p style="margin:0 0 14px">Adjust to roughly match one complete chase. This controls how often the command is resent, not the LED animation speed.</p>
+    <div class="actions"><button id="chase-once" disabled type="button">Chase once</button><button id="loop-start" disabled class="primary" type="button">Start looping</button><button id="loop-stop" disabled class="danger" type="button">Stop looping</button><button id="mode255" disabled type="button">Mode 255</button></div>
+    <p id="count-label" style="margin-top:12px">Chase commands sent: 0</p>
+  </section>
+
+  <section class="panel">
+    <h2>Static RGB</h2>
+    <div class="color-row"><label for="color">Choose a color</label><input id="color" type="color" value="#0000ff" aria-label="RGB color"></div>
+    <div class="actions"><button id="send-color" disabled type="button">Apply color</button><button id="solid-red" disabled type="button">Set solid red</button></div>
+    <p>The color command ends the chase and selects a steady color. Starting a chase afterward uses the controller's most recently selected color.</p>
+  </section>
+
+  <section class="panel">
+    <div class="section-head"><h2>Activity</h2><button id="clear-log" type="button" style="padding:7px 11px">Clear</button></div>
+    <div id="log" role="log" aria-live="polite" class="log">Ready. Open this page in Bluefy on your iPhone.</div>
+  </section>
+  <p><small>Service FFD5 · Write characteristic FFD9 · Mode 4 command 9E0003819800E9. This is a diagnostic controller, not a safety lighting system.</small></p>
+</main>
+<script>
+(() => {
+  'use strict';
+  const SERVICE = '0000ffd5-0000-1000-8000-00805f9b34fb';
+  const WRITE_CHAR = '0000ffd9-0000-1000-8000-00805f9b34fb';
+  const CHASE = Uint8Array.from([0x9e,0x00,0x03,0x81,0x98,0x00,0xe9]);
+  const MODE255 = Uint8Array.from([0x9e,0x00,0xfe,0x81,0x98,0x00,0xe9]);
+  const names = {left:'Dream-CF4B',right:'Dream-A90F'};
+  const conn = {left:null,right:null};
+  const $ = id => document.getElementById(id);
+  let running = false, timer = null, busy = false, sentCount = 0;
+  const fmt = a => Array.from(a,x=>x.toString(16).padStart(2,'0')).join('').toUpperCase();
+  function log(message) {
+    const when = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    const current = $('log').textContent;
+    $('log').textContent = `${when} · ${message}\n` + (current === 'Ready. Open this page in Bluefy on your iPhone.' ? '' : current);
+    $('log').textContent = $('log').textContent.slice(0,1800);
+  }
+  function isUp(side) {return Boolean(conn[side]?.device?.gatt?.connected && conn[side]?.characteristic)}
+  function refresh() {
+    ['left','right'].forEach(side => {
+      const connected=isUp(side);
+      $(side+'-status').innerHTML = `<i class="dot${connected?' on':''}"></i>${names[side]} · ${connected?'Connected':'Disconnected'}`;
+      $('connect-'+side).textContent = connected?'Disconnect':'Connect';
+    });
+    const any = isUp('left') || isUp('right');
+    ['chase-once','mode255','send-color','solid-red'].forEach(id=>$(id).disabled=!any);
+    $('loop-start').disabled=!any || running;
+    $('loop-stop').disabled=!running;
+    $('loop-status').textContent=running?'Loop running':'Stopped';
+    $('count-label').textContent=`Chase commands sent: ${sentCount}`;
+  }
+  function stopLoop(reason) {
+    running=false;
+    if(timer !== null) {clearTimeout(timer);timer=null}
+    refresh();
+    if(reason)log(reason);
+  }
+  async function connect(side) {
+    if (!navigator.bluetooth) {log('Web Bluetooth unavailable. Use Bluefy over HTTPS.');return}
+    if (isUp(side)) {
+      if(conn[side]?.device?.gatt?.connected) conn[side].device.gatt.disconnect();
+      conn[side]=null;stopLoop('Bluetooth disconnected.');refresh();return;
+    }
+    try {
+      // Each requestDevice() call must originate from a separate, direct button tap.
+      const device = await navigator.bluetooth.requestDevice({filters:[{namePrefix:'Dream'}],optionalServices:[SERVICE]});
+      if(device.name !== names[side]) {
+        log(`Selected ${device.name||'unnamed device'}; expected ${names[side]}. Try again.`);
+        return;
+      }
+      if(Object.values(conn).some(c=>c?.device?.id===device.id)) {log('That controller is already connected in the other slot.');return}
+      device.addEventListener('gattserverdisconnected',()=>{
+        if(conn[side]?.device?.id===device.id){conn[side]=null;stopLoop(`${names[side]} disconnected; looping halted.`);refresh()}
+      });
+      const server=await device.gatt.connect();
+      const service=await server.getPrimaryService(SERVICE);
+      const characteristic=await service.getCharacteristic(WRITE_CHAR);
+      conn[side]={device, characteristic};
+      log(`${device.name} connected; write characteristic found.`);
+    } catch(e) {log(`Connection failed: ${e.message||String(e)}`)}
+    refresh();
+  }
+  async function writeCharacteristic(characteristic,bytes) {
+    if (typeof characteristic.writeValueWithResponse === 'function') {
+      return characteristic.writeValueWithResponse(bytes);
+    }
+    if (typeof characteristic.writeValue === 'function') {
+      return characteristic.writeValue(bytes);
+    }
+    if (typeof characteristic.writeValueWithoutResponse === 'function') {
+      return characteristic.writeValueWithoutResponse(bytes);
+    }
+    throw new Error('No supported GATT write method');
+  }
+  async function send(bytes, silent=false) {
+    const active=Object.keys(conn).filter(isUp);
+    if(!active.length){log('Connect at least one Dream controller.');return false}
+    const results=await Promise.allSettled(active.map(side=>writeCharacteristic(conn[side].characteristic,bytes)));
+    const errors=results.map((r,i)=>r.status==='rejected'?`${names[active[i]]}: ${r.reason?.message||r.reason}`:null).filter(Boolean);
+    if(errors.length){stopLoop('Write failed; looping halted.');log(errors.join(' | '));return false}
+    if(!silent)log(`Sent ${fmt(bytes)} to ${active.join(' + ')}`);
+    return true;
+  }
+  async function once() {
+    if(busy)return;
+    busy=true;
+    try {if(await send(CHASE)){sentCount++;refresh()}}
+    finally {busy=false}
+  }
+  async function tick() {
+    if(!running)return;
+    if(busy) {timer=setTimeout(tick,150);return}
+    busy=true;
+    try {
+      if(await send(CHASE,true)) {
+        sentCount++;refresh();
+        if(sentCount===1 || sentCount%5===0)log(`Chase triggered (${sentCount} total sends)`);
+      } else stopLoop('Loop stopped after write failure.');
+    } finally {busy=false}
+    if(running)timer=setTimeout(tick,Number($('interval').value));
+  }
+  function solidColor(hex) {
+    if(!/^#[0-9a-fA-F]{6}$/.test(hex))throw Error('Invalid RGB color');
+    const values=hex.slice(1).match(/../g).map(x=>parseInt(x,16));
+    return Uint8Array.from([0x56,...values,0x00,0xf0,0xaa]);
+  }
+  async function setColor(hex) {
+    stopLoop();
+    if(busy){log('Wait for the current command to finish.');return}
+    busy=true;try{await send(solidColor(hex));}finally{busy=false}
+  }
+  ['left','right'].forEach(s=>$('connect-'+s).addEventListener('click',()=>connect(s)));
+  $('chase-once').addEventListener('click',()=>{stopLoop();once()});
+  $('loop-start').addEventListener('click',()=>{if(running)return;running=true;sentCount=0;refresh();log('Starting repeating chase; keep Bluefy open and phone awake.');tick()});
+  $('loop-stop').addEventListener('click',()=>stopLoop('Loop stopped. Current animation may finish its pass.'));
+  $('mode255').addEventListener('click',async()=>{stopLoop();await send(MODE255)});
+  $('send-color').addEventListener('click',()=>setColor($('color').value));
+  $('solid-red').addEventListener('click',()=>setColor('#ff0000'));
+  $('interval').addEventListener('input',()=>{$('interval-value').textContent=(Number($('interval').value)/1000).toFixed(1)+' s'});
+  $('clear-log').addEventListener('click',()=>{$('log').textContent=''});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden && running){stopLoop('Page hidden: loop stopped to avoid unpredictable background playback.')}});
+  const enabled=!!navigator.bluetooth && window.isSecureContext;
+  $('support').textContent=enabled?'Web Bluetooth available':'Needs Bluefy + HTTPS';
+  if(!enabled) log('Use Bluefy browser and an HTTPS URL (GitHub Pages); ordinary iPhone Safari cannot access BLE.');
+  refresh();
+})();
+</script>
+</body>
+</html>
