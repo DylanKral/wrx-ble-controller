@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b1120">
-  <title>WRX Dream BLE Lab</title>
+  <title>WRX Dream BLE Lab v2</title>
   <style>
     :root{color-scheme:dark;--bg:#0b1120;--panel:#151e30;--line:#303b50;--txt:#eff5ff;--muted:#9facbf;--blue:#66b1ff;--red:#ff767c;--green:#57dcad}
     *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 90% 0%,#192c47 0%,var(--bg) 52%);font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--txt)}
@@ -21,7 +21,7 @@
 <body>
 <main>
   <div class="kicker">Subaru WRX · Proof of concept</div>
-  <h1>Dream BLE Lab</h1>
+  <h1>Dream BLE Lab <span style="font-size:12px;color:var(--muted);vertical-align:middle">v2</span></h1>
   <p>Control your two Archaic RGB tail lights directly from your iPhone. No server, accounts, analytics, or firmware changes.</p>
   <div class="note"><b>Parked testing only.</b> Keep the original brake, turn and reverse lighting systems untouched. Do not use custom lighting effects on public roads. Browser looping may stop when iOS locks or backgrounds the page.</div>
 
@@ -44,7 +44,8 @@
     <input id="interval" type="range" min="1000" max="10000" step="100" value="2500" aria-label="Repeat interval in milliseconds">
     <p style="margin:0 0 14px">Adjust to roughly match one complete chase. This controls how often the command is resent, not the LED animation speed.</p>
     <div class="actions"><button id="chase-once" disabled type="button">Chase once</button><button id="loop-start" disabled class="primary" type="button">Start looping</button><button id="loop-stop" disabled class="danger" type="button">Stop looping</button><button id="mode255" disabled type="button">Mode 255</button></div>
-    <p id="count-label" style="margin-top:12px">Chase commands sent: 0</p>
+    <p id="count-label" style="margin-top:12px">Completed sends: 0 · Timer ticks: 0</p>
+    <p id="debug-label" style="margin-top:4px">BLE transport: Not connected</p>
   </section>
 
   <section class="panel">
@@ -70,13 +71,15 @@
   const names = {left:'Dream-CF4B',right:'Dream-A90F'};
   const conn = {left:null,right:null};
   const $ = id => document.getElementById(id);
-  let running = false, timer = null, busy = false, sentCount = 0;
+  let running = false, timer = null, busy = false, pendingSince = 0;
+  let completed = 0, attempts = 0, ticks = 0, skipped = 0;
+  let lastTransport = 'Not connected';
   const fmt = a => Array.from(a,x=>x.toString(16).padStart(2,'0')).join('').toUpperCase();
   function log(message) {
     const when = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
     const current = $('log').textContent;
-    $('log').textContent = `${when} · ${message}\n` + (current === 'Ready. Open this page in Bluefy on your iPhone.' ? '' : current);
-    $('log').textContent = $('log').textContent.slice(0,1800);
+    $('log').textContent = `${when} · ${message}\n` + (current.startsWith('Ready. Open this page') ? '' : current);
+    $('log').textContent = $('log').textContent.slice(0,2400);
   }
   function isUp(side) {return Boolean(conn[side]?.device?.gatt?.connected && conn[side]?.characteristic)}
   function refresh() {
@@ -90,7 +93,8 @@
     $('loop-start').disabled=!any || running;
     $('loop-stop').disabled=!running;
     $('loop-status').textContent=running?'Loop running':'Stopped';
-    $('count-label').textContent=`Chase commands sent: ${sentCount}`;
+    $('count-label').textContent=`Completed sends: ${completed} · Timer ticks: ${ticks} · Waiting ticks: ${skipped}`;
+    $('debug-label').textContent=`BLE transport: ${lastTransport}` + (busy?' · write pending':'');
   }
   function stopLoop(reason) {
     running=false;
@@ -105,62 +109,74 @@
       conn[side]=null;stopLoop('Bluetooth disconnected.');refresh();return;
     }
     try {
-      // Each requestDevice() call must originate from a separate, direct button tap.
-      const device = await navigator.bluetooth.requestDevice({filters:[{namePrefix:'Dream'}],optionalServices:[SERVICE]});
-      if(device.name !== names[side]) {
-        log(`Selected ${device.name||'unnamed device'}; expected ${names[side]}. Try again.`);
-        return;
-      }
-      if(Object.values(conn).some(c=>c?.device?.id===device.id)) {log('That controller is already connected in the other slot.');return}
+      const device=await navigator.bluetooth.requestDevice({filters:[{namePrefix:'Dream'}],optionalServices:[SERVICE]});
+      if(device.name !== names[side]) {log(`Selected ${device.name||'unnamed device'}; expected ${names[side]}. Try again.`);return}
+      if(Object.values(conn).some(c=>c?.device?.id===device.id)) {log('Controller already connected in the other slot.');return}
       device.addEventListener('gattserverdisconnected',()=>{
         if(conn[side]?.device?.id===device.id){conn[side]=null;stopLoop(`${names[side]} disconnected; looping halted.`);refresh()}
       });
       const server=await device.gatt.connect();
       const service=await server.getPrimaryService(SERVICE);
       const characteristic=await service.getCharacteristic(WRITE_CHAR);
-      conn[side]={device, characteristic};
-      log(`${device.name} connected; write characteristic found.`);
-    } catch(e) {log(`Connection failed: ${e.message||String(e)}`)}
+      conn[side]={device,characteristic};
+      const capabilities=characteristic.properties;
+      log(`${device.name} connected. Supports: write=${capabilities?.write}, no-response=${capabilities?.writeWithoutResponse}.`);
+    } catch(e) {log(`Connection failed: ${e?.message||String(e)}`)}
     refresh();
   }
+  // FFD9 advertises WRITE NO RESPONSE. Try that first, since waiting for a
+  // write-with-response callback can stall some iOS Web Bluetooth bridges.
   async function writeCharacteristic(characteristic,bytes) {
-    if (typeof characteristic.writeValueWithResponse === 'function') {
-      return characteristic.writeValueWithResponse(bytes);
-    }
-    if (typeof characteristic.writeValue === 'function') {
-      return characteristic.writeValue(bytes);
-    }
-    if (typeof characteristic.writeValueWithoutResponse === 'function') {
+    if(characteristic.properties?.writeWithoutResponse !== false && typeof characteristic.writeValueWithoutResponse==='function') {
+      lastTransport='Write without response';
       return characteristic.writeValueWithoutResponse(bytes);
     }
-    throw new Error('No supported GATT write method');
+    if(typeof characteristic.writeValueWithResponse==='function') {
+      lastTransport='Write with response';
+      return characteristic.writeValueWithResponse(bytes);
+    }
+    if(typeof characteristic.writeValue==='function') {
+      lastTransport='Legacy writeValue';
+      return characteristic.writeValue(bytes);
+    }
+    throw new Error('No supported Web Bluetooth write method');
   }
-  async function send(bytes, silent=false) {
+  async function send(bytes,silent=false) {
     const active=Object.keys(conn).filter(isUp);
-    if(!active.length){log('Connect at least one Dream controller.');return false}
+    if(!active.length) {stopLoop('No connected controllers.');return false}
     const results=await Promise.allSettled(active.map(side=>writeCharacteristic(conn[side].characteristic,bytes)));
     const errors=results.map((r,i)=>r.status==='rejected'?`${names[active[i]]}: ${r.reason?.message||r.reason}`:null).filter(Boolean);
-    if(errors.length){stopLoop('Write failed; looping halted.');log(errors.join(' | '));return false}
-    if(!silent)log(`Sent ${fmt(bytes)} to ${active.join(' + ')}`);
+    if(errors.length) {stopLoop('Bluetooth write failed; loop halted.');log(errors.join(' | '));return false}
+    if(!silent)log(`Sent ${fmt(bytes)} to ${active.join(' + ')} via ${lastTransport}`);
     return true;
   }
   async function once() {
-    if(busy)return;
-    busy=true;
-    try {if(await send(CHASE)){sentCount++;refresh()}}
-    finally {busy=false}
+    if(busy){log('Bluetooth write still pending.');return}
+    busy=true;pendingSince=Date.now();refresh();
+    try {if(await send(CHASE)){completed++;refresh()}}
+    catch(e){log(`Write error: ${e?.message||String(e)}`)}
+    finally {busy=false;pendingSince=0;refresh()}
   }
+  // Schedule timer BEFORE awaiting Bluetooth.  If Bluefy leaves a write Promise
+  // unsettled, the timer still advances and reports the blocked write.
   async function tick() {
     if(!running)return;
-    if(busy) {timer=setTimeout(tick,150);return}
-    busy=true;
+    ticks++;
+    timer=setTimeout(tick,Number($('interval').value));
+    if(busy) {
+      skipped++;
+      const age=Date.now()-pendingSince;
+      if(age>6000)stopLoop(`Bluetooth write pending for ${(age/1000).toFixed(1)} seconds. The browser has not acknowledged it; loop halted.`);
+      refresh();return;
+    }
+    busy=true;pendingSince=Date.now();attempts++;refresh();
     try {
       if(await send(CHASE,true)) {
-        sentCount++;refresh();
-        if(sentCount===1 || sentCount%5===0)log(`Chase triggered (${sentCount} total sends)`);
-      } else stopLoop('Loop stopped after write failure.');
-    } finally {busy=false}
-    if(running)timer=setTimeout(tick,Number($('interval').value));
+        completed++;refresh();
+        if(completed<=3 || completed%5===0)log(`Chase command ${completed} completed via ${lastTransport}`);
+      }
+    } catch(e) {stopLoop(`Bluetooth exception: ${e?.message||String(e)}`)}
+    finally {busy=false;pendingSince=0;refresh()}
   }
   function solidColor(hex) {
     if(!/^#[0-9a-fA-F]{6}$/.test(hex))throw Error('Invalid RGB color');
@@ -169,22 +185,39 @@
   }
   async function setColor(hex) {
     stopLoop();
-    if(busy){log('Wait for the current command to finish.');return}
-    busy=true;try{await send(solidColor(hex));}finally{busy=false}
+    if(busy){log('Wait for the current Bluetooth write to finish.');return}
+    busy=true;pendingSince=Date.now();refresh();
+    try{await send(solidColor(hex))}
+    catch(e){log(`Color write error: ${e?.message||String(e)}`)}
+    finally{busy=false;pendingSince=0;refresh()}
   }
   ['left','right'].forEach(s=>$('connect-'+s).addEventListener('click',()=>connect(s)));
   $('chase-once').addEventListener('click',()=>{stopLoop();once()});
-  $('loop-start').addEventListener('click',()=>{if(running)return;running=true;sentCount=0;refresh();log('Starting repeating chase; keep Bluefy open and phone awake.');tick()});
-  $('loop-stop').addEventListener('click',()=>stopLoop('Loop stopped. Current animation may finish its pass.'));
-  $('mode255').addEventListener('click',async()=>{stopLoop();await send(MODE255)});
+  $('loop-start').addEventListener('click',()=>{
+    if(running)return;
+    if(busy){log('An earlier BLE command is still pending. Wait before starting loop.');return}
+    running=true;completed=0;attempts=0;ticks=0;skipped=0;refresh();
+    log('Loop started (v2). Keep Bluefy visible and screen awake.');
+    tick();
+  });
+  $('loop-stop').addEventListener('click',()=>stopLoop('Loop stopped. Current chase may finish its pass.'));
+  $('mode255').addEventListener('click',async()=>{
+    stopLoop();if(busy){log('Wait for current write to finish.');return}
+    busy=true;pendingSince=Date.now();refresh();
+    try{await send(MODE255)}catch(e){log(`Mode 255 error: ${e?.message||String(e)}`)}
+    finally{busy=false;pendingSince=0;refresh()}
+  });
   $('send-color').addEventListener('click',()=>setColor($('color').value));
   $('solid-red').addEventListener('click',()=>setColor('#ff0000'));
   $('interval').addEventListener('input',()=>{$('interval-value').textContent=(Number($('interval').value)/1000).toFixed(1)+' s'});
   $('clear-log').addEventListener('click',()=>{$('log').textContent=''});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden && running){stopLoop('Page hidden: loop stopped to avoid unpredictable background playback.')}});
-  const enabled=!!navigator.bluetooth && window.isSecureContext;
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden&&running)stopLoop('Page hidden. iOS backgrounded the web app, so looping stopped.');
+  });
+  const enabled=!!navigator.bluetooth&&window.isSecureContext;
   $('support').textContent=enabled?'Web Bluetooth available':'Needs Bluefy + HTTPS';
-  if(!enabled) log('Use Bluefy browser and an HTTPS URL (GitHub Pages); ordinary iPhone Safari cannot access BLE.');
+  if(!enabled)log('Use Bluefy on an HTTPS website; Safari cannot access Web Bluetooth.');
+  log('Loaded v2 diagnostic loop.');
   refresh();
 })();
 </script>
