@@ -1,307 +1,458 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b1120">
-  <title>WRX Dream BLE Controller v3</title>
-  <style>
-    :root{color-scheme:dark;--bg:#0b1120;--panel:#151e30;--line:#303b50;--txt:#eff5ff;--muted:#acb9cc;--blue:#73b7ff;--red:#ff767c;--green:#57dcad}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 90% 0%,#192c47 0%,var(--bg) 52%);font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--txt)}
-    main{max-width:580px;margin:auto;padding:calc(22px + env(safe-area-inset-top)) 18px calc(35px + env(safe-area-inset-bottom))}
-    h1{font-size:27px;letter-spacing:-.7px;line-height:1.15;margin:5px 0 8px}h2{font-size:17px;margin:0 0 14px}p{margin:7px 0 0;color:var(--muted);font-size:13px}
-    .kicker{font-weight:700;text-transform:uppercase;letter-spacing:1.6px;color:var(--blue);font-size:11px}
-    .panel{border:1px solid var(--line);background:linear-gradient(160deg,#192337,#121b2c);border-radius:18px;padding:18px;margin-top:16px}
-    .device{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}.device:first-of-type{border-top:0;padding-top:0}.device strong{display:block;font-size:14px}
-    .status{display:flex;gap:7px;align-items:center;font-size:12px;color:var(--muted);margin-top:4px}.dot{width:7px;height:7px;border-radius:50%;background:#65748a}.dot.on{background:var(--green);box-shadow:0 0 10px #57dcad77}
-    button{background:#294261;border:1px solid #375477;color:var(--txt);font-size:14px;font-weight:650;padding:11px 12px;border-radius:11px;cursor:pointer;touch-action:manipulation;min-height:44px}
-    button.primary{background:#1974d2;border-color:#3992f1}button.danger{background:#542b39;border-color:#965165}
-    button:disabled{opacity:.43;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #8ac3ff;outline-offset:2px}
-    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actions button{min-height:48px}
-    .range-row,.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.section-head h2{margin:0}
-    input[type=range]{width:100%;accent-color:#6dbaff;height:34px;margin-top:8px}input[type=color]{width:58px;height:44px;padding:3px;background:transparent;border:1px solid var(--line);border-radius:8px}
-    input[type=text],input[type=number],select{width:100%;background:#0e1727;border:1px solid #526179;border-radius:9px;color:#f5f8fd;padding:11px;font:inherit;font-size:15px;min-width:0}
-    label{font-size:13px;color:#d3ddeb}label small{display:block;color:var(--muted)}
-    .twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:grid;gap:5px}
-    .presets{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:15px 0}
-    .preset{display:flex;flex-direction:column;gap:2px;text-align:left;background:#172b46;min-height:70px;padding:11px 12px;line-height:1.25}
-    .preset.selected{border-color:#79bcff;box-shadow:inset 0 0 0 1px #79bcff;background:#204166}
-    .preset .subtitle{font-size:12px;color:#acc3e2;font-weight:500;margin-top:3px}
-    .sequence{display:grid;grid-template-columns:1fr 1fr;gap:9px 12px;margin:10px 0}
-    .seq-option{display:flex;align-items:center;gap:8px;font-size:13px;min-width:0;line-height:1.25}.seq-option span{overflow-wrap:anywhere}
-    input[type=checkbox]{accent-color:#6ab6ff;min-width:19px;width:19px;height:19px;margin:0}
-    .pill{font-size:12px;display:inline-flex;align-items:center;padding:5px 9px;border-radius:25px;background:#24344a;color:#abc9ef;border:1px solid #3a5272}
-    .note{font-size:13px;color:#dfc7b0;background:#362c29;border:1px solid #665046;padding:11px 13px;border-radius:11px;margin-top:15px}
-    .tip{border-top:1px solid var(--line);padding-top:13px;margin-top:15px}
-    .color-row{display:flex;gap:10px;align-items:center;margin-bottom:13px}.color-row label{flex:1;font-size:14px}
-    .log{font-size:12px;line-height:1.5;color:#c1cfe1;overflow-wrap:anywhere;min-height:25px;max-height:185px;overflow:auto;white-space:pre-line}
-    small{font-size:12px;color:var(--muted)}
-  </style>
-</head>
-<body>
-<main>
-  <div class="kicker">Subaru WRX · Parked-only Bluetooth lab</div>
-  <h1>Dream BLE Lab <span style="font-size:12px;color:var(--muted);vertical-align:middle">v3 · 10 presets</span></h1>
-  <p>Ten editable animation favorites, repeat controls and a simple playlist. All commands are sent directly from Bluefy to your two Dream controllers.</p>
-  <div class="note"><b>Parked testing only.</b> Keep factory brake, turn and reverse lighting untouched. Custom color and animations may be illegal for public-road use. Looping requires Bluefy to stay open and the screen awake. Stop only halts future commands; a built-in looping effect may continue until you select a static color.</div>
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#0c1424"/><title>WRX Dream BLE Controller — Calibration</title><style>
+:root{color-scheme:dark;--bg:#0c1424;--panel:#182438;--line:#334159;--txt:#edf4ff;--muted:#b0bfd3;--blue:#86c5ff;--green:#5cdda5}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% -5%,#1e3655,transparent 58%),var(--bg);color:var(--txt);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}main{max-width:610px;margin:auto;padding:calc(22px + env(safe-area-inset-top)) 17px calc(30px + env(safe-area-inset-bottom))}
+h1{font-size:27px;line-height:1.15;letter-spacing:-.7px;margin:5px 0 8px}h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 9px}p{margin:7px 0 0;color:var(--muted);font-size:13px}.kicker{font-size:11px;letter-spacing:1.2px;color:var(--blue);font-weight:750;text-transform:uppercase}
+.panel{background:linear-gradient(155deg,#1a2940,#141e30);border:1px solid var(--line);border-radius:18px;padding:17px;margin-top:15px}.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px}.sectionhead h2{margin:0}.pill{border-radius:30px;color:#b8d8ff;background:#293e56;padding:5px 9px;font-size:11px;white-space:nowrap}
+button{background:#2e4968;color:var(--txt);border:1px solid #436687;font:600 14px/1.25 system-ui,sans-serif;padding:11px 12px;border-radius:11px;min-height:44px;cursor:pointer;touch-action:manipulation}button.primary{background:#176cc2;border-color:#3489e7}button.danger{background:#623141;border-color:#905566}button:disabled{opacity:.45}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #8fd3ff;outline-offset:2px}
+.actions,.twocol,.presets,.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.presets{margin:13px 0 14px}.preset{display:flex;flex-direction:column;gap:4px;text-align:left;min-height:78px;padding:11px;background:#173050}.preset.selected{background:#214970;border-color:#8ecaff;box-shadow:inset 0 0 0 1px #8ecaff}.preset small{font-size:11px;color:#bed0e7;line-height:1.4}
+input[type=text],input[type=number],select{min-width:0;width:100%;border:1px solid #566985;background:#101b2d;border-radius:9px;padding:11px;color:var(--txt);font:inherit;font-size:15px}input[type=color]{height:42px;width:65px;border:1px solid var(--line);border-radius:8px;padding:3px;background:transparent}input[type=checkbox]{width:20px;height:20px;flex:none;accent-color:#6ab6ff;margin:0}label{font-size:13px;color:#d6e2f1}.field{display:grid;gap:5px;margin-top:12px}.device{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--line);padding:12px 0}.device:first-of-type{border:0}.device strong{font-size:14px}.status{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px}.dot{width:7px;height:7px;border-radius:50%;background:#667b96}.dot.on{background:var(--green)}
+.note{font-size:12px;background:#352c2a;border:1px solid #675249;padding:11px 12px;border-radius:10px;margin-top:14px;color:#e9cabb}.hint{font-size:12px;margin-top:6px;color:#a6b7ce}.check{display:flex;gap:8px;align-items:center;border:1px solid #334966;border-radius:10px;padding:10px;background:#172a43;min-width:0;font-size:12px}.check span{overflow-wrap:anywhere}.divider{height:1px;background:var(--line);margin:16px 0}.seqline{padding:9px 0;border-bottom:1px solid #314058;display:flex;align-items:center;justify-content:space-between;gap:8px}.seqline:last-child{border-bottom:0}.seqline small{color:var(--muted)}.color-row{display:flex;justify-content:space-between;align-items:center;margin:15px 0}.log{white-space:pre-line;font-size:12px;line-height:1.5;color:#c4d2e2;max-height:200px;overflow:auto;overflow-wrap:anywhere}.metric{font-size:12px;color:#b5cce5}.flex{display:flex;justify-content:space-between;align-items:center;gap:8px}.hidden{display:none!important}
 
-  <section class="panel">
-    <div class="section-head"><h2>Bluetooth connections</h2><span id="support" class="pill">Checking browser</span></div>
-    <div class="device"><div><strong>Left tail light</strong><span id="left-status" class="status"><i class="dot"></i>Dream-CF4B · Disconnected</span></div><button id="connect-left" type="button">Connect</button></div>
-    <div class="device"><div><strong>Right tail light</strong><span id="right-status" class="status"><i class="dot"></i>Dream-A90F · Disconnected</span></div><button id="connect-right" type="button">Connect</button></div>
-    <p>Connect each light separately by choosing its matching Dream name.</p>
-  </section>
+#calibration-view{color-scheme:dark;--bg:#0b1425;--panel:#18253a;--line:#354760;--text:#ecf4ff;--muted:#b4c6dc;--blue:#82bfff;--good:#58dca4;--warn:#f5bf6d}
+#calibration-view{max-width:760px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 32px)}
+#calibration-view a{color:#9ccfff}
+#calibration-view h1{font-size:27px;line-height:1.15;margin:9px 0}
+#calibration-view h2{font-size:20px;margin:0 0 8px}
+#calibration-view h3{font-size:16px;margin:0}
+#calibration-view p{color:var(--muted);font-size:13px;line-height:1.5;margin:7px 0}
+#calibration-view .topline{display:flex;justify-content:space-between;align-items:center;gap:10px}
+#calibration-view .eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.3px;font-weight:700;color:var(--blue)}
+#calibration-view .panel{background:linear-gradient(160deg,#1a2b45,#151f31);border:1px solid var(--line);border-radius:18px;padding:17px;margin-top:16px}
+#calibration-view .note{border:1px solid #6f5842;background:#352b25;color:#f2d6b2;border-radius:11px;padding:11px 12px;font-size:12px;margin:14px 0}
+#calibration-view .small{color:var(--muted);font-size:12px}
+#calibration-view .pill{border-radius:999px;background:#263d58;color:#b8d9ff;padding:5px 10px;font-size:11px;white-space:nowrap}
+#calibration-view .status{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}
+#calibration-view .dot{width:8px;height:8px;background:#8191a8;border-radius:50%;display:inline-block}
+#calibration-view .dot.ok{background:var(--good)}
+#calibration-view button{background:#304e70;color:var(--text);border:1px solid #497297;border-radius:10px;padding:11px 13px;min-height:44px;font:600 14px system-ui;touch-action:manipulation;cursor:pointer}
+#calibration-view button.primary{background:#176dbf;border-color:#3b96e6}
+#calibration-view button.danger{background:#713d4c;border-color:#99586b}
+#calibration-view button:disabled{opacity:.43}
+#calibration-view button:focus-visible, #calibration-view input:focus-visible, #calibration-view select:focus-visible, #calibration-view a:focus-visible{outline:2px solid #9de4ff;outline-offset:2px}
+#calibration-view .row{display:flex;justify-content:space-between;gap:12px;align-items:center}
+#calibration-view .device{padding:10px 0;border-bottom:1px solid #30435c}
+#calibration-view .device:last-child{border-bottom:none}
+#calibration-view .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#calibration-view .test-btn{text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:84px;background:#173451}
+#calibration-view .test-btn small{font-size:12px;color:#c0d1e8;font-weight:400}
+#calibration-view .test-btn strong{font-size:14px}
+#calibration-view .field{display:grid;gap:6px}
+#calibration-view label{font-size:13px;font-weight:600;color:#d6e6f6}
+#calibration-view input[type=number], #calibration-view select{font:inherit;background:#101c2f;border:1px solid #5a7597;color:var(--text);border-radius:9px;padding:10px 11px;min-width:0;width:100%}
+#calibration-view .quick{margin-top:12px}
+#calibration-view .metric-card{border:1px solid #4b6587;border-radius:16px;background:#0c2035;padding:16px;margin-top:12px}
+#calibration-view .clock{font-variant-numeric:tabular-nums;font-size:clamp(32px,10vw,58px);line-height:1.07;font-weight:800;letter-spacing:.3px;text-align:center}
+#calibration-view .cue{font-weight:800;font-size:clamp(18px,5vw,26px);text-align:center;min-height:34px;margin:8px 0}
+#calibration-view .cue-banner{border:2px solid #365778;border-radius:10px;background:#1a344d;height:21px;overflow:hidden;transition:none}
+#calibration-view .cue-banner.pulse{background:#ffffff;border-color:#ffffff;box-shadow:0 0 15px #fff9}
+#calibration-view .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+#calibration-view .metric{border:1px solid #3b526f;border-radius:10px;padding:8px 7px;text-align:center}
+#calibration-view .metric strong{display:block;font-variant-numeric:tabular-nums;font-size:18px}
+#calibration-view .metric span{font-size:10px;color:#b6cde7}
+#calibration-view .activity{max-height:255px;overflow:auto;white-space:pre-line;overflow-wrap:anywhere;color:#cad9ed;font-size:12px;line-height:1.55}
+#calibration-view .sectionhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:9px}
+#calibration-view .btn-full{width:100%;margin-top:12px}
+#calibration-view .divider{height:1px;background:var(--line);margin:16px 0}
+#calibration-view .fail{color:#ffbdab}
+#calibration-view .oktext{color:var(--good)}
+#calibration-view .hide{display:none!important}
+#calibration-view .buttonbar{display:flex;gap:10px;flex-wrap:wrap}
+#calibration-view .buttonbar>*{flex:1 1 125px}
+#calibration-view .nowrap{white-space:nowrap}
+#calibration-view .mini{font:11px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#bdd5eb}
+#calibration-view .itemline{display:flex;gap:10px;align-items:baseline;justify-content:space-between;border-bottom:1px solid #32435b;padding:8px 0}
+#calibration-view .itemline small{color:var(--muted)}
+#calibration-view .flashlabel{font-size:11px;color:var(--blue);text-align:center;min-height:19px}
+#calibration-view .footer{margin:18px 0 0;font-size:12px;color:var(--muted)}
+@media (min-width:650px){#calibration-view .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+#calibration-view .test-btn{min-height:94px}}
 
-  <section class="panel">
-    <div class="section-head"><h2>My 10 animations</h2><span class="pill" id="selected-label">Mode 4</span></div>
-    <p>Tap a favorite to select it. Modes 4 and 255 were verified on your controllers; the others are editable starting suggestions, not verified effects.</p>
-    <div class="presets" id="preset-grid"></div>
-    <div class="tip">
-      <h2>Edit selected favorite</h2>
-      <div class="twocol">
-        <div class="field"><label for="preset-name">Name</label><input type="text" id="preset-name" maxlength="28" placeholder="Favorite name"></div>
-        <div class="field"><label for="preset-mode">Factory mode number (1–256)</label><input type="number" id="preset-mode" min="1" max="256" step="1" inputmode="numeric"></div>
-      </div>
-      <div class="actions" style="margin-top:12px"><button id="save-preset" type="button">Save this favorite</button><button id="play-once" type="button" disabled>Play selected once</button></div>
-      <p>Factory mode commands use <code>9E 00 [mode minus 1] 81 98 00 E9</code>. Modes other than 4 and 255 follow an observed pattern but haven't all been tested.</p>
-    </div>
-  </section>
-
-  <section class="panel">
-    <div class="section-head"><h2>Loop playback</h2><span id="loop-status" class="pill">Stopped</span></div>
-    <div class="range-row" style="margin-top:14px"><label for="interval">Time between triggers</label><strong id="interval-value">2.5 s</strong></div>
-    <input id="interval" type="range" min="1000" max="12000" step="100" value="2500" aria-label="Repeat interval">
-    <p style="margin-top:0">Match this to the length of the effect. It does not adjust animation speed inside the lights.</p>
-    <div class="field" style="margin-top:13px"><label for="repeat-count">Repeat count</label><select id="repeat-count"><option value="forever">Until stopped</option><option value="1">1</option><option value="5">5</option><option value="10">10</option><option value="20">20</option><option value="100">100</option></select></div>
-    <div class="actions" style="margin-top:12px">
-      <button id="loop-selected" class="primary" type="button" disabled>Loop selected</button>
-      <button id="loop-stop" class="danger" type="button" disabled>Stop playback</button>
-    </div>
-    <p id="count-label" style="margin-top:12px">Completed sends: 0 · Timer ticks: 0 · Waiting ticks: 0</p>
-    <p id="debug-label">BLE transport: Not connected</p>
-  </section>
-
-  <section class="panel">
-    <h2>Custom sequence</h2>
-    <p>Check up to 10 favorites. The sequence plays the checked modes in their displayed order, moving to the next at each repeat interval.</p>
-    <div class="sequence" id="sequence-options"></div>
-    <div class="actions"><button id="play-sequence" type="button" disabled>Play sequence</button><button id="clear-sequence" type="button">Clear selections</button></div>
-    <p>For a sequence, the repeat count is how many complete cycles of the selected modes to play. “Until stopped” keeps cycling.</p>
-  </section>
-
-  <section class="panel">
-    <h2>Static RGB</h2>
-    <div class="color-row"><label for="color">Choose a color</label><input id="color" type="color" value="#0000ff" aria-label="RGB color"></div>
-    <div class="actions"><button id="send-color" type="button" disabled>Apply color</button><button id="solid-red" type="button" disabled>Set solid red</button></div>
-    <p>The selected solid color is also used by applicable chasing effects. Sending a color stops this webpage's timer.</p>
-  </section>
-
-  <section class="panel">
-    <div class="section-head"><h2>Activity</h2><button id="clear-log" type="button" style="min-height:34px;padding:7px 11px">Clear</button></div>
-    <div id="log" class="log" role="log" aria-live="polite">Ready. Open this page in Bluefy on your iPhone.</div>
-  </section>
-  <p><small>Dream controllers · Service FFD5 · Characteristic FFD9. No firmware flashing, no telemetry, no external dependencies. Presets are saved locally in the browser.</small></p>
+[hidden]{display:none!important}
+.site-nav{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;
+  padding:10px 16px;min-height:58px;background:#101d31f2;backdrop-filter:blur(10px);border-bottom:1px solid #364d67}
+.brand{font-size:14px;font-weight:800;color:#e9f4ff;letter-spacing:.1px}
+.site-menu-btn{width:45px;min-height:42px;padding:8px;font-size:23px;line-height:1;border:1px solid #597594;background:#263f60;color:#eff8ff}
+.site-menu{position:absolute;right:13px;top:calc(100% - 3px);width:min(260px,calc(100vw - 26px));
+ background:#182943;border:1px solid #4e6581;box-shadow:0 14px 40px #0008;border-radius:14px;padding:8px;display:grid;gap:6px}
+.site-menu button{width:100%;text-align:left;background:transparent;border:1px solid transparent;color:#eff7ff;min-height:48px;padding:10px 12px}
+.site-menu button[aria-current="page"]{background:#214f80;border-color:#4f8fc6}
+.site-menu button:focus-visible{outline:2px solid #93d5ff}
+#controller-view,#calibration-view{padding-top:16px}
+#calibration-view{--text:#ecf4ff;--good:#58dca4;--warn:#f5bf6d;max-width:760px;color:var(--text)}
+#calibration-view .return-nav{background:#263f60;border:1px solid #507aa8;padding:10px 12px;min-height:42px}
+</style></head><body><header class="site-nav">
+  <span class="brand">WRX Dream BLE</span>
+  <button id="menu-toggle" class="site-menu-btn" type="button" aria-label="Open navigation" aria-controls="site-menu" aria-expanded="false">☰</button>
+  <nav id="site-menu" class="site-menu" aria-label="Pages" hidden>
+    <button type="button" data-nav-view="controller" aria-current="page">Main controller</button>
+    <button type="button" data-nav-view="calibration">Calibration Mode</button>
+  </nav>
+</header><main id="controller-view">
+<div class="kicker">Subaru WRX · Parked-only Bluetooth lab</div>
+<h1>Dream BLE Lab <span style="font-size:12px;color:#aab9cf">v4 · Timed sequencer</span></h1>
+<p>Ten saved favorites, each with an independent full-play duration and optional early-cut duration. Bluetooth commands go directly to your Dream controllers.</p>
+<div class="note"><strong>For parked testing only.</strong> This controller does not measure actual animation completion; “Finish” uses your saved estimated duration. Browser timer jitter and Bluetooth delays can affect transitions. Keep factory brake/turn/reverse functions untouched. Stop playback and restore normal legal lighting before driving.</div>
+<section class="panel">
+<div class="sectionhead"><h2>Bluetooth connections</h2><span class="pill" id="support">Checking</span></div>
+<div class="device"><div><strong>Left tail light</strong><div class="status" id="left-status"><i class="dot"></i>Dream-CF4B · Disconnected</div></div><button id="connect-left" type="button">Connect</button></div>
+<div class="device"><div><strong>Right tail light</strong><div class="status" id="right-status"><i class="dot"></i>Dream-A90F · Disconnected</div></div><button id="connect-right" type="button">Connect</button></div>
+<p>Connect each controller separately. The webpage transmits to both near-simultaneously.</p>
+</section>
+<section class="panel">
+<div class="sectionhead"><h2>My 10 favorites</h2><span class="pill" id="selected-label">Mode 4</span></div>
+<p>Saved names, modes, and timing settings persist in this browser. Existing v3 favorites are imported automatically on first launch.</p>
+<div class="presets" id="preset-grid"></div>
+<div class="divider"></div>
+<h3>Edit selected favorite</h3>
+<div class="twocol">
+<div class="field" style="margin-top:0"><label for="preset-name">Favorite name</label><input id="preset-name" maxlength="28" type="text"/></div>
+<div class="field" style="margin-top:0"><label for="preset-mode">Factory mode (1–256)</label><input id="preset-mode" inputmode="numeric" max="256" min="1" step="1" type="number"/></div>
+</div>
+<div class="field"><label for="preset-transition">Transition behavior</label><select id="preset-transition"><option value="finish">Finish — wait for estimated duration</option><option value="cut">Cut — switch early at selected time</option></select></div>
+<div class="twocol">
+<div class="field"><label for="preset-full">Full duration (seconds)</label><input id="preset-full" inputmode="decimal" max="60" min="0.05" step="0.05" type="number"/><span class="hint">Estimate full animation length</span></div>
+<div class="field" id="cut-field"><label for="preset-cut">Cut at (seconds)</label><input id="preset-cut" inputmode="decimal" max="60" min="0.05" step="0.05" type="number"/><span class="hint">Must be less than full duration</span></div>
+</div>
+<div class="actions" style="margin-top:15px"><button class="primary" id="save-preset" type="button">Save favorite + timing</button><button disabled="" id="play-once" type="button">Play selected once</button></div>
+<p>Timing adjusts in 0.05-second increments. “Finish” cannot detect the actual end of an animation; calibrate duration from observation. A same-mode command may not immediately interrupt a running effect.</p>
+</section>
+<section class="panel">
+<div class="sectionhead"><h2>Playback</h2><span class="pill" id="loop-status">Stopped</span></div>
+<div class="field"><label for="repeat-count">Repeat complete playlist</label><select id="repeat-count"><option value="forever">Until stopped</option><option value="1">1 time</option><option value="2">2 times</option><option value="5">5 times</option><option value="10">10 times</option><option value="20">20 times</option><option value="100">100 times</option></select></div>
+<div class="actions" style="margin-top:12px"><button class="primary" disabled="" id="loop-selected" type="button">Loop selected</button><button class="danger" disabled="" id="loop-stop" type="button">Stop playback</button></div>
+<p class="metric" id="now-playing" style="margin-top:12px">No active animation.</p>
+<p class="metric" id="count-label">Sends: 0 · Steps: 0 · Late: 0</p>
+<p class="metric" id="debug-label">BLE transport: Not connected</p>
+</section>
+<section class="panel">
+<h2>Custom sequence</h2>
+<p>Choose the favorites to play in order. Each uses its own saved finish or cut timing instead of a single global interval.</p>
+<div class="checks" id="sequence-options" style="margin-top:13px"></div>
+<div class="actions" style="margin-top:13px"><button class="primary" disabled="" id="play-sequence" type="button">Play sequence</button><button id="clear-sequence" type="button">Clear selections</button></div>
+<div class="divider"></div><h3>Timing preview</h3><div id="sequence-preview"></div>
+<p>The schedule is based on command start times, not confirmation that LEDs have finished. Bluetooth packets may arrive slightly apart on the two controllers.</p>
+</section>
+<section class="panel"><h2>Static RGB</h2>
+<div class="color-row"><label for="color">Choose a color</label><input id="color" type="color" value="#0000ff"/></div>
+<div class="actions"><button disabled="" id="send-color" type="button">Apply color</button><button disabled="" id="solid-red" type="button">Set solid red</button></div>
+<p>Sending a static color stops the page's sequence and requests the selected color. Previously selected color is used by compatible chase modes.</p>
+</section>
+<section class="panel"><div class="sectionhead"><h2>Activity</h2><button id="clear-log" type="button">Clear</button></div><div aria-live="polite" class="log" id="log" role="log">Ready.</div></section>
+<p style="margin:18px 0"><small>FFD5 / FFD9 · Verified Mode 4: 9E0003819800E9 · Other modes use inferred mode-minus-one encoding. Settings stored on this device only. No background looping.</small></p>
+</main>
+<main hidden="" id="calibration-view">
+<div class="topline"><span class="eyebrow">WRX · Dream BLE Lab</span><button class="return-nav" data-nav-view="controller" type="button">Main controller</button></div>
+<h1>Calibration Mode <span class="small">v1</span></h1>
+<p>Record the display and both tail lights in a single fixed camera shot. The screen's white cue marks when each command is requested; during rapid tests, use the exported timestamps to distinguish closely spaced commands. Logs distinguish command scheduling and write completion; video measures actual LED response.</p>
+<div class="note"><strong>Parked testing only.</strong> These are diagnostic commands to aftermarket RGB effects, not vehicle safety controls. They do not measure brake response or replace factory wiring. Keep the browser foregrounded, screen awake, and restore normal road-legal lighting before driving. The rapid tests send a bounded number of commands, not unbounded traffic.</div>
+<section class="panel">
+<div class="sectionhead"><h2>Bluetooth connections</h2><span class="pill" id="cal-ble-support">Checking</span></div>
+<div class="row device"><div><strong>Left — Dream-CF4B</strong><div class="status" id="cal-left-status"><i class="dot"></i>Disconnected</div></div><button id="cal-connect-left">Connect</button></div>
+<div class="row device"><div><strong>Right — Dream-A90F</strong><div class="status" id="cal-right-status"><i class="dot"></i>Disconnected</div></div><button id="cal-connect-right">Connect</button></div>
+<p>Use Bluefy on iPhone or Chrome on Android. Select the matching controller when the browser asks for a device. Both lights are recommended for synchronization tests; one light can be tested separately.</p>
+</section>
+<section class="panel">
+<h2>Recording settings</h2>
+<div class="grid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+<div class="field"><label for="cal-observation">Single-mode observation</label><select id="cal-observation"><option value="6000">6 seconds</option><option value="8000">8 seconds</option><option selected="" value="10000">10 seconds</option><option value="15000">15 seconds</option></select></div>
+<div class="field"><label for="cal-target">Send commands to</label><select id="cal-target"><option value="both">Both connected lights</option><option value="left">Left only</option><option value="right">Right only</option></select></div>
+</div>
+<p>Tests set a static blue baseline, wait for a short countdown, and then send their programmed commands. No more commands are sent during the observation period unless a test explicitly specifies them.</p>
+</section>
+<section class="panel" id="cal-instrument">
+<div class="sectionhead"><h2>Video synchronization</h2><span class="pill" id="cal-run-state">Idle</span></div>
+<div class="metric-card">
+<div class="eyebrow" id="cal-test-id" style="text-align:center">Select a test</div>
+<div class="clock" id="cal-clock">00:00.00</div>
+<div class="cue" id="cal-cue">Ready</div>
+<div aria-hidden="true" class="cue-banner" id="cal-cue-banner"></div>
+<div class="flashlabel">SCREEN CUE = COMMAND REQUEST · NOT LED RESPONSE</div>
+<div class="metrics"><div class="metric"><strong id="cal-requested">0</strong><span>Requested</span></div><div class="metric"><strong id="cal-completed">0</strong><span>Writes OK</span></div><div class="metric"><strong id="cal-skipped">0</strong><span>Skipped/failed</span></div></div>
+</div>
+<div class="buttonbar quick"><button class="danger" disabled="" id="cal-stop-test">Stop test</button><button id="cal-baseline-blue">Reset static blue</button><button id="cal-baseline-red">Restore static red</button></div>
+<p class="small" id="cal-last-event">Commands not sent yet.</p>
+</section>
+<section class="panel">
+<div class="sectionhead"><h2>A · Animation duration tests</h2><span class="pill">8 tests</span></div>
+<p>Each test selects one factory animation (Modes 2–9) exactly once, then watches without resending it. This is the cleanest way to estimate each natural animation duration and determine whether some modes are identical.</p>
+<div class="grid" id="cal-mode-tests" style="margin-top:13px"></div>
+<button class="primary btn-full" id="cal-run-all-modes">Run all 8 tests consecutively</button>
+<p>For separate recordings, use filenames such as <span class="mini">CAL-M04.mp4</span>. For the combined run, record continuously and use the screen's mode label to distinguish clips.</p>
+</section>
+<section class="panel">
+<div class="sectionhead"><h2>B · Bluetooth timing tests</h2><span class="pill">7 tests</span></div>
+<p>These tests deliberately compare repeated selections of the same mode with switching between Modes 4 and 7. Commands are issued at fixed planned offsets; actual send and completion timestamps are logged.</p>
+<div class="grid" id="cal-timing-tests" style="margin-top:13px"></div>
+<p class="small">The final test requests 12 alternating commands at 50 ms intervals. It is a bounded stress test, not an accurate measurement of the radio's theoretical maximum throughput. Writes that remain pending are skipped rather than queued.</p>
+</section>
+<section class="panel">
+<div class="sectionhead"><h2>C · Mode numbering check</h2><span class="pill">Optional</span></div>
+<p>Tests the hypothesis that modes above 9 repeat earlier effects. Sends Mode 2, then Mode 10, with separate observation windows. Compare their visual patterns in the recording.</p>
+<button class="btn-full" id="cal-mode-compare">Compare Mode 2 vs Mode 10</button>
+</section>
+<section class="panel">
+<div class="sectionhead"><h2>Calibration records</h2><span class="pill" id="cal-event-count">0 events</span></div>
+<div class="buttonbar"><button id="cal-download-csv">Download CSV</button><button id="cal-download-json">Download JSON</button><button id="cal-copy-csv">Copy CSV</button></div>
+<div class="buttonbar" style="margin-top:10px"><button class="danger" id="cal-clear-data">Clear recorded logs</button></div>
+<p>Exports include test label, command mode/hex, requested time, actual dispatch time, per-controller write completion, skipped commands, and failure details. Recorded times come from the browser clock; physical LED timing must be read from the footage.</p>
+<div class="divider"></div><h3>Recent activity</h3><div class="activity" id="cal-activity">Ready.</div>
+</section>
+<div class="footer">Service FFD5 · Write characteristic FFD9 · Mode command 9E 00 [mode−1] 81 98 00 E9. Modes 2–9 and the Mode 10 comparison are inferred from the captured command pattern. Mode 4 is verified on both lights. No personal data is uploaded; records remain in this browser until exported or cleared.</div>
 </main>
 <script>
-(() => {
-  'use strict';
-  const SERVICE='0000ffd5-0000-1000-8000-00805f9b34fb';
-  const WRITE_CHAR='0000ffd9-0000-1000-8000-00805f9b34fb';
-  const names={left:'Dream-CF4B',right:'Dream-A90F'};
-  const conn={left:null,right:null};
-  const $=id=>document.getElementById(id);
-  const defaults=[
-    {name:'Chase',mode:4,include:true},
-    {name:'Rainbow',mode:255,include:false},
-    {name:'Favorite 3',mode:1,include:false},
-    {name:'Favorite 4',mode:2,include:false},
-    {name:'Favorite 5',mode:3,include:false},
-    {name:'Favorite 6',mode:5,include:false},
-    {name:'Favorite 7',mode:6,include:false},
-    {name:'Favorite 8',mode:7,include:false},
-    {name:'Favorite 9',mode:8,include:false},
-    {name:'Favorite 10',mode:9,include:false}
-  ];
-  function validMode(n){return Number.isInteger(n)&&n>=1&&n<=256}
-  let presets=defaults.map(p=>({...p}));
-  try {
-    const saved=JSON.parse(localStorage.getItem('wrx-dream-presets-v3')||'null');
-    if(Array.isArray(saved)&&saved.length===10&&saved.every(p=>validMode(Number(p.mode))&&typeof p.name==='string'&&typeof p.include==='boolean')) {
-      presets=saved.map(p=>({name:p.name.slice(0,28)||'Favorite',mode:Number(p.mode),include:p.include}));
-    }
-  }catch(_){}
-  function persist(){try{localStorage.setItem('wrx-dream-presets-v3',JSON.stringify(presets))}catch(_){}}
-  let selected=0;
-  let run=null,timer=null,busy=false,pendingSince=0;
-  let completed=0,attempts=0,ticks=0,skipped=0,lastTransport='Not connected';
-  const fmt=a=>Array.from(a,x=>x.toString(16).padStart(2,'0')).join('').toUpperCase();
-  const modeBytes=mode=>Uint8Array.from([0x9e,0x00,mode-1,0x81,0x98,0x00,0xe9]);
-  function log(message){
-    const when=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    const current=$('log').textContent;
-    $('log').textContent=`${when} · ${message}\n`+(current.startsWith('Ready. Open this page')?'':current);
-    $('log').textContent=$('log').textContent.slice(0,2800);
-  }
-  function isUp(side){return Boolean(conn[side]?.device?.gatt?.connected&&conn[side]?.characteristic)}
-  function renderPresets(){
-    $('preset-grid').replaceChildren();$('sequence-options').replaceChildren();
-    presets.forEach((p,i)=>{
-      const b=document.createElement('button');b.type='button';b.className='preset'+(i===selected?' selected':'');
-      b.setAttribute('aria-pressed',String(i===selected));
-      const name=document.createElement('strong');name.textContent=`${i+1}. ${p.name}`;
-      const mode=document.createElement('span');mode.className='subtitle';mode.textContent=`Mode ${p.mode}`;
-      b.append(name,mode);b.addEventListener('click',()=>choosePreset(i));$('preset-grid').append(b);
-      const label=document.createElement('label');label.className='seq-option';
-      const ck=document.createElement('input');ck.type='checkbox';ck.checked=p.include;
-      ck.addEventListener('change',()=>{presets[i].include=ck.checked;persist()});
-      const tx=document.createElement('span');tx.textContent=p.name;
-      label.append(ck,tx);$('sequence-options').append(label);
-    });
-    $('selected-label').textContent=`Mode ${presets[selected].mode}`;
-    $('preset-name').value=presets[selected].name;
-    $('preset-mode').value=String(presets[selected].mode);
-  }
-  function choosePreset(i){selected=i;renderPresets();log(`Selected ${presets[i].name} (Mode ${presets[i].mode}).`)}
-  function refresh(){
-    ['left','right'].forEach(side=>{
-      const connected=isUp(side);
-      $(side+'-status').innerHTML=`<i class="dot${connected?' on':''}"></i>${names[side]} · ${connected?'Connected':'Disconnected'}`;
-      $('connect-'+side).textContent=connected?'Disconnect':'Connect';
-    });
-    const any=isUp('left')||isUp('right');
-    ['play-once','send-color','solid-red','loop-selected','play-sequence'].forEach(id=>$(id).disabled=!any||Boolean(run));
-    $('loop-stop').disabled=!run;
-    $('loop-status').textContent=run?`${run.type==='single'?'Mode loop':'Sequence'} running`:'Stopped';
-    $('count-label').textContent=`Completed sends: ${completed} · Timer ticks: ${ticks} · Waiting ticks: ${skipped}`;
-    $('debug-label').textContent=`BLE transport: ${lastTransport}`+(busy?' · write pending':'');
-  }
-  function stopLoop(message){
-    run=null;
-    if(timer!==null){clearTimeout(timer);timer=null}
-    refresh();if(message)log(message);
-  }
-  async function connect(side){
-    if(!navigator.bluetooth){log('Web Bluetooth unavailable. Use Bluefy over HTTPS.');return}
-    if(isUp(side)){
-      const old=conn[side];conn[side]=null;
-      if(old?.device?.gatt?.connected)old.device.gatt.disconnect();
-      stopLoop(`${names[side]} disconnected; looping halted.`);return;
-    }
-    try{
-      const device=await navigator.bluetooth.requestDevice({filters:[{namePrefix:'Dream'}],optionalServices:[SERVICE]});
-      if(device.name!==names[side]){log(`Selected ${device.name||'unnamed'}; expected ${names[side]}. Try again.`);return}
-      if(Object.values(conn).some(c=>c?.device?.id===device.id)){log('Already assigned to the other light.');return}
-      device.addEventListener('gattserverdisconnected',()=>{
-        if(conn[side]?.device?.id===device.id){conn[side]=null;stopLoop(`${names[side]} disconnected; looping halted.`)}
-      });
-      const server=await device.gatt.connect();
-      const service=await server.getPrimaryService(SERVICE);
-      const characteristic=await service.getCharacteristic(WRITE_CHAR);
-      conn[side]={device,characteristic};
-      log(`${device.name} connected. No-response write: ${characteristic.properties?.writeWithoutResponse}.`);
-    }catch(e){log(`Connection failed: ${e?.message||String(e)}`)}
-    refresh();
-  }
-  async function writeCharacteristic(characteristic,bytes){
-    if(characteristic.properties?.writeWithoutResponse!==false&&typeof characteristic.writeValueWithoutResponse==='function'){
-      lastTransport='Write without response';return characteristic.writeValueWithoutResponse(bytes);
-    }
-    if(typeof characteristic.writeValueWithResponse==='function'){
-      lastTransport='Write with response';return characteristic.writeValueWithResponse(bytes);
-    }
-    if(typeof characteristic.writeValue==='function'){
-      lastTransport='Legacy writeValue';return characteristic.writeValue(bytes);
-    }
-    throw Error('No supported Web Bluetooth write method');
-  }
-  async function send(bytes,silent=false){
-    const active=Object.keys(conn).filter(isUp);
-    if(!active.length){stopLoop('No connected controllers.');return false}
-    const results=await Promise.allSettled(active.map(side=>writeCharacteristic(conn[side].characteristic,bytes)));
-    const errors=results.map((r,i)=>r.status==='rejected'?`${names[active[i]]}: ${r.reason?.message||r.reason}`:null).filter(Boolean);
-    if(errors.length){stopLoop('Bluetooth write failed; playback stopped.');log(errors.join(' | '));return false}
-    if(!silent)log(`Sent ${fmt(bytes)} to ${active.join(' + ')} via ${lastTransport}.`);
-    return true;
-  }
-  async function playOnce(){
-    if(busy){log('Previous Bluetooth write still pending.');return}
-    stopLoop();busy=true;pendingSince=Date.now();refresh();
-    const p={...presets[selected]};
-    try{if(await send(modeBytes(p.mode))){completed++;log(`${p.name} (Mode ${p.mode}) triggered.`)}}
-    catch(e){log(`Write error: ${e?.message||String(e)}`)}
-    finally{busy=false;pendingSince=0;refresh()}
-  }
-  function startPlayback(type){
-    if(run||busy){log('A playback or write is already active.');return}
-    if(!isUp('left')&&!isUp('right')){log('Connect a tail light first.');return}
-    const queue=type==='single'?[{...presets[selected]}]:presets.filter(p=>p.include).map(p=>({...p}));
-    if(!queue.length){log('Select at least one favorite in Custom sequence.');return}
-    const repeat=$('repeat-count').value;
-    const cycles=repeat==='forever'?Infinity:Number(repeat);
-    if(!(cycles===Infinity||(Number.isInteger(cycles)&&cycles>0))){log('Invalid repeat count.');return}
-    run={type,queue,limit:cycles===Infinity?Infinity:cycles*queue.length};
-    completed=0;attempts=0;ticks=0;skipped=0;refresh();
-    log(`${type==='single'?'Loop':'Sequence'} started: ${queue.map(p=>`Mode ${p.mode}`).join(' → ')}. ${repeat==='forever'?'Until stopped':`${cycles} cycle(s)`}.`);
-    tick();
-  }
-  // Schedule the next trigger BEFORE awaiting writes.  Some Bluefy builds
-  // leave an unresolved promise after a successful GATT write.
-  async function tick(){
-    const session=run;if(!session)return;
-    ticks++;
-    if(busy){
-      skipped++;
-      const age=Date.now()-pendingSince;
-      if(age>6000)stopLoop(`Bluetooth write unacknowledged for ${(age/1000).toFixed(1)} seconds; playback halted.`);
-      else timer=setTimeout(tick,Number($('interval').value));
-      refresh();return;
-    }
-    const item=session.queue[attempts%session.queue.length];
-    attempts++;
-    if(attempts<session.limit)timer=setTimeout(tick,Number($('interval').value));
-    busy=true;pendingSince=Date.now();refresh();
-    try{
-      if(await send(modeBytes(item.mode),true)){
-        completed++;
-        if(completed<=3||completed%5===0||attempts===session.limit)log(`${item.name} · Mode ${item.mode} · send ${completed} (${lastTransport})`);
-      }
-      if(run===session&&attempts>=session.limit)stopLoop(`Finished ${completed} mode trigger(s). Last animation may finish independently.`);
-    }catch(e){stopLoop(`Bluetooth exception: ${e?.message||String(e)}`)}
-    finally{busy=false;pendingSince=0;refresh()}
-  }
-  function solidColor(hex){
-    if(!/^#[0-9a-fA-F]{6}$/.test(hex))throw Error('Invalid color');
-    const rgb=hex.slice(1).match(/../g).map(x=>parseInt(x,16));
-    return Uint8Array.from([0x56,...rgb,0x00,0xf0,0xaa]);
-  }
-  async function setColor(hex){
-    stopLoop();if(busy){log('Wait for the current BLE write.');return}
-    busy=true;pendingSince=Date.now();refresh();
-    try{await send(solidColor(hex))}
-    catch(e){log(`Color error: ${e?.message||String(e)}`)}
-    finally{busy=false;pendingSince=0;refresh()}
-  }
-  ['left','right'].forEach(side=>$('connect-'+side).addEventListener('click',()=>connect(side)));
-  $('save-preset').addEventListener('click',()=>{
-    const raw=$('preset-mode').value.trim();const mode=Number(raw);const name=$('preset-name').value.trim().slice(0,28);
-    if(!raw||!validMode(mode)||!name){log('Favorite not saved. Use a nonempty name and an integer mode from 1 to 256.');return}
-    presets[selected]={...presets[selected],name,mode};persist();renderPresets();log(`Favorite ${selected+1} saved: ${name} (Mode ${mode}).`);
-  });
-  $('play-once').addEventListener('click',playOnce);
-  $('loop-selected').addEventListener('click',()=>startPlayback('single'));
-  $('play-sequence').addEventListener('click',()=>startPlayback('sequence'));
-  $('loop-stop').addEventListener('click',()=>stopLoop('Playback stopped. Active internal effect may continue; use a static color to override it.'));
-  $('clear-sequence').addEventListener('click',()=>{presets.forEach(p=>p.include=false);persist();renderPresets()});
-  $('send-color').addEventListener('click',()=>setColor($('color').value));
-  $('solid-red').addEventListener('click',()=>setColor('#ff0000'));
-  $('interval').addEventListener('input',()=>{$('interval-value').textContent=(Number($('interval').value)/1000).toFixed(1)+' s'});
-  $('clear-log').addEventListener('click',()=>{$('log').textContent=''});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden&&run)stopLoop('Page hidden; playback stopped to avoid unpredictable background timing.')});
-  const enabled=!!navigator.bluetooth&&window.isSecureContext;
-  $('support').textContent=enabled?'Web Bluetooth available':'Needs Bluefy + HTTPS';
-  if(!enabled)log('Use Bluefy over HTTPS. Standard iPhone Safari lacks Web Bluetooth support.');
-  renderPresets();refresh();log('Loaded v3 with 10 editable favorites.');
+(()=>{'use strict';
+const SERVICE='0000ffd5-0000-1000-8000-00805f9b34fb', WRITE_CHAR='0000ffd9-0000-1000-8000-00805f9b34fb';
+const names={left:'Dream-CF4B',right:'Dream-A90F'}, conn={left:null,right:null};
+const $=id=>document.getElementById(id), storageKey='wrx-dream-presets-v4';
+const defaults=[{name:'Chase',mode:4,include:true},{name:'Rainbow',mode:255,include:false},{name:'Favorite 3',mode:1,include:false},{name:'Favorite 4',mode:2,include:false},{name:'Favorite 5',mode:3,include:false},{name:'Favorite 6',mode:5,include:false},{name:'Favorite 7',mode:6,include:false},{name:'Favorite 8',mode:7,include:false},{name:'Favorite 9',mode:8,include:false},{name:'Favorite 10',mode:9,include:false}];
+const validMode=n=>Number.isInteger(n)&&n>=1&&n<=256;
+function validDuration(ms){return Number.isInteger(ms)&&ms>=50&&ms<=60000&&ms%50===0}
+function sanitize(p,d){
+ const mode=Number(p?.mode),fullMs=Number(p?.fullMs),cutMs=Number(p?.cutMs);
+ const full=validDuration(fullMs)?fullMs:3000;
+ const cut=validDuration(cutMs)?cutMs:Math.min(1250,Math.max(50,full-50));
+ return {name:(typeof p?.name==='string'&&p.name.trim()?p.name.trim().slice(0,28):d.name),mode:validMode(mode)?mode:d.mode,include:typeof p?.include==='boolean'?p.include:d.include,fullMs:full,cutMs:cut,transition:p?.transition==='cut'?'cut':'finish'};
+}
+let presets=defaults.map(d=>sanitize(d,d));let selected=0;
+try{
+ const raw=JSON.parse(localStorage.getItem(storageKey)||'null');
+ if(raw&&Array.isArray(raw.presets)&&raw.presets.length===10){presets=raw.presets.map((p,i)=>sanitize(p,defaults[i]));if(Number.isInteger(raw.selected)&&raw.selected>=0&&raw.selected<10)selected=raw.selected}
+ else {const legacy=JSON.parse(localStorage.getItem('wrx-dream-presets-v3')||'null');if(Array.isArray(legacy)&&legacy.length===10)presets=legacy.map((p,i)=>sanitize(p,defaults[i]));}
+}catch(e){}
+function persist(){try{localStorage.setItem(storageKey,JSON.stringify({presets,selected}))}catch(e){log('Storage unavailable: settings may not survive closing the browser.')}}
+let run=null,timer=null,busy=false,writeSince=0,done=0,steps=0,late=0,lastTransport='Not connected';
+const duration=p=>p.transition==='cut'?p.cutMs:p.fullMs;
+const modeBytes=mode=>Uint8Array.from([0x9e,0x00,mode-1,0x81,0x98,0x00,0xe9]);
+const fmt=bytes=>Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
+const sec=ms=>(ms/1000).toFixed(2)+'s';
+function log(t){const time=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});const node=$('log');let old=node.textContent==='Ready.'?'':node.textContent;node.textContent=`${time} · ${t}\n${old}`.slice(0,3500)}
+function isUp(side){return Boolean(conn[side]?.device?.gatt?.connected&&conn[side]?.characteristic)}
+function renderPresets(){
+ $('preset-grid').replaceChildren();$('sequence-options').replaceChildren();
+ presets.forEach((p,i)=>{
+  const b=document.createElement('button');b.type='button';b.className='preset'+(i===selected?' selected':'');b.setAttribute('aria-pressed',i===selected?'true':'false');
+  const strong=document.createElement('strong');strong.textContent=`${i+1}. ${p.name}`;const small=document.createElement('small');small.textContent=`Mode ${p.mode} · ${p.transition==='cut'?'Cut '+sec(p.cutMs):'Finish ~'+sec(p.fullMs)}`;b.append(strong,small);b.addEventListener('click',()=>choose(i));$('preset-grid').append(b);
+  const label=document.createElement('label');label.className='check';const check=document.createElement('input');check.type='checkbox';check.checked=p.include;check.addEventListener('change',()=>{presets[i].include=check.checked;persist();renderPreview()});const span=document.createElement('span');span.textContent=p.name;label.append(check,span);$('sequence-options').append(label);
+ });
+ const p=presets[selected];$('selected-label').textContent=`Mode ${p.mode}`;$('preset-name').value=p.name;$('preset-mode').value=p.mode;
+ $('preset-transition').value=p.transition;$('preset-full').value=(p.fullMs/1000).toFixed(2);$('preset-cut').value=(p.cutMs/1000).toFixed(2);showCut();renderPreview();
+}
+function choose(i){selected=i;persist();renderPresets();log(`Selected ${presets[i].name} (Mode ${presets[i].mode}).`)}
+function showCut(){$('cut-field').classList.toggle('hidden',$('preset-transition').value!=='cut')}
+function renderPreview(){const parent=$('sequence-preview');parent.replaceChildren();const queue=presets.filter(p=>p.include);if(!queue.length){const p=document.createElement('p');p.textContent='No favorites checked.';parent.append(p);return}let ms=0;queue.forEach(p=>{const d=duration(p),r=document.createElement('div');r.className='seqline';const l=document.createElement('span');l.textContent=p.name+' · Mode '+p.mode;const right=document.createElement('small');right.textContent=`${sec(ms)} → ${sec(ms+d)} (${p.transition==='cut'?'cut':'finish'})`;r.append(l,right);parent.append(r);ms+=d});const p=document.createElement('p');p.textContent=`Full sequence cycle: ${sec(ms)} (estimated).`;parent.append(p)}
+function refresh(){for(const side of ['left','right']){const is=isUp(side),node=$(side+'-status');node.replaceChildren();const dot=document.createElement('i');dot.className='dot'+(is?' on':'');node.append(dot,document.createTextNode(names[side]+' · '+(is?'Connected':'Disconnected')));$('connect-'+side).textContent=is?'Disconnect':'Connect'}const any=isUp('left')||isUp('right');for(const id of ['play-once','send-color','solid-red','loop-selected','play-sequence'])$(id).disabled=!any||!!run;$('loop-stop').disabled=!run;$('loop-status').textContent=run?'Playing':'Stopped';$('count-label').textContent=`Sends: ${done} · Steps: ${steps} · Late: ${late}`;$('debug-label').textContent=`BLE transport: ${lastTransport}`+(busy?' · write pending':'');if(!run)$('now-playing').textContent='No active animation.'}
+function stopPlayback(reason){run=null;if(timer!==null){clearTimeout(timer);timer=null}refresh();if(reason)log(reason)}
+async function connect(side){
+ if(!navigator.bluetooth){log('Web Bluetooth unavailable. Use Android Chrome or iPhone Bluefy via HTTPS.');return}
+ if(isUp(side)){const old=conn[side];conn[side]=null;if(old?.device?.gatt?.connected)old.device.gatt.disconnect();stopPlayback(`${names[side]} disconnected.`);window.WRXCAL?.onDisconnect(side);return}
+ try{
+  const device=await navigator.bluetooth.requestDevice({filters:[{namePrefix:'Dream'}],optionalServices:[SERVICE]});
+  if(device.name!==names[side]){log(`Selected ${device.name||'unnamed'}; expected ${names[side]}.`);return}
+  if(Object.values(conn).some(c=>c?.device?.id===device.id)){log('That device is assigned to the other light.');return}
+  device.addEventListener('gattserverdisconnected',()=>{if(conn[side]?.device?.id===device.id){conn[side]=null;stopPlayback(`${names[side]} disconnected; playback halted.`);window.WRXCAL?.onDisconnect(side)}});
+  const server=await device.gatt.connect(),service=await server.getPrimaryService(SERVICE),characteristic=await service.getCharacteristic(WRITE_CHAR);
+  conn[side]={device,characteristic};log(`${device.name} connected. No-response: ${characteristic.properties?.writeWithoutResponse}.`);
+ }catch(e){log(`Connection failed: ${e?.message||e}`)}finally{refresh()}
+}
+async function write(c,b){
+ if(c.properties?.writeWithoutResponse!==false&&typeof c.writeValueWithoutResponse==='function'){lastTransport='Write without response';return c.writeValueWithoutResponse(b)}
+ if(typeof c.writeValueWithResponse==='function'){lastTransport='Write with response';return c.writeValueWithResponse(b)}
+ if(typeof c.writeValue==='function'){lastTransport='Legacy writeValue';return c.writeValue(b)}
+ throw Error('No compatible GATT write method');
+}
+async function send(b,silent=false){const active=['left','right'].filter(isUp);if(!active.length){stopPlayback('No connected controllers.');return false}
+ const result=await Promise.allSettled(active.map(side=>write(conn[side].characteristic,b)));
+ const errors=result.map((v,i)=>v.status==='rejected'?`${names[active[i]]}: ${v.reason?.message||v.reason}`:null).filter(Boolean);
+ if(errors.length){stopPlayback('BLE write failed.');log(errors.join(' | '));return false}
+ if(!silent)log(`Sent ${fmt(b)} to ${active.join(' + ')}.`);return true;
+}
+async function playOnce(){if(busy){log('Bluetooth is busy.');return}stopPlayback();busy=true;writeSince=performance.now();refresh();try{if(await send(modeBytes(presets[selected].mode))){done++;log(`${presets[selected].name} triggered once.`)}}catch(e){log('Send error: '+(e?.message||e))}finally{busy=false;refresh()}}
+function start(type){if(run||busy)return;if(!isUp('left')&&!isUp('right')){log('Connect a device first.');return}
+ const queue=type==='single'?[{...presets[selected]}]:presets.filter(p=>p.include).map(p=>({...p}));if(!queue.length){log('Check at least one favorite.');return}
+ const selectedRepeat=$('repeat-count').value,cycleCount=selectedRepeat==='forever'?Infinity:Number(selectedRepeat);
+ if(!(cycleCount===Infinity||(Number.isInteger(cycleCount)&&cycleCount>=1)))return;
+ run={queue,total:cycleCount===Infinity?Infinity:cycleCount*queue.length,step:0,nextTime:performance.now(),type};done=0;steps=0;late=0;refresh();
+ log(`${type==='single'?'Favorite loop':'Custom sequence'} started: ${queue.map(p=>p.name).join(' → ')}. ${selectedRepeat==='forever'?'Until stopped':cycleCount+' cycle(s)'}.`);tick(run);
+}
+// Each next step is scheduled from a monotonic target time, independently of BLE acknowledgements.
+// Timing refers to issuing a command, NOT receiving a firmware animation-completed callback.
+async function tick(session){if(run!==session)return;
+ if(busy){late++;if(performance.now()-writeSince>6000){stopPlayback('BLE write stalled for more than 6 seconds.');return}timer=setTimeout(()=>tick(session),50);refresh();return}
+ const item=session.queue[session.step%session.queue.length],durationMs=duration(item),startTime=performance.now();
+ if(startTime>session.nextTime+100)late++;
+ session.step++;steps=session.step;const thisIndex=session.step,final=thisIndex>=session.total;
+ $('now-playing').textContent=`Now: ${item.name} · Mode ${item.mode} · ${item.transition==='cut'?'Cut at '+sec(item.cutMs):'Finish ~'+sec(item.fullMs)} · Step ${thisIndex}`;
+ session.nextTime=Math.max(session.nextTime,startTime)+durationMs;
+ const nextDelay=Math.max(0,session.nextTime-performance.now());
+ if(!final)timer=setTimeout(()=>tick(session),nextDelay);
+ else timer=setTimeout(()=>{if(run===session)stopPlayback(`Playback finished after ${steps} step(s); last effect may continue internally.`)},nextDelay);
+ busy=true;writeSince=performance.now();refresh();
+ try{if(await send(modeBytes(item.mode),true)){done++;if(thisIndex<=4||thisIndex%5===0||final)log(`${item.name} · Mode ${item.mode} · Step ${thisIndex} · ${item.transition} ${sec(durationMs)}`)}}
+ catch(e){stopPlayback('BLE write error: '+(e?.message||e))}
+ finally{busy=false;refresh()}
+}
+function colorBytes(hex){if(!/^#[a-f0-9]{6}$/i.test(hex))throw Error('Invalid color');const rgb=hex.slice(1).match(/../g).map(s=>parseInt(s,16));return Uint8Array.from([0x56,...rgb,0x00,0xf0,0xaa])}
+async function color(hex){stopPlayback();if(busy){log('Wait for Bluetooth write to complete.');return}busy=true;refresh();try{await send(colorBytes(hex))}catch(e){log('Color error: '+(e?.message||e))}finally{busy=false;refresh()}}
+for(const side of ['left','right'])$('connect-'+side).addEventListener('click',()=>connect(side));
+$('preset-transition').addEventListener('change',showCut);
+$('save-preset').addEventListener('click',()=>{
+ const name=$('preset-name').value.trim().slice(0,28),modeRaw=$('preset-mode').value.trim(),mode=Number(modeRaw);
+ const fullSeconds=Number($('preset-full').value),cutSeconds=Number($('preset-cut').value);
+ const fullMs=Math.round(fullSeconds*1000),cutMs=Math.round(cutSeconds*1000);
+ const transition=$('preset-transition').value;
+ if(!name||!modeRaw||!validMode(mode)||!validDuration(fullMs)||Math.abs(fullSeconds-fullMs/1000)>0.00001||((transition==='cut')&&(!validDuration(cutMs)||Math.abs(cutSeconds-cutMs/1000)>0.00001||cutMs>=fullMs))){log('Not saved. Use a valid mode (1–256) and a full duration in 0.05s steps (0.05–60s); early cut must be at least 0.05s and shorter than full duration.');return}
+ const safeCutMs=(validDuration(cutMs)&&Math.abs(cutSeconds-cutMs/1000)<=0.00001)?cutMs:50;
+ presets[selected]={...presets[selected],name,mode,fullMs,cutMs:safeCutMs,transition:transition==='cut'?'cut':'finish'};persist();renderPresets();log(`Saved ${name}: Mode ${mode}, full ${sec(fullMs)}, cut ${sec(safeCutMs)}, ${transition}.`)
+});
+$('play-once').addEventListener('click',playOnce);$('loop-selected').addEventListener('click',()=>start('single'));
+$('play-sequence').addEventListener('click',()=>start('sequence'));$('loop-stop').addEventListener('click',()=>stopPlayback('Playback stopped. Existing internal effect may finish.'));
+$('clear-sequence').addEventListener('click',()=>{presets.forEach(p=>p.include=false);persist();renderPresets()});
+$('send-color').addEventListener('click',()=>color($('color').value));$('solid-red').addEventListener('click',()=>color('#ff0000'));
+$('clear-log').addEventListener('click',()=>{$('log').textContent=''});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&run)stopPlayback('Page hidden; playback stopped to prevent unpredictable timing.')});
+const usable=Boolean(navigator.bluetooth&&window.isSecureContext);$('support').textContent=usable?'Web Bluetooth available':'Needs Bluetooth browser + HTTPS';
+if(!usable)log('On iPhone use Bluefy; on Android use Chrome. HTTPS required.');
+window.WRXBLE={
+  connect, isUp, getCharacteristic: side => isUp(side)?conn[side].characteristic:null,
+  stopPlayback, refresh,
+  onEnter:()=>refresh()
+};
+renderPresets();refresh();log('v4 ready. v3 saved favorites imported where available.');
 })();
 </script>
-</body>
-</html>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById('cal-'+id);
+const shared=window.WRXBLE;
+const SERVICE='0000ffd5-0000-1000-8000-00805f9b34fb',CHAR='0000ffd9-0000-1000-8000-00805f9b34fb';
+const DEV={left:'Dream-CF4B',right:'Dream-A90F'};
+const pending={left:false,right:false};
+const LOG_KEY='wrx-calibration-logs-v1';let events=[];
+try{const data=JSON.parse(localStorage.getItem(LOG_KEY)||'[]');if(Array.isArray(data))events=data.slice(-1600)}catch(e){}
+let session=null,clockFrame=null,requests=0,completions=0,skips=0,flashTimeout=null;
+let recent='Ready.';
+const hex=b=>Array.from(b,x=>x.toString(16).padStart(2,'0')).join('').toUpperCase();
+const packet=m=>Uint8Array.from([0x9e,0x00,m-1,0x81,0x98,0x00,0xe9]);
+const colorPacket=rgb=>Uint8Array.from([0x56,...rgb,0x00,0xf0,0xaa]);
+const isConnected=side=>shared.isUp(side);
+const fmt=ms=>(ms<0?'-':'')+String(Math.floor(Math.abs(ms)/60000)).padStart(2,'0')+':'+String(Math.floor(Math.abs(ms)%60000/1000)).padStart(2,'0')+'.'+String(Math.floor(Math.abs(ms)%1000/10)).padStart(2,'0');
+const iso=()=>new Date().toISOString();
+function updateLog(msg){const at=new Date().toLocaleTimeString();recent=at+' · '+msg+'\n'+(recent==='Ready.'?'':recent);recent=recent.slice(0,5000);$('activity').textContent=recent;$('last-event').textContent=msg}
+function persist(){try{localStorage.setItem(LOG_KEY,JSON.stringify(events.slice(-1600)))}catch(e){updateLog('Browser storage unavailable; export logs before closing this page.')}}
+function entry(type,data={}){const now=performance.now();const record={date_utc:iso(),run_id:session?.runId||'',test_id:session?.testId||'',test_label:session?.testLabel||'',event:type,elapsed_ms:session?.t0!=null?Math.round((now-session.t0)*1000)/1000:null, ...data};events.push(record);if(events.length>1800)events=events.slice(-1600);$('event-count').textContent=events.length+' events';persist();return record}
+function uiConnections(){for(const side of ['left','right']){const st=$(side+'-status');st.replaceChildren();const dot=document.createElement('i');dot.className='dot'+(isConnected(side)?' ok':'');st.append(dot,document.createTextNode(isConnected(side)?'Connected':'Disconnected'));$('connect-'+side).textContent=isConnected(side)?'Disconnect':'Connect'}const busy=Boolean(session);for(const button of document.querySelectorAll('#calibration-view .test-btn,#cal-run-all-modes,#cal-mode-compare'))button.disabled=busy||(!isConnected('left')&&!isConnected('right'));$('stop-test').disabled=!busy;$('baseline-blue').disabled=busy;$('baseline-red').disabled=busy;$('target').disabled=busy;$('observation').disabled=busy;$('run-state').textContent=busy?'Recording':'Idle';$('requested').textContent=requests;$('completed').textContent=completions;$('skipped').textContent=skips}
+async function connect(side){
+ if(session)return;
+ const wasConnected=isConnected(side);
+ await shared.connect(side);
+ if(!wasConnected && isConnected(side)){
+   updateLog('Connected '+(side==='left'?'Dream-CF4B':'Dream-A90F')+'.');
+   entry('connected',{side,device_name:side==='left'?'Dream-CF4B':'Dream-A90F'});
+ }else if(wasConnected&&!isConnected(side)){
+   updateLog('Disconnected '+side+'.');
+   entry('disconnected',{side});
+ }
+ uiConnections();
+}
+async function writeBLE(c,bytes){if(c.properties?.writeWithoutResponse!==false&&typeof c.writeValueWithoutResponse==='function')return c.writeValueWithoutResponse(bytes);if(typeof c.writeValueWithResponse==='function')return c.writeValueWithResponse(bytes);if(typeof c.writeValue==='function')return c.writeValue(bytes);throw Error('No compatible Bluetooth write method')}
+function targetSides(){const t=$('target').value;return(t==='both'?['left','right']:[t]).filter(isConnected)}
+function dispatch(bytes,meta={},sideList=null){const sides=sideList||targetSides();requests++;$('requested').textContent=requests;
+ const tReq=performance.now();entry('command_request',{mode:meta.mode??'',hex:hex(bytes),planned_ms:meta.atMs??'',label:meta.label??'',requested_at_ms:session?.t0!=null?+(tReq-session.t0).toFixed(3):''});
+ if(!sides.length){skips++;entry('no_connected_target',{...meta});uiConnections();return}
+ for(const side of sides){if(pending[side]){skips++;entry('write_skipped_pending',{side,mode:meta.mode??'',planned_ms:meta.atMs??''});uiConnections();continue}pending[side]=true;const t=performance.now();entry('write_started',{side,mode:meta.mode??'',hex:hex(bytes),planned_ms:meta.atMs??'',dispatch_lateness_ms:meta.atMs!=null&&session?.t0!=null?+(t-session.t0-meta.atMs).toFixed(3):''});
+  Promise.resolve().then(()=>writeBLE(shared.getCharacteristic(side),bytes)).then(()=>{completions++;entry('write_completed',{side,mode:meta.mode??'',ble_write_promise_ms:+(performance.now()-t).toFixed(3)});uiConnections()}).catch(e=>{skips++;entry('write_error',{side,mode:meta.mode??'',error:String(e?.message||e)});updateLog(side+' BLE write failed: '+(e?.message||e));uiConnections()}).finally(()=>{pending[side]=false;uiConnections()});
+ }
+ uiConnections();
+}
+function flash(text){$('cue').textContent=text;$('cue-banner').classList.add('pulse');if(flashTimeout)clearTimeout(flashTimeout);flashTimeout=setTimeout(()=>$('cue-banner').classList.remove('pulse'),175)}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function until(at,run){while(session===run){const remain=at-performance.now();if(remain<=0)return true;await wait(Math.min(150,Math.max(1,remain)))}return false}
+function clock(){if(!session)return;let delta=session.t0==null?0:performance.now()-session.t0;$('clock').textContent=fmt(delta);clockFrame=requestAnimationFrame(clock)}
+function setRunStatus(text){$('test-id').textContent=text;}
+function abort(reason){if(!session)return;entry('abort',{reason});session=null;if(clockFrame)cancelAnimationFrame(clockFrame);clockFrame=null;$('cue').textContent='STOPPED';$('cue-banner').classList.remove('pulse');updateLog(reason);uiConnections()}
+async function baseline(run){if(session!==run)return false;$('cue').textContent='Setting baseline…';entry('baseline_begin',{color:'blue'});dispatch(colorPacket([0,0,255]),{label:'static blue baseline'});await wait(450);if(session!==run)return false;return true}
+async function performSingleTest(run,spec,observation){if(session!==run)return;run.testId=spec.id;run.testLabel=spec.label;run.t0=null;setRunStatus(spec.id+' · '+spec.label);entry('test_begin',{test_id:spec.id,test_label:spec.label,observation_ms:observation});
+ updateLog('Start '+spec.id+' — '+spec.label);if(!await baseline(run))return;
+ // Give the LEDs time to settle in static blue before the first timed command.
+ $('cue').textContent='Ready · 3';await wait(700);if(session!==run)return;$('cue').textContent='Ready · 2';await wait(700);if(session!==run)return;$('cue').textContent='Ready · 1';await wait(700);if(session!==run)return;
+ run.t0=performance.now()+200;const planned=spec.commands();
+ for(let i=0;i<planned.length;i++){const e=planned[i];if(!await until(run.t0+e.atMs,run))return;const actual=performance.now();
+  // Markers are visible on the phone; the Bluetooth command may reach the lamp later.
+  flash(e.label||'MODE '+e.mode);entry('visual_marker',{mode:e.mode,planned_ms:e.atMs,marker_lateness_ms:+(actual-run.t0-e.atMs).toFixed(3)});
+  dispatch(packet(e.mode),{mode:e.mode,atMs:e.atMs,label:e.label||'Mode '+e.mode});
+ }
+ const last=planned.at(-1)?.atMs||0;const endAt=run.t0+last+observation;
+ $('cue').textContent='OBSERVE · no further commands';if(!await until(endAt,run))return;entry('test_end',{observation_ms:observation});$('cue').textContent='TEST COMPLETE';updateLog('Finished '+spec.id+'. No automatic light change after the test.');await wait(850);
+}
+async function startTest(specs,kind){if(session)return;const sides=targetSides();if(!sides.length){updateLog('Connect the selected tail light(s) first.');return}const run={runId:'CAL-'+Date.now().toString(36),testId:'',testLabel:'',t0:null,kind};session=run;requests=0;completions=0;skips=0;uiConnections();$('instrument').scrollIntoView({block:'start',behavior:'auto'});clock();entry('run_begin',{tests:specs.map(s=>s.id).join(','),targets:sides.join(',')});const observation=Number($('observation').value);
+ try{for(let i=0;i<specs.length;i++){if(session!==run)break;const spec=specs[i];$('run-state').textContent=(i+1)+'/'+specs.length;await performSingleTest(run,spec,kind==='modes'?observation:spec.observationMs||3500)}if(session===run){entry('run_end',{tests_finished:specs.length});updateLog('Calibration run finished; export CSV and submit video of screen plus tail lights.');$('cue').textContent='RUN COMPLETE'}}catch(e){if(session===run){entry('unexpected_error',{error:String(e)});updateLog('Test error: '+String(e));$('cue').textContent='ERROR'}}finally{if(session===run){session=null;if(clockFrame)cancelAnimationFrame(clockFrame);clockFrame=null;uiConnections()}}}
+const modeSpecs=Array.from({length:8},(_,i)=>{const m=i+2;return{id:'M'+String(m).padStart(2,'0'),label:'Mode '+m+' · natural duration',commands:()=>[{atMs:0,mode:m,label:'MODE '+m}]}});
+const alternating=(interval,count)=>Array.from({length:count},(_,i)=>({atMs:i*interval,mode:i%2?7:4,label:'MODE '+(i%2?7:4)}));
+const tests=[
+{id:'T01',label:'Same-mode retrigger · 250ms',desc:'8 × Mode 4 at 250ms intervals. Does it restart mid-pass?',commands:()=>Array.from({length:8},(_,i)=>({atMs:i*250,mode:4,label:'MODE 4 AGAIN'})),observationMs:4000},
+{id:'T02',label:'Different mode · late cut',desc:'Mode 4 then Mode 7 at 3.0s.',commands:()=>[{atMs:0,mode:4,label:'MODE 4'},{atMs:3000,mode:7,label:'MODE 7'}],observationMs:5000},
+{id:'T03',label:'Different mode · early cut',desc:'Mode 4 then Mode 7 at 1.0s.',commands:()=>[{atMs:0,mode:4,label:'MODE 4'},{atMs:1000,mode:7,label:'MODE 7'}],observationMs:5000},
+{id:'T04',label:'Alternation · 500ms',desc:'8 switches between Modes 4 and 7.',commands:()=>alternating(500,8),observationMs:3500},
+{id:'T05',label:'Alternation · 200ms',desc:'12 switches between Modes 4 and 7.',commands:()=>alternating(200,12),observationMs:3500},
+{id:'T06',label:'Alternation · 100ms',desc:'12 switches between Modes 4 and 7.',commands:()=>alternating(100,12),observationMs:3500},
+{id:'T07',label:'Bounded load · 50ms',desc:'12 switches at 50ms. Busy writes are skipped.',commands:()=>alternating(50,12),observationMs:3500}
+];
+const compare=[{id:'C01a',label:'Mode 2 comparator',commands:()=>[{atMs:0,mode:2,label:'MODE 2'}]},{id:'C01b',label:'Mode 10 comparator',commands:()=>[{atMs:0,mode:10,label:'MODE 10'}]}];
+function makeButton(spec){const btn=document.createElement('button');btn.className='test-btn';btn.type='button';const b=document.createElement('strong');b.textContent=spec.id+' · '+(spec.id.startsWith('M')?'Mode '+Number(spec.id.slice(1)):spec.label);const small=document.createElement('small');small.textContent=spec.desc||'One command; watch natural completion';btn.append(b,small);btn.addEventListener('click',()=>startTest([spec],spec.id.startsWith('M')?'modes':'timing'));return btn}
+modeSpecs.forEach(t=>$('mode-tests').append(makeButton(t)));tests.forEach(t=>$('timing-tests').append(makeButton(t)));
+$('run-all-modes').onclick=()=>startTest(modeSpecs,'modes');$('mode-compare').onclick=()=>startTest(compare,'modes');$('stop-test').onclick=()=>abort('User stopped test; pending BLE writes may complete.');
+for(const side of ['left','right'])$('connect-'+side).onclick=()=>connect(side);
+async function setBaseline(rgb,name){if(session){updateLog('Stop the active test first.');return}if(!targetSides().length){updateLog('No selected controller connected.');return}flash('STATIC '+name);entry('manual_color',{color:name});dispatch(colorPacket(rgb),{label:'Manual '+name});updateLog('Requested static '+name+'.')}
+$('baseline-blue').onclick=()=>setBaseline([0,0,255],'BLUE');$('baseline-red').onclick=()=>setBaseline([255,0,0],'RED');
+const fields=['date_utc','run_id','test_id','test_label','event','elapsed_ms','mode','hex','side','planned_ms','requested_at_ms','marker_lateness_ms','dispatch_lateness_ms','ble_write_promise_ms','label','error','note'];
+function csv(){const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';return [fields.join(','),...events.map(row=>fields.map(key=>q(row[key])).join(','))].join('\r\n')}
+function download(filename,content,type){const a=document.createElement('a'),url=URL.createObjectURL(new Blob([content],{type}));a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}
+$('download-csv').onclick=()=>download('wrx_calibration_'+new Date().toISOString().replace(/[:.]/g,'-')+'.csv',csv(),'text/csv;charset=utf-8');
+$('download-json').onclick=()=>download('wrx_calibration_'+new Date().toISOString().replace(/[:.]/g,'-')+'.json',JSON.stringify({format:'WRX_Calibration_v1',exported_at:iso(),note:'BLE write completion is NOT physical LED response',events},null,2),'application/json');
+$('copy-csv').onclick=async()=>{try{await navigator.clipboard.writeText(csv());updateLog('CSV copied to clipboard.')}catch(e){const ta=document.createElement('textarea');ta.value=csv();document.body.append(ta);ta.select();const ok=document.execCommand('copy');ta.remove();updateLog(ok?'CSV copied.':'Clipboard unavailable; use Download CSV.')}};
+$('clear-data').onclick=()=>{if(session){updateLog('Stop active test first.');return}if(!confirm('Delete all locally saved calibration events? Download logs first.'))return;events=[];persist();$('event-count').textContent='0 events';recent='Ready.';$('activity').textContent=recent;updateLog('Saved records cleared.')};
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&session)abort('Page hidden; test stopped to avoid inaccurate timing.')});
+$('ble-support').textContent=navigator.bluetooth&&window.isSecureContext?'Web Bluetooth available':'BLE browser + HTTPS required';
+$('event-count').textContent=events.length+' events';uiConnections();window.WRXCAL={
+ onEnter:uiConnections,
+ onDisconnect:side=>{if(session)abort('Bluetooth '+side+' disconnected during test.');uiConnections();},
+ onLeave:()=>{if(session)abort('Left Calibration Mode; active test stopped.');},
+ isRunning:()=>Boolean(session)
+};
+updateLog('Calibration Mode ready. Capture both phone display and tail lights in one video.');
+})();
+</script>
+<script>
+(()=>{'use strict';
+ const menu=document.getElementById('site-menu');
+ const toggle=document.getElementById('menu-toggle');
+ const main=document.getElementById('controller-view');
+ const cal=document.getElementById('calibration-view');
+ let active='controller';
+ function closeMenu(){menu.hidden=true;toggle.setAttribute('aria-expanded','false')}
+ function show(view){
+   if(view!=='controller'&&view!=='calibration')return;
+   closeMenu();
+   if(view===active)return;
+   // Never continue unobserved animation or timing experiments after switching tabs.
+   if(active==='controller')window.WRXBLE?.stopPlayback('Switched to Calibration Mode; playback stopped.');
+   if(active==='calibration')window.WRXCAL?.onLeave();
+   active=view;
+   main.hidden=view!=='controller';
+   cal.hidden=view!=='calibration';
+   document.querySelectorAll('[data-nav-view]').forEach(b=>{
+     if(b.getAttribute('data-nav-view')===view)b.setAttribute('aria-current','page');
+     else b.removeAttribute('aria-current');
+   });
+   if(view==='controller')window.WRXBLE?.onEnter();
+   else window.WRXCAL?.onEnter();
+   window.scrollTo(0,0);
+   try{history.replaceState(null,'','#'+(view==='calibration'?'calibration':'controller'))}catch(e){}
+ }
+ toggle.addEventListener('click',()=>{const expanded=toggle.getAttribute('aria-expanded')==='true';menu.hidden=expanded;toggle.setAttribute('aria-expanded',String(!expanded))});
+ document.querySelectorAll('[data-nav-view]').forEach(b=>b.addEventListener('click',()=>show(b.getAttribute('data-nav-view'))));
+ document.addEventListener('click',e=>{if(!e.target.closest('.site-nav'))closeMenu()});
+ window.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
+ window.addEventListener('hashchange',()=>show(location.hash==='#calibration'?'calibration':'controller'));
+ if(location.hash==='#calibration')show('calibration');
+})();</script></body></html>
