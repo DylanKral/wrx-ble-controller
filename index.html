@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#0c1424"/><title>WRX Dream BLE Controller v5 — Calibration</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#0c1424"/><title>WRX Dream BLE Controller v6 — Presets</title><style>
 :root{color-scheme:dark;--bg:#0c1424;--panel:#182438;--line:#334159;--txt:#edf4ff;--muted:#b0bfd3;--blue:#86c5ff;--green:#5cdda5}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% -5%,#1e3655,transparent 58%),var(--bg);color:var(--txt);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}main{max-width:610px;margin:auto;padding:calc(22px + env(safe-area-inset-top)) 17px calc(30px + env(safe-area-inset-bottom))}
 h1{font-size:27px;line-height:1.15;letter-spacing:-.7px;margin:5px 0 8px}h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 9px}p{margin:7px 0 0;color:var(--muted);font-size:13px}.kicker{font-size:11px;letter-spacing:1.2px;color:var(--blue);font-weight:750;text-transform:uppercase}
@@ -102,17 +102,81 @@ input[type=text],input[type=number],select{min-width:0;width:100%;border:1px sol
 .sequence-tools{display:flex;gap:8px;align-items:end}.sequence-tools .field{flex:1;min-width:0}.sequence-tools>button{flex-shrink:0}
 .smalltext{font-size:12px;color:var(--muted)}
 @media(max-width:390px){.seq-item button{padding:7px;min-width:35px}.sequence-tools{flex-wrap:wrap}}
+
+/* v6: Main dashboard and sequence studio */
+body{padding-bottom:env(safe-area-inset-bottom)}
+#home-view{max-width:610px;margin:0 auto;padding:18px 17px 114px}
+#home-view h1{font-size:30px;letter-spacing:-.8px}
+.home-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.home-kicker{font-weight:800;font-size:11px;letter-spacing:1.4px;color:#9ed5ff;text-transform:uppercase}
+.home-sub{margin-top:7px;max-width:450px}
+.home-status{font-size:12px;border:1px solid #445c77;background:#1b2c44;color:#cbddf3;padding:9px 11px;border-radius:10px;white-space:nowrap}
+.home-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.home-tile{background:linear-gradient(150deg,#1b385d,#172944);border:1px solid #49688a;min-height:114px;border-radius:15px;padding:15px 12px;display:flex;flex-direction:column;justify-content:space-between;text-align:left;gap:9px}
+.home-tile strong{font-size:15px;line-height:1.22;overflow-wrap:anywhere}
+.home-tile small{font-size:11px;color:#acc8e7;font-weight:500}
+.home-tile.playing{background:#25578a;border-color:#8dc6ff;box-shadow:inset 0 0 0 1px #83c3f5}
+.home-tile.experimental{border-style:dashed}
+.home-tile:disabled{opacity:.58}
+.home-footnote{font-size:12px;line-height:1.5;color:#b2c2d8;margin-top:12px}
+.home-quick{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:15px;font-size:12px}
+.home-quick button{padding:8px 10px;min-height:38px;font-size:12px}
+.global-playbar{position:fixed;bottom:0;left:0;right:0;z-index:18;background:linear-gradient(180deg,#102137f8,#0b1424);border-top:1px solid #46627f;padding:10px max(14px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));display:flex;align-items:center;gap:12px;box-shadow:0 -12px 26px #0005}
+.global-playbar .playing-caption{flex:1;min-width:0}
+.global-playbar strong{display:block;font-size:13px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.global-playbar small{font-size:11px;color:#a9c1df}
+.global-playbar .danger{min-width:100px;background:#a73c53;border-color:#c05768;color:white}
+.site-menu .menu-heading{padding:9px 11px 2px;color:#93aacc;font-size:10px;text-transform:uppercase;letter-spacing:1px}
+.site-menu .menu-child{padding-left:22px}
+#controller-view,#calibration-view{padding-bottom:115px}
+#controller-view{scroll-margin-top:70px}
+.dev-shortcuts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:13px}
+.dev-shortcuts a{border:1px solid #425d7d;border-radius:10px;padding:9px 5px;text-align:center;background:#203652;color:#c9e4ff;text-decoration:none;font-size:12px}
+#dev-presets,#dev-editor,#dev-playlists{scroll-margin-top:80px}
+.studio-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end;margin:10px 0}
+.studio-row label{display:flex;flex-direction:column;gap:5px}
+.studio-step{border:1px solid #394f6d;padding:11px;border-radius:12px;margin-top:9px;background:#15243a}
+.studio-step-head{display:flex;justify-content:space-between;align-items:center;gap:9px}
+.studio-step-head strong{font-size:13px;min-width:0}
+.studio-step .field{margin-top:8px}
+.studio-buttons{display:flex;gap:6px;flex-wrap:wrap}
+.studio-buttons button{min-height:37px;padding:6px 10px;font-size:12px}
+.studio-entry{border:1px solid #364b66;border-radius:12px;padding:12px;margin-top:9px;background:#152840}
+.studio-entry .rowtop{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.studio-entry .field{margin:8px 0 0}
+.studio-entry .tools{display:flex;gap:6px;justify-content:flex-end;margin-top:7px}
+.studio-entry .tools button{min-height:36px;padding:7px 9px;font-size:12px}
+.studio-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.studio-heading small{color:#a9c3df}
+.safety-line{margin-top:12px;padding:10px;border:1px solid #6e554b;background:#332a2a;border-radius:10px;color:#e9cbbd;font-size:12px}
+#home-view .panel{margin-top:15px}
+#home-view input{font-size:14px}
+@media(max-width:360px){.home-tile{padding:12px 10px;min-height:104px}.home-tile strong{font-size:13px}.global-playbar .danger{min-width:90px}}
 </style></head><body><header class="site-nav">
-  <span class="brand">WRX Dream BLE</span>
-  <button id="menu-toggle" class="site-menu-btn" type="button" aria-label="Open navigation" aria-controls="site-menu" aria-expanded="false">☰</button>
-  <nav id="site-menu" class="site-menu" aria-label="Pages" hidden>
-    <button type="button" data-nav-view="controller" aria-current="page">Main controller</button>
-    <button type="button" data-nav-view="calibration">Calibration Mode</button>
-  </nav>
-</header><main id="controller-view">
-<div class="kicker">Subaru WRX · Parked-only Bluetooth lab</div>
-<h1>Dream BLE Lab <span style="font-size:12px;color:#aab9cf">v5 · Calibrated sequencer</span></h1>
-<p>Ten saved favorites, calibrated timing defaults, individually timed transitions, named playlists, and live control of both Dream BLE modules.</p>
+ <span class="brand">WRX Dream BLE <span style="opacity:.6;font-weight:600">v6</span></span>
+ <button id="menu-toggle" class="site-menu-btn" type="button" aria-label="Open navigation" aria-controls="site-menu" aria-expanded="false">☰</button>
+ <nav id="site-menu" class="site-menu" aria-label="Pages" hidden>
+   <button type="button" data-nav-view="home" aria-current="page">Main presets</button>
+   <div class="menu-heading">Development</div>
+   <button type="button" class="menu-child" data-nav-view="controller">Custom Testing</button>
+   <button type="button" class="menu-child" data-nav-view="calibration">Calibration Mode</button>
+ </nav>
+</header><main id="home-view">
+  <div class="home-header"><div><div class="home-kicker">WRX · Dream BLE</div><h1>Lighting presets</h1></div><div class="home-status" id="home-connection-pill">0 of 2 connected</div></div>
+  <p class="home-sub">Tap a preset to play it on both tail lights. Configure buttons and sequences under Development.</p>
+  <div class="panel"><div class="sectionhead"><h2>Connect lights</h2><span class="pill" id="home-ble-support">BLE browser</span></div>
+  <div class="device"><div><strong>Left · CF4B</strong><div class="status" id="home-left-status">Disconnected</div></div><button type="button" id="home-connect-left">Connect</button></div>
+  <div class="device"><div><strong>Right · A90F</strong><div class="status" id="home-right-status">Disconnected</div></div><button type="button" id="home-connect-right">Connect</button></div>
+  </div>
+  <section class="panel"><div class="sectionhead"><h2>Presets</h2><span class="pill" id="home-presets-count">0 profiles</span></div>
+  <div class="home-grid" id="home-grid"></div>
+  <p class="home-footnote">Each button runs its assigned saved profile; buttons cannot be edited on this page. To change a preset, open Development → Custom Testing.</p></section>
+  <p class="safety-line"><strong>Parked-only show control.</strong> Bluetooth RGB commands do not replace factory brake or turn signals. Stop, restore red, and verify normal lighting before driving. A failed/disconnected controller may retain its last color.</p>
+ </main>
+<main hidden id="controller-view">
+<div class="kicker">Development · Custom Testing</div>
+<h1>Custom Testing <span style="font-size:12px;color:#aab9cf">v6 · Calibrated sequencer</span></h1>
+<p>Experiment with individual factory modes, reusable profile macros, and precisely timed transitions. Main-page buttons are assigned here.</p><div class="dev-shortcuts"><a href="#dev-presets">Favorites</a><a href="#dev-editor">Profile editor</a><a href="#dev-playlists">Legacy playlists</a></div>
 <div class="note"><strong>For parked testing only.</strong> Playback times are video-derived estimates, not firmware completion signals. An internal-looping factory effect may continue after the browser stops scheduling; <strong>Stop + solid red</strong> sends a solid-color request. This page is not a safety lighting controller. Restore and verify factory lights before driving.</div>
 <section class="panel">
 <div class="sectionhead"><h2>Bluetooth connections</h2><span class="pill" id="support">Checking</span></div>
@@ -120,7 +184,23 @@ input[type=text],input[type=number],select{min-width:0;width:100%;border:1px sol
 <div class="device"><div><strong>Right tail light</strong><div class="status" id="right-status"><i class="dot"></i>Dream-A90F · Disconnected</div></div><button id="connect-right" type="button">Connect</button></div>
 <p>Bluetooth writes are dispatched to both devices as closely together as the browser permits. Connections are shared with Calibration Mode.</p>
 </section>
-<section class="panel">
+<section class="panel" id="dev-editor">
+ <div class="sectionhead"><h2>Profile studio</h2><span class="pill">Main presets are assigned here</span></div>
+ <p>Build profiles from <strong>Mode</strong>, <strong>Color</strong>, and <strong>Wait</strong> steps. A duration determines when the next command is sent; timing runs from command start. Changes save in this browser.</p>
+ <div class="studio-row"><label>Profile to edit<select id="studio-profile"></select></label><button type="button" id="studio-new" class="primary">New profile</button></div>
+ <div class="studio-row"><label>Profile name<input id="studio-name" type="text" maxlength="44" placeholder="Chase / Overlap"/></label><label>Default playback<select id="studio-repeat"><option value="loop">Continuous</option><option value="once">One pass</option></select></label></div>
+ <label class="check" style="margin-top:10px"><input type="checkbox" id="studio-experimental"/><span>Experimental behavior — show warning on preset</span></label>
+ <div class="studio-heading" style="margin-top:16px"><h3>Sequence steps</h3><small id="studio-step-count">0 steps</small></div>
+ <div id="studio-steps"></div>
+ <div class="actions" style="margin-top:12px"><button id="studio-add-mode" type="button">+ Mode</button><button id="studio-add-color" type="button">+ Color</button><button id="studio-add-wait" type="button">+ Wait</button><button id="studio-save" type="button" class="primary">Save profile</button><button id="studio-preview" type="button">Play test</button><button id="studio-duplicate" type="button">Duplicate profile</button></div>
+ <div class="actions" style="margin-top:10px"><button class="danger" id="studio-delete" type="button">Delete profile</button><button id="studio-reset" type="button">Restore editor</button></div>
+ <p class="hint">Observed in your testing: Mode 1 appears red, Mode 2 shows no visible effect, and Mode 9 flashes. Mode 10 is only a provisional Breathe identifier. Sending black mid-animation may cancel the chase. These are test hypotheses, not verified firmware features. For each action, set duration in 0.05-second increments.</p>
+ <div class="divider"></div><div class="sectionhead"><h3>Configure Main buttons</h3><button type="button" class="primary" id="studio-add-button">+ Add button</button></div>
+ <p>Assign any saved profile to each two-column Main button. Add as many buttons as browser storage permits; reorder and rename them here.</p>
+ <div id="studio-buttons"></div>
+ <div class="actions" style="margin-top:12px"><button type="button" id="studio-export">Backup profiles as JSON</button><button type="button" id="studio-import">Restore JSON backup</button><input hidden type="file" id="studio-import-file" accept="application/json,.json"/></div>
+ </section>
+<section class="panel" id="dev-presets">
 <div class="sectionhead"><h2>My 10 favorites</h2><span class="pill" id="selected-label">Mode 4</span></div>
 <p>Favorites and timing settings are saved locally. Existing v3/v4 names and manual timings are retained when present.</p>
 <div class="presets" id="preset-grid"></div>
@@ -148,7 +228,7 @@ input[type=text],input[type=number],select{min-width:0;width:100%;border:1px sol
 <p class="metric" id="debug-label">BLE transport: Not connected</p>
 <p class="hint">For a single internally-looping mode, “Until stopped” sends it once and leaves it running on the controller. For one-pass modes, the scheduler retriggers at your entered full duration (plus a small same-mode guard).</p>
 </section>
-<section class="panel">
+<section class="panel" id="dev-playlists">
 <div class="sectionhead"><h2>Custom sequences</h2><span class="pill" id="sequence-total">0 steps</span></div>
 <p>Create a playlist using your favorite slots. Dragging isn't required: use the up/down buttons to order steps. Playlists are saved in this browser and use your current favorite timing settings.</p>
 <div class="field"><label for="saved-sequence">Saved playlist</label><select id="saved-sequence"><option value="">Unsaved playlist</option></select></div>
@@ -172,7 +252,7 @@ input[type=text],input[type=number],select{min-width:0;width:100%;border:1px sol
 <p style="margin:18px 0"><small>FFD5 / FFD9 · Verified chase command 9E0003819800E9 · Mode values use observed mode-minus-one encoding. Timing is approximate and browser foreground-only. Local storage is browser-specific.</small></p>
 </main>
 <main hidden="" id="calibration-view">
-<div class="topline"><span class="eyebrow">WRX · Dream BLE Lab</span><button class="return-nav" data-nav-view="controller" type="button">Main controller</button></div>
+<div class="topline"><span class="eyebrow">WRX · Dream BLE Lab</span><button class="return-nav" data-nav-view="controller" type="button">Custom Testing</button></div>
 <h1>Calibration Mode <span class="small">v1</span></h1>
 <p>Record the display and both tail lights in a single fixed camera shot. The screen's white cue marks when each command is requested; during rapid tests, use the exported timestamps to distinguish closely spaced commands. Logs distinguish command scheduling and write completion; video measures actual LED response.</p>
 <div class="note"><strong>Parked testing only.</strong> These are diagnostic commands to aftermarket RGB effects, not vehicle safety controls. They do not measure brake response or replace factory wiring. Keep the browser foregrounded, screen awake, and restore normal road-legal lighting before driving. The rapid tests send a bounded number of commands, not unbounded traffic.</div>
@@ -230,6 +310,10 @@ input[type=text],input[type=number],select{min-width:0;width:100%;border:1px sol
 </section>
 <div class="footer">Service FFD5 · Write characteristic FFD9 · Mode command 9E 00 [mode−1] 81 98 00 E9. Modes 2–9 and the Mode 10 comparison are inferred from the captured command pattern. Mode 4 is verified on both lights. No personal data is uploaded; records remain in this browser until exported or cleared.</div>
 </main>
+<div class="global-playbar" role="region" aria-label="Playback controls">
+  <div class="playing-caption"><strong id="global-playing">Idle · Ready</strong><small id="global-play-detail">No profile running</small></div>
+  <button type="button" class="danger" id="global-stop">Stop + Red</button>
+</div>
 <script>
 (()=>{'use strict';
 const SERVICE='0000ffd5-0000-1000-8000-00805f9b34fb';
@@ -313,7 +397,7 @@ function renderButtons(){const isAny=isUp('left')||isUp('right');for(const id of
  $('loop-status').textContent=playing?(playing.internal?'Internal loop':'Playing'):'Stopped';$('count-label').textContent=`Sends: ${done} · Steps: ${steps} · Late: ${late}`;
  $('debug-label').textContent=`BLE transport: ${lastTransport}${busy?' · write pending':''}`;
 }
-function showDevices(){for(const side of ['left','right']){const on=isUp(side),node=$(side+'-status');node.replaceChildren();const dot=document.createElement('i');dot.className='dot'+(on?' on':'');node.append(dot,document.createTextNode(names[side]+' · '+(on?'Connected':'Disconnected')));$('connect-'+side).textContent=on?'Disconnect':'Connect'}renderButtons()}
+function showDevices(){for(const side of ['left','right']){const on=isUp(side),node=$(side+'-status');node.replaceChildren();const dot=document.createElement('i');dot.className='dot'+(on?' on':'');node.append(dot,document.createTextNode(names[side]+' · '+(on?'Connected':'Disconnected')));$('connect-'+side).textContent=on?'Disconnect':'Connect'}renderButtons();window.WRXMODE?.refresh()}
 function stopPlayback(reason){playing=null;if(timer!==null){clearTimeout(timer);timer=null}if(reason)log(reason);renderButtons()}
 async function connect(side){if(!navigator.bluetooth){log('Bluetooth unavailable; Android Chrome or iPhone Bluefy required over HTTPS.');return}
  if(isUp(side)){const old=conn[side];conn[side]=null;stopPlayback(`${names[side]} disconnected.`);old.device.gatt.disconnect();window.WRXCAL?.onDisconnect(side);showDevices();return}
@@ -369,7 +453,7 @@ $('save-sequence').onclick=()=>{const name=$('sequence-name').value.trim().slice
 $('delete-sequence').onclick=()=>{if(!activePlaylist)return;playlists=playlists.filter(p=>p.id!==activePlaylist);activePlaylist='';seqSteps=[];$('sequence-name').value='';savePlaylists();renderPlaylist();log('Deleted saved playlist.')};
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing)stopPlayback('Browser hidden; timer stopped. Last selected factory effect may continue internally.')});
 const supported=Boolean(navigator.bluetooth&&window.isSecureContext);$('support').textContent=supported?'Web Bluetooth available':'Requires BLE browser / HTTPS';
-window.WRXBLE={connect,isUp,getCharacteristic:side=>isUp(side)?conn[side].char:null,stopPlayback,refresh:showDevices,onEnter:showDevices};
+window.WRXBLE={connect,isUp,getCharacteristic:side=>isUp(side)?conn[side].char:null,stopPlayback,refresh:showDevices,onEnter:showDevices,sendRaw:(b,quiet=true)=>send(b,quiet),sendMode:m=>send(modeBytes(m),true),sendColor:h=>send(colorBytes(h),true),isBusy:()=>busy};
 displayPresets();if(activePlaylist){const initial=playlists.find(p=>p.id===activePlaylist);if(initial)$('sequence-name').value=initial.name;}savePresets();savePlaylists();showDevices();log('v5 ready. Video-derived timing estimates loaded; previous favorites and Calibration Mode retained.');
 })();
 </script>
@@ -477,35 +561,142 @@ updateLog('Calibration Mode ready. Capture both phone display and tail lights in
 </script>
 <script>
 (()=>{'use strict';
- const menu=document.getElementById('site-menu');
- const toggle=document.getElementById('menu-toggle');
- const main=document.getElementById('controller-view');
- const cal=document.getElementById('calibration-view');
- let active='controller';
- function closeMenu(){menu.hidden=true;toggle.setAttribute('aria-expanded','false')}
- function show(view){
-   if(view!=='controller'&&view!=='calibration')return;
-   closeMenu();
-   if(view===active)return;
-   // Never continue unobserved animation or timing experiments after switching tabs.
-   if(active==='controller')window.WRXBLE?.stopPlayback('Switched to Calibration Mode; playback stopped.');
-   if(active==='calibration')window.WRXCAL?.onLeave();
-   active=view;
-   main.hidden=view!=='controller';
-   cal.hidden=view!=='calibration';
-   document.querySelectorAll('[data-nav-view]').forEach(b=>{
-     if(b.getAttribute('data-nav-view')===view)b.setAttribute('aria-current','page');
-     else b.removeAttribute('aria-current');
-   });
-   if(view==='controller')window.WRXBLE?.onEnter();
-   else window.WRXCAL?.onEnter();
-   window.scrollTo(0,0);
-   try{history.replaceState(null,'','#'+(view==='calibration'?'calibration':'controller'))}catch(e){}
+const $=id=>document.getElementById(id),shared=window.WRXBLE;
+const STORE='wrx-dream-studio-v6';
+const M=(mode,seconds)=>({type:'mode',mode,ms:Math.round(seconds*1000)});
+const C=(color,seconds)=>({type:'color',color,ms:Math.round(seconds*1000)});
+const W=(seconds)=>({type:'wait',ms:Math.round(seconds*1000)});
+const initialProfiles=[
+ {id:'blue-overlap',name:'Blue Overlap',repeat:true,experimental:false,steps:[C('#0000ff',.10),M(7,3.5)]},
+ {id:'overlap-double',name:'Infinite Overlap',repeat:true,experimental:false,steps:[C('#0000ff',.10),M(7,3.5),M(7,3.65)]},
+ {id:'reverse-double',name:'Reverse Infinite Overlap',repeat:true,experimental:false,steps:[C('#0000ff',.10),M(8,3.5),M(8,3.65)]},
+ {id:'overlap-cut',name:'Overlap · 1.30s cut',repeat:true,experimental:false,steps:[C('#0000ff',.10),M(7,1.30),M(8,.20)]},
+ {id:'chase-breathe',name:'Chase → Breathe',repeat:true,experimental:true,steps:[M(4,2.20),M(10,1.80)]},
+ {id:'chase-rainbow',name:'Chase / Rainbow chase',repeat:true,experimental:false,steps:[M(4,.70),M(3,.70)]},
+ {id:'black-blue-chase',name:'Black / Blue chase test',repeat:true,experimental:true,steps:[M(4,.70),C('#000000',.10),M(4,.10),C('#0000ff',.70)]},
+ {id:'breathe-to-overlap',name:'Breathe fade → Overlap',repeat:true,experimental:true,steps:[C('#0000ff',.10),M(10,1.80),C('#0000ff',.05),M(7,3.50)]},
+ {id:'basic-chase',name:'Chase',repeat:true,experimental:false,steps:[M(4,2.35)]},
+ {id:'flash',name:'Flash',repeat:false,experimental:false,steps:[M(9,1.00)]}
+ ];
+let profiles=structuredClone(initialProfiles);
+let buttons=initialProfiles.map(p=>({id:'btn-'+p.id,label:p.name,profileId:p.id}));
+let selectedId=profiles[0].id,run=null,runCounter=0;
+let editorDirty=false;
+let messages=[];
+const now=()=>performance.now();
+const fmt=ms=>(ms/1000).toFixed(2)+'s';
+const safeMs=n=>Number.isInteger(n)&&n>=0&&n<=60000&&n%50===0;
+const makeId=()=>('profile-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8));
+const shortText=(x,n=44)=>String(x||'').trim().slice(0,n);
+function cleanStep(s){if(!s||!['mode','color','wait'].includes(s.type))return null;const ms=Number(s.ms);
+ if(!safeMs(ms))return null;
+ if(s.type==='mode'){const m=Number(s.mode);if(!Number.isInteger(m)||m<1||m>256)return null;return {type:'mode',mode:m,ms}}
+ if(s.type==='color'){if(!/^#[0-9a-f]{6}$/i.test(s.color||''))return null;return {type:'color',color:s.color.toLowerCase(),ms}}
+ return {type:'wait',ms};
+}
+function cleanProfile(p){if(!p||typeof p.id!=='string'||!Array.isArray(p.steps))return null;
+ const steps=p.steps.map(cleanStep);if(steps.some(x=>!x)||steps.length>250)return null;
+ return {id:p.id.slice(0,80),name:shortText(p.name)||'Untitled',repeat:!!p.repeat,experimental:!!p.experimental,steps};}
+function persist(){try{localStorage.setItem(STORE,JSON.stringify({version:6,profiles,buttons,selectedId}))}catch(e){setMsg('Local storage is full; export your backup.')}}
+try{const raw=JSON.parse(localStorage.getItem(STORE)||'null');if(raw&&Array.isArray(raw.profiles)&&Array.isArray(raw.buttons)){
+ const out=raw.profiles.map(cleanProfile);if(!out.some(x=>!x)&&out.length){profiles=out;buttons=raw.buttons.filter(x=>x&&typeof x.id==='string'&&typeof x.profileId==='string'&&profiles.some(p=>p.id===x.profileId)).map(x=>({id:x.id.slice(0,80),label:shortText(x.label,50)||'Preset',profileId:x.profileId}));selectedId=profiles.some(p=>p.id===raw.selectedId)?raw.selectedId:profiles[0].id;}
+}}catch(e){}
+function current(){return profiles.find(p=>p.id===selectedId)||profiles[0]}
+function setMsg(str){messages.unshift(new Date().toLocaleTimeString()+' · '+str);messages=messages.slice(0,7);$('global-play-detail').textContent=str.slice(0,95)}
+function refreshStatus(){const live=['left','right'].filter(shared.isUp).length;$('home-connection-pill').textContent=live+' of 2 connected';
+ for(const side of ['left','right']){$('home-'+side+'-status').textContent=shared.isUp(side)?'Connected':'Disconnected';$('home-connect-'+side).textContent=shared.isUp(side)?'Disconnect':'Connect'}
+ $('home-ble-support').textContent=(navigator.bluetooth&&window.isSecureContext)?'Web BLE ready':'BLE browser needed';
+ $('home-presets-count').textContent=buttons.length+' presets';}
+function paintHome(){const grid=$('home-grid');grid.replaceChildren();if(!buttons.length){const p=document.createElement('p');p.textContent='No buttons assigned. Add them under Development.';grid.append(p)}
+ buttons.forEach((b,i)=>{const p=profiles.find(x=>x.id===b.profileId);if(!p)return;const tile=document.createElement('button');tile.type='button';tile.className='home-tile'+(p.experimental?' experimental':'')+(run?.profileId===p.id?' playing':'');
+ const title=document.createElement('strong');title.textContent=b.label;const meta=document.createElement('small');meta.textContent=(p.repeat?'Loop':'One pass')+' · '+p.steps.length+' steps'+(p.experimental?' · TEST':'');tile.append(title,meta);tile.title='Play '+b.label;
+ tile.onclick=()=>startProfile(p.id);grid.append(tile)});refreshStatus();}
+function controls(){const p=current(),sel=$('studio-profile');sel.replaceChildren();profiles.forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.name;sel.append(o)});sel.value=p.id;
+ $('studio-name').value=p.name;$('studio-repeat').value=p.repeat?'loop':'once';$('studio-experimental').checked=p.experimental;
+ drawSteps();drawButtons();}
+function readFields(){const p=current();p.name=shortText($('studio-name').value)||'Untitled';p.repeat=$('studio-repeat').value==='loop';p.experimental=$('studio-experimental').checked;persist()}
+function drawSteps(){const parent=$('studio-steps'),p=current();parent.replaceChildren();$('studio-step-count').textContent=p.steps.length+' steps';
+ p.steps.forEach((step,i)=>{const box=document.createElement('div');box.className='studio-step';const head=document.createElement('div');head.className='studio-step-head';const strong=document.createElement('strong');strong.textContent=`${i+1}. ${step.type==='mode'?'Factory animation':step.type==='color'?'RGB color':'Timed wait'}`;head.append(strong);
+ const tools=document.createElement('div');tools.className='studio-buttons';for(const [symbol,fn,disabled] of [['↑',()=>move(i,-1),i===0],['↓',()=>move(i,1),i===p.steps.length-1],['×',()=>{p.steps.splice(i,1);persist();drawSteps()},false]]){const b=document.createElement('button');b.type='button';b.textContent=symbol;b.disabled=disabled;b.onclick=fn;tools.append(b)}head.append(tools);box.append(head);
+ const row=document.createElement('div');row.className='studio-row';
+ const typeField=document.createElement('label');typeField.textContent='Action';const type=document.createElement('select');[['mode','Animation mode'],['color','Set RGB color'],['wait','Wait only']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;type.append(o)});type.value=step.type;type.onchange=()=>{const old=step.ms;const x=type.value;p.steps[i]=x==='mode'?{type:'mode',mode:4,ms:old}:x==='color'?{type:'color',color:'#0000ff',ms:old}:{type:'wait',ms:old};persist();drawSteps()};typeField.append(type);row.append(typeField);
+ const valLabel=document.createElement('label');valLabel.textContent=step.type==='mode'?'Mode (1–256)':step.type==='color'?'Color':'Wait step';let val;if(step.type==='mode'){val=document.createElement('input');val.type='number';val.min=1;val.max=256;val.step=1;val.value=step.mode;val.onchange=()=>{const m=Number(val.value);if(Number.isInteger(m)&&m>=1&&m<=256){step.mode=m;persist()}else val.value=step.mode}}
+ else if(step.type==='color'){val=document.createElement('input');val.type='color';val.style.width='100%';val.value=step.color;val.oninput=()=>{step.color=val.value;persist()}}
+ else{val=document.createElement('div');val.className='hint';val.textContent='No command';}valLabel.append(val);row.append(valLabel);box.append(row);
+ const time=document.createElement('label');time.className='field';time.textContent='Time until next step (seconds)';const inp=document.createElement('input');inp.type='number';inp.min='0';inp.max='60';inp.step='.05';inp.inputMode='decimal';inp.value=(step.ms/1000).toFixed(2);inp.onchange=()=>{const ms=Math.round(Number(inp.value)*1000);if(safeMs(ms)&&Math.abs(ms-Number(inp.value)*1000)<.0001){step.ms=ms;persist()}else inp.value=(step.ms/1000).toFixed(2)};time.append(inp);box.append(time);parent.append(box)});
+}
+function move(i,by){const a=current().steps,j=i+by;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];persist();drawSteps()}
+function drawButtons(){const div=$('studio-buttons');div.replaceChildren();buttons.forEach((b,i)=>{const x=document.createElement('div');x.className='studio-entry';const top=document.createElement('div');top.className='rowtop';const title=document.createElement('strong');title.textContent='Button '+(i+1);const ops=document.createElement('div');ops.className='studio-buttons';for(const [symbol,fn,disabled] of [['↑',()=>moveButton(i,-1),i===0],['↓',()=>moveButton(i,1),i===buttons.length-1],['×',()=>{buttons.splice(i,1);persist();drawButtons();paintHome()},false]]){const z=document.createElement('button');z.textContent=symbol;z.disabled=disabled;z.type='button';z.onclick=fn;ops.append(z)}top.append(title,ops);x.append(top);
+ const row=document.createElement('div');row.className='studio-row';const l=document.createElement('label');l.textContent='Main label';const input=document.createElement('input');input.type='text';input.maxLength=50;input.value=b.label;input.onchange=()=>{b.label=shortText(input.value,50)||'Preset';persist();paintHome()};l.append(input);row.append(l);
+ const lr=document.createElement('label');lr.textContent='Assigned profile';const select=document.createElement('select');profiles.forEach(p=>{const opt=document.createElement('option');opt.value=p.id;opt.textContent=p.name;select.append(opt)});select.value=b.profileId;select.onchange=()=>{b.profileId=select.value;persist();paintHome()};lr.append(select);row.append(lr);x.append(row);div.append(x)});}
+function moveButton(i,delta){const j=i+delta;if(j<0||j>=buttons.length)return;[buttons[i],buttons[j]]=[buttons[j],buttons[i]];persist();drawButtons();paintHome()}
+function sleepUntil(deadline,token){return new Promise(resolve=>{function tick(){if(run!==token||token.aborted)return resolve(false);const remain=deadline-now();if(remain<=0)return resolve(true);setTimeout(tick,Math.min(remain,45));}tick()})}
+const colorBytes=(color)=>Uint8Array.from([0x56,...color.slice(1).match(/../g).map(x=>parseInt(x,16)),0x00,0xf0,0xaa]);
+const modeBytes=(m)=>Uint8Array.from([0x9e,0x00,m-1,0x81,0x98,0x00,0xe9]);
+let writer=Promise.resolve();
+function serialWrite(bytes){const task=writer.catch(()=>{}).then(()=>shared.sendRaw(bytes,true));writer=task.catch(()=>{});return task}
+async function sendColor(color){return serialWrite(colorBytes(color))}
+function renderActive(){const profile=profiles.find(x=>x.id===run?.profileId);$('global-playing').textContent=run?'Playing · '+(profile?.name||'Profile'):'Idle · Ready';
+ document.querySelectorAll('.home-tile').forEach((tile,i)=>tile.classList.toggle('playing',!!run&&buttons[i]?.profileId===run.profileId));}
+function stop(silent=false){if(run){run.aborted=true;run=null;renderActive();if(!silent)setMsg('Stopped profile playback; request solid red if finished testing.')}}
+async function stopRed(){stop(true);shared.stopPlayback('Stopped by global Stop + Red button.');if(!shared.isUp('left')&&!shared.isUp('right')){setMsg('No connected lights; cannot confirm red.');renderActive();return}
+ try{const ok=await sendColor('#ff0000');setMsg(ok?'Static red requested; verify lights':'Failed to send red. Verify lights.')}catch(e){setMsg('Red request failed: '+e.message)}renderActive()}
+async function startProfile(id){const p=profiles.find(x=>x.id===id);if(!p||!p.steps.length)return setMsg('No steps in selected profile.');if(!shared.isUp('left')&&!shared.isUp('right'))return setMsg('Connect at least one tail light first.');
+ stop(true);shared.stopPlayback('Profile playback started from Main.');const token={profileId:id,aborted:false};run=token;renderActive();setMsg((p.experimental?'TEST: ':'')+p.name+' · '+(p.repeat?'repeating':'once'));
+ try{let deadline=now(),cycles=0;do{for(let i=0;i<p.steps.length;i++){const step=p.steps[i];if(!(await sleepUntil(deadline,token)))return;const issued=now();
+ if(issued-deadline>100&&i>0)setMsg('Timing delay '+(issued-deadline).toFixed(0)+'ms on step '+(i+1));
+ if(step.type!=='wait'){
+ const ok=await serialWrite(step.type==='mode'?modeBytes(step.mode):colorBytes(step.color));if(!ok){setMsg('BLE write failed; playback stopped.');stop(true);return}
  }
- toggle.addEventListener('click',()=>{const expanded=toggle.getAttribute('aria-expanded')==='true';menu.hidden=expanded;toggle.setAttribute('aria-expanded',String(!expanded))});
- document.querySelectorAll('[data-nav-view]').forEach(b=>b.addEventListener('click',()=>show(b.getAttribute('data-nav-view'))));
- document.addEventListener('click',e=>{if(!e.target.closest('.site-nav'))closeMenu()});
- window.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
- window.addEventListener('hashchange',()=>show(location.hash==='#calibration'?'calibration':'controller'));
- if(location.hash==='#calibration')show('calibration');
+ deadline=Math.max(deadline,issued)+step.ms;
+ }cycles++;if(!p.repeat)break;}while(run===token&&!token.aborted);
+ if(run===token){stop(true);setMsg('Completed '+p.name+'; last effect may remain active.')}}catch(e){if(run===token){stop(true);setMsg('Playback failed: '+e.message)}}finally{renderActive()}
+}
+function createProfile(){const id=makeId();profiles.push({id,name:'New profile',repeat:true,experimental:false,steps:[M(4,2.20)]});selectedId=id;persist();controls();paintHome()}
+function saveEditor(){readFields();controls();paintHome();setMsg('Saved '+current().name+' to this browser')}
+function saveBackup(){const data=JSON.stringify({format:'WRX_Studio_v6',profiles,buttons,selectedId},null,2),a=document.createElement('a');const url=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.href=url;a.download='wrx_profiles_backup.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000)}
+$('studio-profile').onchange=()=>{selectedId=$('studio-profile').value;persist();controls()};
+$('studio-new').onclick=createProfile;
+$('studio-save').onclick=saveEditor;
+$('studio-preview').onclick=()=>{readFields();persist();startProfile(selectedId)};
+$('studio-duplicate').onclick=()=>{readFields();const p=structuredClone(current());p.id=makeId();p.name=(p.name+' copy').slice(0,44);profiles.push(p);selectedId=p.id;persist();controls();paintHome()};
+$('studio-delete').onclick=()=>{if(profiles.length===1)return setMsg('Keep at least one profile.');const id=selectedId;if(!confirm('Delete this profile? Assigned main buttons will be removed.'))return;profiles=profiles.filter(p=>p.id!==id);buttons=buttons.filter(b=>b.profileId!==id);selectedId=profiles[0].id;persist();controls();paintHome()};
+$('studio-reset').onclick=controls;
+$('studio-add-mode').onclick=()=>addStep(M(4,2.20));$('studio-add-color').onclick=()=>addStep(C('#0000ff',.10));$('studio-add-wait').onclick=()=>addStep(W(.10));
+function addStep(step){const p=current();if(p.steps.length>=250)return setMsg('Max 250 steps per profile.');p.steps.push(step);persist();drawSteps()}
+$('studio-add-button').onclick=()=>{readFields();buttons.push({id:makeId(),label:current().name,profileId:current().id});persist();drawButtons();paintHome()};
+$('studio-export').onclick=saveBackup;
+$('studio-import').onclick=()=>$('studio-import-file').click();
+$('studio-import-file').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.format!=='WRX_Studio_v6'||!Array.isArray(data.profiles)||!Array.isArray(data.buttons))throw Error('Invalid backup type');const ps=data.profiles.map(cleanProfile);if(!ps.length||ps.some(x=>!x)||new Set(ps.map(x=>x.id)).size!==ps.length)throw Error('Invalid profiles');const bs=data.buttons.filter(x=>typeof x?.profileId==='string'&&ps.some(p=>p.id===x.profileId)).map(x=>({id:String(x.id),label:shortText(x.label,50),profileId:x.profileId}));if(!confirm('Replace current profile library and Main buttons with this backup?'))return;stop(true);profiles=ps;buttons=bs;selectedId=ps.some(p=>p.id===data.selectedId)?data.selectedId:ps[0].id;persist();controls();paintHome();setMsg('Backup restored.')}catch(err){setMsg('Import rejected: '+err.message)}finally{e.target.value=''}};
+for(const side of ['left','right'])$('home-connect-'+side).onclick=async()=>{await shared.connect(side);refreshStatus()};
+$('global-stop').onclick=stopRed;
+$('studio-name').onchange=()=>{readFields();paintHome()};$('studio-repeat').onchange=readFields;$('studio-experimental').onchange=()=>{readFields();paintHome()};
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stop(true)});
+$('controller-view').addEventListener('click',e=>{if(e.target.closest('#play-once,#loop-selected,#play-sequence,#send-color,#solid-red'))stop(true)},true);
+window.WRXMODE={stop,refresh:()=>{refreshStatus();renderActive()},isRunning:()=>!!run};
+controls();paintHome();renderActive();setMsg('v6 ready; Main buttons and profile studio saved locally.');
+})();
+</script>
+<script>
+(()=>{'use strict';
+const menu=document.getElementById('site-menu'),toggle=document.getElementById('menu-toggle');
+const views={home:document.getElementById('home-view'),controller:document.getElementById('controller-view'),calibration:document.getElementById('calibration-view')};
+let active='home';
+function closeMenu(){menu.hidden=true;toggle.setAttribute('aria-expanded','false')}
+function show(view){if(!views[view])return;closeMenu();if(view===active)return;
+ // Any running experiment is stopped when leaving its view.
+ window.WRXMODE?.stop(true);
+ if(active==='controller')window.WRXBLE?.stopPlayback('Left Custom Testing; playback timer stopped.');
+ if(active==='calibration')window.WRXCAL?.onLeave();
+ active=view;Object.entries(views).forEach(([k,el])=>el.hidden=k!==view);
+ document.querySelectorAll('[data-nav-view]').forEach(b=>{if(b.dataset.navView===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+ if(view==='calibration')window.WRXCAL?.onEnter();else window.WRXBLE?.onEnter();window.WRXMODE?.refresh();
+ window.scrollTo(0,0);try{history.replaceState(null,'','#'+(view==='home'?'home':view==='controller'?'development':'calibration'))}catch(e){}
+}
+toggle.onclick=()=>{let expanded=toggle.getAttribute('aria-expanded')==='true';menu.hidden=expanded;toggle.setAttribute('aria-expanded',String(!expanded))};
+document.querySelectorAll('[data-nav-view]').forEach(b=>b.onclick=()=>show(b.dataset.navView));
+document.addEventListener('click',e=>{if(!e.target.closest('.site-nav'))closeMenu()});
+window.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
+window.addEventListener('hashchange',()=>{const h=location.hash;show(h==='#calibration'?'calibration':h==='#development'||h==='#controller'||h.startsWith('#dev-')?'controller':'home')});
+const initial=location.hash==='#calibration'?'calibration':location.hash==='#development'||location.hash==='#controller'||location.hash.startsWith('#dev-')?'controller':'home';if(initial!=='home')show(initial);
 })();</script></body></html>
