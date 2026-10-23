@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#0c1424"/><title>WRX Dream BLE Controller — Calibration</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#0c1424"/><title>WRX Dream BLE Controller v5 — Calibration</title><style>
 :root{color-scheme:dark;--bg:#0c1424;--panel:#182438;--line:#334159;--txt:#edf4ff;--muted:#b0bfd3;--blue:#86c5ff;--green:#5cdda5}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% -5%,#1e3655,transparent 58%),var(--bg);color:var(--txt);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}main{max-width:610px;margin:auto;padding:calc(22px + env(safe-area-inset-top)) 17px calc(30px + env(safe-area-inset-bottom))}
 h1{font-size:27px;line-height:1.15;letter-spacing:-.7px;margin:5px 0 8px}h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 9px}p{margin:7px 0 0;color:var(--muted);font-size:13px}.kicker{font-size:11px;letter-spacing:1.2px;color:var(--blue);font-weight:750;text-transform:uppercase}
@@ -80,6 +80,28 @@ input[type=text],input[type=number],select{min-width:0;width:100%;border:1px sol
 #controller-view,#calibration-view{padding-top:16px}
 #calibration-view{--text:#ecf4ff;--good:#58dca4;--warn:#f5bf6d;max-width:760px;color:var(--text)}
 #calibration-view .return-nav{background:#263f60;border:1px solid #507aa8;padding:10px 12px;min-height:42px}
+
+/* v5 timeline and playlist */
+.calib-chip{font-size:11px;color:#acd9ff;background:#183b5a;border:1px solid #3d7299;border-radius:9px;padding:4px 8px;white-space:nowrap}
+.seq-item{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #34465f}
+.seq-item .seq-detail{flex:1;min-width:0}.seq-item strong{display:block;font-size:13px;overflow-wrap:anywhere}.seq-item small{font-size:11px;color:var(--muted)}
+.seq-item button{padding:7px 9px;min-height:38px;font-size:13px;flex-shrink:0}
+.timing-line{height:16px;display:flex;border-radius:7px;overflow:hidden;margin-top:10px;background:#263851}
+.timing-segment{height:100%;min-width:2px;border-right:2px solid #101b2d}
+.sequence-tools{display:flex;gap:8px;align-items:end}.sequence-tools .field{flex:1;min-width:0}.sequence-tools>button{flex-shrink:0}
+.smalltext{font-size:12px;color:var(--muted)}
+@media(max-width:390px){.seq-item button{padding:7px;min-width:35px}.sequence-tools{flex-wrap:wrap}}
+
+/* v5 timeline and playlist */
+.calib-chip{font-size:11px;color:#acd9ff;background:#183b5a;border:1px solid #3d7299;border-radius:9px;padding:4px 8px;white-space:nowrap}
+.seq-item{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #34465f}
+.seq-item .seq-detail{flex:1;min-width:0}.seq-item strong{display:block;font-size:13px;overflow-wrap:anywhere}.seq-item small{font-size:11px;color:var(--muted)}
+.seq-item button{padding:7px 9px;min-height:38px;font-size:13px;flex-shrink:0}
+.timing-line{height:16px;display:flex;border-radius:7px;overflow:hidden;margin-top:10px;background:#263851}
+.timing-segment{height:100%;min-width:2px;border-right:2px solid #101b2d}
+.sequence-tools{display:flex;gap:8px;align-items:end}.sequence-tools .field{flex:1;min-width:0}.sequence-tools>button{flex-shrink:0}
+.smalltext{font-size:12px;color:var(--muted)}
+@media(max-width:390px){.seq-item button{padding:7px;min-width:35px}.sequence-tools{flex-wrap:wrap}}
 </style></head><body><header class="site-nav">
   <span class="brand">WRX Dream BLE</span>
   <button id="menu-toggle" class="site-menu-btn" type="button" aria-label="Open navigation" aria-controls="site-menu" aria-expanded="false">☰</button>
@@ -89,56 +111,65 @@ input[type=text],input[type=number],select{min-width:0;width:100%;border:1px sol
   </nav>
 </header><main id="controller-view">
 <div class="kicker">Subaru WRX · Parked-only Bluetooth lab</div>
-<h1>Dream BLE Lab <span style="font-size:12px;color:#aab9cf">v4 · Timed sequencer</span></h1>
-<p>Ten saved favorites, each with an independent full-play duration and optional early-cut duration. Bluetooth commands go directly to your Dream controllers.</p>
-<div class="note"><strong>For parked testing only.</strong> This controller does not measure actual animation completion; “Finish” uses your saved estimated duration. Browser timer jitter and Bluetooth delays can affect transitions. Keep factory brake/turn/reverse functions untouched. Stop playback and restore normal legal lighting before driving.</div>
+<h1>Dream BLE Lab <span style="font-size:12px;color:#aab9cf">v5 · Calibrated sequencer</span></h1>
+<p>Ten saved favorites, calibrated timing defaults, individually timed transitions, named playlists, and live control of both Dream BLE modules.</p>
+<div class="note"><strong>For parked testing only.</strong> Playback times are video-derived estimates, not firmware completion signals. An internal-looping factory effect may continue after the browser stops scheduling; <strong>Stop + solid red</strong> sends a solid-color request. This page is not a safety lighting controller. Restore and verify factory lights before driving.</div>
 <section class="panel">
 <div class="sectionhead"><h2>Bluetooth connections</h2><span class="pill" id="support">Checking</span></div>
 <div class="device"><div><strong>Left tail light</strong><div class="status" id="left-status"><i class="dot"></i>Dream-CF4B · Disconnected</div></div><button id="connect-left" type="button">Connect</button></div>
 <div class="device"><div><strong>Right tail light</strong><div class="status" id="right-status"><i class="dot"></i>Dream-A90F · Disconnected</div></div><button id="connect-right" type="button">Connect</button></div>
-<p>Connect each controller separately. The webpage transmits to both near-simultaneously.</p>
+<p>Bluetooth writes are dispatched to both devices as closely together as the browser permits. Connections are shared with Calibration Mode.</p>
 </section>
 <section class="panel">
 <div class="sectionhead"><h2>My 10 favorites</h2><span class="pill" id="selected-label">Mode 4</span></div>
-<p>Saved names, modes, and timing settings persist in this browser. Existing v3 favorites are imported automatically on first launch.</p>
+<p>Favorites and timing settings are saved locally. Existing v3/v4 names and manual timings are retained when present.</p>
 <div class="presets" id="preset-grid"></div>
-<div class="divider"></div>
-<h3>Edit selected favorite</h3>
+<div class="divider"></div><h3>Edit selected favorite</h3>
 <div class="twocol">
 <div class="field" style="margin-top:0"><label for="preset-name">Favorite name</label><input id="preset-name" maxlength="28" type="text"/></div>
 <div class="field" style="margin-top:0"><label for="preset-mode">Factory mode (1–256)</label><input id="preset-mode" inputmode="numeric" max="256" min="1" step="1" type="number"/></div>
 </div>
-<div class="field"><label for="preset-transition">Transition behavior</label><select id="preset-transition"><option value="finish">Finish — wait for estimated duration</option><option value="cut">Cut — switch early at selected time</option></select></div>
+<div class="field"><label for="preset-behavior">Mode behavior</label><select id="preset-behavior"><option value="oneshot">One-pass / returns to static</option><option value="continuous">Factory internally loops</option><option value="unknown">Unknown / not calibrated</option></select></div>
+<div class="field"><label for="preset-transition">Sequence transition</label><select id="preset-transition"><option value="finish">Finish — use estimated full duration</option><option value="cut">Cut — switch at specified time</option></select></div>
 <div class="twocol">
-<div class="field"><label for="preset-full">Full duration (seconds)</label><input id="preset-full" inputmode="decimal" max="60" min="0.05" step="0.05" type="number"/><span class="hint">Estimate full animation length</span></div>
-<div class="field" id="cut-field"><label for="preset-cut">Cut at (seconds)</label><input id="preset-cut" inputmode="decimal" max="60" min="0.05" step="0.05" type="number"/><span class="hint">Must be less than full duration</span></div>
+<div class="field"><label for="preset-full">Full duration / cycle (seconds)</label><input id="preset-full" inputmode="decimal" min="0.05" max="60" step="0.05" type="number"/><span class="hint">One pass or estimated loop cycle; 0.05 s steps</span></div>
+<div class="field" id="cut-field"><label for="preset-cut">Cut at (seconds)</label><input id="preset-cut" inputmode="decimal" min="0.05" max="60" step="0.05" type="number"/><span class="hint">Must be shorter than full duration</span></div>
 </div>
-<div class="actions" style="margin-top:15px"><button class="primary" id="save-preset" type="button">Save favorite + timing</button><button disabled="" id="play-once" type="button">Play selected once</button></div>
-<p>Timing adjusts in 0.05-second increments. “Finish” cannot detect the actual end of an animation; calibrate duration from observation. A same-mode command may not immediately interrupt a running effect.</p>
+<div class="sectionhead" style="margin-top:14px"><span id="calibration-note" class="smalltext">Mode not calibrated</span><button id="use-calibration" type="button">Use measured timing</button></div>
+<div class="actions" style="margin-top:15px"><button class="primary" id="save-preset" type="button">Save favorite + timing</button><button id="play-once" disabled type="button">Play selected once</button></div>
+<p>“Finish” waits your entered time; it does not detect completion. Changing to a different factory mode can interrupt the current animation. Resending the same mode may not interrupt it.</p>
 </section>
 <section class="panel">
 <div class="sectionhead"><h2>Playback</h2><span class="pill" id="loop-status">Stopped</span></div>
-<div class="field"><label for="repeat-count">Repeat complete playlist</label><select id="repeat-count"><option value="forever">Until stopped</option><option value="1">1 time</option><option value="2">2 times</option><option value="5">5 times</option><option value="10">10 times</option><option value="20">20 times</option><option value="100">100 times</option></select></div>
-<div class="actions" style="margin-top:12px"><button class="primary" disabled="" id="loop-selected" type="button">Loop selected</button><button class="danger" disabled="" id="loop-stop" type="button">Stop playback</button></div>
-<p class="metric" id="now-playing" style="margin-top:12px">No active animation.</p>
+<div class="field"><label for="repeat-count">Repeat selected / playlist</label><select id="repeat-count"><option value="forever">Until stopped</option><option value="1">1 time</option><option value="2">2 times</option><option value="5">5 times</option><option value="10">10 times</option><option value="20">20 times</option><option value="100">100 times</option></select></div>
+<div class="actions" style="margin-top:12px"><button class="primary" disabled id="loop-selected" type="button">Loop selected</button><button class="danger" disabled id="loop-stop" type="button">Stop + solid red</button></div>
+<p class="metric" id="now-playing">No active animation.</p>
 <p class="metric" id="count-label">Sends: 0 · Steps: 0 · Late: 0</p>
 <p class="metric" id="debug-label">BLE transport: Not connected</p>
+<p class="hint">For a single internally-looping mode, “Until stopped” sends it once and leaves it running on the controller. For one-pass modes, the scheduler retriggers at your entered full duration (plus a small same-mode guard).</p>
 </section>
 <section class="panel">
-<h2>Custom sequence</h2>
-<p>Choose the favorites to play in order. Each uses its own saved finish or cut timing instead of a single global interval.</p>
-<div class="checks" id="sequence-options" style="margin-top:13px"></div>
-<div class="actions" style="margin-top:13px"><button class="primary" disabled="" id="play-sequence" type="button">Play sequence</button><button id="clear-sequence" type="button">Clear selections</button></div>
-<div class="divider"></div><h3>Timing preview</h3><div id="sequence-preview"></div>
-<p>The schedule is based on command start times, not confirmation that LEDs have finished. Bluetooth packets may arrive slightly apart on the two controllers.</p>
+<div class="sectionhead"><h2>Custom sequences</h2><span class="pill" id="sequence-total">0 steps</span></div>
+<p>Create a playlist using your favorite slots. Dragging isn't required: use the up/down buttons to order steps. Playlists are saved in this browser and use your current favorite timing settings.</p>
+<div class="field"><label for="saved-sequence">Saved playlist</label><select id="saved-sequence"><option value="">Unsaved playlist</option></select></div>
+<div class="sequence-tools" style="margin-top:10px">
+<div class="field" style="margin-top:0"><label for="sequence-name">Playlist name</label><input id="sequence-name" type="text" maxlength="36" placeholder="My chase sequence"/></div>
+<button id="save-sequence" class="primary" type="button">Save</button>
+</div>
+<div class="actions" style="margin-top:10px"><button id="new-sequence" type="button">New blank playlist</button><button id="delete-sequence" type="button">Delete saved playlist</button></div>
+<div class="divider"></div>
+<div class="sequence-tools"><div class="field" style="margin-top:0"><label for="step-favorite">Add a favorite</label><select id="step-favorite"></select></div><button type="button" id="add-step" class="primary">Add step</button></div>
+<div id="sequence-steps" style="margin-top:10px"></div>
+<div class="divider"></div><h3>Planned timeline</h3><div id="sequence-preview"></div>
+<div id="timeline-bar" class="timing-line" aria-label="Sequence timeline"></div>
+<div class="actions" style="margin-top:14px"><button class="primary" id="play-sequence" disabled type="button">Play sequence</button><button id="clear-sequence" type="button">Clear steps</button></div>
+<p class="hint">Transitions are scheduled from command start times. Early cuts work when the following mode differs; consecutive identical modes cannot be forced to interrupt their current effect. Internal-looping modes are not redundantly retriggered.</p>
 </section>
-<section class="panel"><h2>Static RGB</h2>
-<div class="color-row"><label for="color">Choose a color</label><input id="color" type="color" value="#0000ff"/></div>
-<div class="actions"><button disabled="" id="send-color" type="button">Apply color</button><button disabled="" id="solid-red" type="button">Set solid red</button></div>
-<p>Sending a static color stops the page's sequence and requests the selected color. Previously selected color is used by compatible chase modes.</p>
-</section>
-<section class="panel"><div class="sectionhead"><h2>Activity</h2><button id="clear-log" type="button">Clear</button></div><div aria-live="polite" class="log" id="log" role="log">Ready.</div></section>
-<p style="margin:18px 0"><small>FFD5 / FFD9 · Verified Mode 4: 9E0003819800E9 · Other modes use inferred mode-minus-one encoding. Settings stored on this device only. No background looping.</small></p>
+<section class="panel"><h2>Static RGB</h2><div class="color-row"><label for="color">Choose a color</label><input id="color" type="color" value="#0000ff"/></div>
+<div class="actions"><button disabled id="send-color" type="button">Apply color</button><button disabled id="solid-red" type="button">Set solid red</button></div>
+<p>Sending static RGB changes the supplemental effect. It does not replace or manage factory brake, turn, or reverse functions.</p></section>
+<section class="panel"><div class="sectionhead"><h2>Activity</h2><button type="button" id="clear-log">Clear</button></div><div class="log" id="log" role="log" aria-live="polite">Ready.</div></section>
+<p style="margin:18px 0"><small>FFD5 / FFD9 · Verified chase command 9E0003819800E9 · Mode values use observed mode-minus-one encoding. Timing is approximate and browser foreground-only. Local storage is browser-specific.</small></p>
 </main>
 <main hidden="" id="calibration-view">
 <div class="topline"><span class="eyebrow">WRX · Dream BLE Lab</span><button class="return-nav" data-nav-view="controller" type="button">Main controller</button></div>
@@ -201,123 +232,145 @@ input[type=text],input[type=number],select{min-width:0;width:100%;border:1px sol
 </main>
 <script>
 (()=>{'use strict';
-const SERVICE='0000ffd5-0000-1000-8000-00805f9b34fb', WRITE_CHAR='0000ffd9-0000-1000-8000-00805f9b34fb';
-const names={left:'Dream-CF4B',right:'Dream-A90F'}, conn={left:null,right:null};
-const $=id=>document.getElementById(id), storageKey='wrx-dream-presets-v4';
-const defaults=[{name:'Chase',mode:4,include:true},{name:'Rainbow',mode:255,include:false},{name:'Favorite 3',mode:1,include:false},{name:'Favorite 4',mode:2,include:false},{name:'Favorite 5',mode:3,include:false},{name:'Favorite 6',mode:5,include:false},{name:'Favorite 7',mode:6,include:false},{name:'Favorite 8',mode:7,include:false},{name:'Favorite 9',mode:8,include:false},{name:'Favorite 10',mode:9,include:false}];
-const validMode=n=>Number.isInteger(n)&&n>=1&&n<=256;
-function validDuration(ms){return Number.isInteger(ms)&&ms>=50&&ms<=60000&&ms%50===0}
-function sanitize(p,d){
- const mode=Number(p?.mode),fullMs=Number(p?.fullMs),cutMs=Number(p?.cutMs);
- const full=validDuration(fullMs)?fullMs:3000;
- const cut=validDuration(cutMs)?cutMs:Math.min(1250,Math.max(50,full-50));
- return {name:(typeof p?.name==='string'&&p.name.trim()?p.name.trim().slice(0,28):d.name),mode:validMode(mode)?mode:d.mode,include:typeof p?.include==='boolean'?p.include:d.include,fullMs:full,cutMs:cut,transition:p?.transition==='cut'?'cut':'finish'};
+const SERVICE='0000ffd5-0000-1000-8000-00805f9b34fb';
+const WRITE_CHAR='0000ffd9-0000-1000-8000-00805f9b34fb';
+const $=id=>document.getElementById(id),names={left:'Dream-CF4B',right:'Dream-A90F'},conn={left:null,right:null};
+const KEY='wrx-dream-presets-v5',PLKEY='wrx-dream-playlists-v5';
+const CAL={3:{ms:2250,kind:'oneshot',note:'~2.25s one-pass (video estimate)'},4:{ms:2200,kind:'oneshot',note:'~2.20s chase (video estimate)'},5:{ms:4100,kind:'continuous',note:'~4.10s cycle, internally looping (estimate)'},6:{ms:4000,kind:'continuous',note:'~4.00s cycle, internally looping (estimate)'},7:{ms:3500,kind:'oneshot',note:'~3.50s overlap (estimate)'},8:{ms:3500,kind:'oneshot',note:'~3.50s reverse overlap (estimate)'},9:{ms:500,kind:'continuous',note:'~0.50s flash pulse (estimate)'},255:{ms:4000,kind:'continuous',note:'Internally-looping rainbow; 4.00s illustrative dwell, not measured'}};
+const starter=[{name:'Chase',mode:4},{name:'Rainbow Chase',mode:3},{name:'Overlap',mode:7},{name:'Overlap Reverse',mode:8},{name:'Rainbow',mode:5},{name:'Effect 6',mode:6},{name:'Flash',mode:9},{name:'Favorite 8',mode:2},{name:'Mode 255 Rainbow',mode:255},{name:'Favorite 10',mode:1}];
+const goodMode=n=>Number.isInteger(n)&&n>=1&&n<=256;
+const goodMs=n=>Number.isInteger(n)&&n>=50&&n<=60000&&n%50===0;
+const round50=n=>Math.round(n/50)*50;
+const formatSec=ms=>(ms/1000).toFixed(2)+'s';
+function fallback(p){const m=CAL[p.mode],fullMs=m?.ms||3000;return {...p,kind:m?.kind||'unknown',fullMs,cutMs:Math.max(50,Math.min(round50(fullMs*.65),fullMs-50)),transition:'finish'};}
+const defaults=starter.map(fallback);
+function cleanPreset(o,d,legacy=false){const mode=Number(o?.mode),num=goodMode(mode)?mode:d.mode,m=CAL[num];
+ const name=typeof o?.name==='string'&&o.name.trim()?o.name.trim().slice(0,28):d.name;
+ let fullMs=Number(o?.fullMs),cutMs=Number(o?.cutMs);
+ // v4's untouched 3.00s initial placeholders get calibrated; preserve other v4 manual durations.
+ if(legacy&&fullMs===3000&&cutMs===1250&&o?.transition==='finish'&&m)fullMs=m.ms;
+ if(!goodMs(fullMs))fullMs=m?.ms||3000;
+ if(!goodMs(cutMs)||cutMs>=fullMs)cutMs=Math.max(50,Math.min(round50(fullMs*.65),fullMs-50));
+ let kind=['oneshot','continuous','unknown'].includes(o?.kind)?o.kind:(m?.kind||'unknown');
+ return {name,mode:num,kind,fullMs,cutMs,transition:o?.transition==='cut'?'cut':'finish'};
 }
-let presets=defaults.map(d=>sanitize(d,d));let selected=0;
-try{
- const raw=JSON.parse(localStorage.getItem(storageKey)||'null');
- if(raw&&Array.isArray(raw.presets)&&raw.presets.length===10){presets=raw.presets.map((p,i)=>sanitize(p,defaults[i]));if(Number.isInteger(raw.selected)&&raw.selected>=0&&raw.selected<10)selected=raw.selected}
- else {const legacy=JSON.parse(localStorage.getItem('wrx-dream-presets-v3')||'null');if(Array.isArray(legacy)&&legacy.length===10)presets=legacy.map((p,i)=>sanitize(p,defaults[i]));}
+let presets=defaults.map(p=>({...p})),selected=0;
+try{const raw=JSON.parse(localStorage.getItem(KEY)||'null');
+ if(raw&&Array.isArray(raw.presets)&&raw.presets.length===10){presets=raw.presets.map((p,i)=>cleanPreset(p,defaults[i]));if(Number.isInteger(raw.selected)&&raw.selected>=0&&raw.selected<10)selected=raw.selected;}
+ else {const v4=JSON.parse(localStorage.getItem('wrx-dream-presets-v4')||'null');
+ if(v4&&Array.isArray(v4.presets)&&v4.presets.length===10){presets=v4.presets.map((p,i)=>cleanPreset(p,defaults[i],true));if(Number.isInteger(v4.selected)&&v4.selected>=0&&v4.selected<10)selected=v4.selected;}
+ else {const v3=JSON.parse(localStorage.getItem('wrx-dream-presets-v3')||'null');if(Array.isArray(v3)&&v3.length===10)presets=v3.map((p,i)=>cleanPreset(p,defaults[i]));}
+ }
 }catch(e){}
-function persist(){try{localStorage.setItem(storageKey,JSON.stringify({presets,selected}))}catch(e){log('Storage unavailable: settings may not survive closing the browser.')}}
-let run=null,timer=null,busy=false,writeSince=0,done=0,steps=0,late=0,lastTransport='Not connected';
-const duration=p=>p.transition==='cut'?p.cutMs:p.fullMs;
-const modeBytes=mode=>Uint8Array.from([0x9e,0x00,mode-1,0x81,0x98,0x00,0xe9]);
-const fmt=bytes=>Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
-const sec=ms=>(ms/1000).toFixed(2)+'s';
-function log(t){const time=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});const node=$('log');let old=node.textContent==='Ready.'?'':node.textContent;node.textContent=`${time} · ${t}\n${old}`.slice(0,3500)}
-function isUp(side){return Boolean(conn[side]?.device?.gatt?.connected&&conn[side]?.characteristic)}
-function renderPresets(){
- $('preset-grid').replaceChildren();$('sequence-options').replaceChildren();
- presets.forEach((p,i)=>{
-  const b=document.createElement('button');b.type='button';b.className='preset'+(i===selected?' selected':'');b.setAttribute('aria-pressed',i===selected?'true':'false');
-  const strong=document.createElement('strong');strong.textContent=`${i+1}. ${p.name}`;const small=document.createElement('small');small.textContent=`Mode ${p.mode} · ${p.transition==='cut'?'Cut '+sec(p.cutMs):'Finish ~'+sec(p.fullMs)}`;b.append(strong,small);b.addEventListener('click',()=>choose(i));$('preset-grid').append(b);
-  const label=document.createElement('label');label.className='check';const check=document.createElement('input');check.type='checkbox';check.checked=p.include;check.addEventListener('change',()=>{presets[i].include=check.checked;persist();renderPreview()});const span=document.createElement('span');span.textContent=p.name;label.append(check,span);$('sequence-options').append(label);
- });
- const p=presets[selected];$('selected-label').textContent=`Mode ${p.mode}`;$('preset-name').value=p.name;$('preset-mode').value=p.mode;
- $('preset-transition').value=p.transition;$('preset-full').value=(p.fullMs/1000).toFixed(2);$('preset-cut').value=(p.cutMs/1000).toFixed(2);showCut();renderPreview();
+function savePresets(){try{localStorage.setItem(KEY,JSON.stringify({presets,selected}))}catch(e){log('Local storage unavailable; preset changes may not persist.')}}
+let playlists=[],activePlaylist='',seqSteps=[];
+try{const o=JSON.parse(localStorage.getItem(PLKEY)||'null');if(o&&Array.isArray(o.items)){playlists=o.items.filter(p=>p&&typeof p.id==='string'&&Array.isArray(p.steps)).slice(0,30).map(p=>({id:p.id,name:String(p.name||'Playlist').slice(0,36),steps:p.steps.filter(i=>Number.isInteger(i)&&i>=0&&i<10).slice(0,50)}));activePlaylist=playlists.some(p=>p.id===o.active)?o.active:'';seqSteps=(activePlaylist?playlists.find(p=>p.id===activePlaylist)?.steps: (Array.isArray(o.steps)?o.steps:[]))?.slice()||[];}}
+catch(e){}
+if(!playlists.length&&!seqSteps.length){try{const p=JSON.parse(localStorage.getItem('wrx-dream-presets-v4')||'null');if(p?.presets)seqSteps=p.presets.flatMap((v,i)=>v.include?[i]:[])}catch(e){}}
+if(!seqSteps.length&&!playlists.length)seqSteps=[0,2,1];
+function savePlaylists(){try{localStorage.setItem(PLKEY,JSON.stringify({items:playlists,active:activePlaylist,steps:seqSteps}))}catch(e){log('Could not save playlists.')}}
+function log(msg){const s=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'}),node=$('log');node.textContent=`${s} · ${msg}\n${node.textContent==='Ready.'?'':node.textContent}`.slice(0,5000)}
+function isUp(side){return Boolean(conn[side]?.device?.gatt?.connected&&conn[side]?.char)}
+const modeBytes=m=>Uint8Array.from([0x9e,0x00,m-1,0x81,0x98,0x00,0xe9]);
+const hex=b=>Array.from(b,v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();
+function kindLabel(k){return k==='continuous'?'Internal loop':k==='oneshot'?'One pass':'Uncalibrated'}
+function displayPresets(){
+ const grid=$('preset-grid');grid.replaceChildren();presets.forEach((p,i)=>{const b=document.createElement('button');b.type='button';b.className='preset'+(i===selected?' selected':'');b.setAttribute('aria-pressed',String(i===selected));
+ const st=document.createElement('strong');st.textContent=`${i+1}. ${p.name}`;const sm=document.createElement('small');sm.textContent=`Mode ${p.mode} · ${formatSec(p.fullMs)} · ${kindLabel(p.kind)}`;b.append(st,sm);b.onclick=()=>{selected=i;savePresets();displayPresets();log(`Selected ${p.name}.`)};grid.append(b)});
+ const p=presets[selected];$('selected-label').textContent='Mode '+p.mode;$('preset-name').value=p.name;$('preset-mode').value=p.mode;$('preset-behavior').value=p.kind;$('preset-transition').value=p.transition;$('preset-full').value=(p.fullMs/1000).toFixed(2);$('preset-cut').value=(p.cutMs/1000).toFixed(2);showCut();displayCalibration();renderPlaylist();
 }
-function choose(i){selected=i;persist();renderPresets();log(`Selected ${presets[i].name} (Mode ${presets[i].mode}).`)}
+function displayCalibration(){const mode=Number($('preset-mode').value),c=CAL[mode];$('calibration-note').textContent=c?c.note:'No verified video-derived duration for this mode';$('use-calibration').disabled=!c}
 function showCut(){$('cut-field').classList.toggle('hidden',$('preset-transition').value!=='cut')}
-function renderPreview(){const parent=$('sequence-preview');parent.replaceChildren();const queue=presets.filter(p=>p.include);if(!queue.length){const p=document.createElement('p');p.textContent='No favorites checked.';parent.append(p);return}let ms=0;queue.forEach(p=>{const d=duration(p),r=document.createElement('div');r.className='seqline';const l=document.createElement('span');l.textContent=p.name+' · Mode '+p.mode;const right=document.createElement('small');right.textContent=`${sec(ms)} → ${sec(ms+d)} (${p.transition==='cut'?'cut':'finish'})`;r.append(l,right);parent.append(r);ms+=d});const p=document.createElement('p');p.textContent=`Full sequence cycle: ${sec(ms)} (estimated).`;parent.append(p)}
-function refresh(){for(const side of ['left','right']){const is=isUp(side),node=$(side+'-status');node.replaceChildren();const dot=document.createElement('i');dot.className='dot'+(is?' on':'');node.append(dot,document.createTextNode(names[side]+' · '+(is?'Connected':'Disconnected')));$('connect-'+side).textContent=is?'Disconnect':'Connect'}const any=isUp('left')||isUp('right');for(const id of ['play-once','send-color','solid-red','loop-selected','play-sequence'])$(id).disabled=!any||!!run;$('loop-stop').disabled=!run;$('loop-status').textContent=run?'Playing':'Stopped';$('count-label').textContent=`Sends: ${done} · Steps: ${steps} · Late: ${late}`;$('debug-label').textContent=`BLE transport: ${lastTransport}`+(busy?' · write pending':'');if(!run)$('now-playing').textContent='No active animation.'}
-function stopPlayback(reason){run=null;if(timer!==null){clearTimeout(timer);timer=null}refresh();if(reason)log(reason)}
-async function connect(side){
- if(!navigator.bluetooth){log('Web Bluetooth unavailable. Use Android Chrome or iPhone Bluefy via HTTPS.');return}
- if(isUp(side)){const old=conn[side];conn[side]=null;if(old?.device?.gatt?.connected)old.device.gatt.disconnect();stopPlayback(`${names[side]} disconnected.`);window.WRXCAL?.onDisconnect(side);return}
- try{
-  const device=await navigator.bluetooth.requestDevice({filters:[{namePrefix:'Dream'}],optionalServices:[SERVICE]});
-  if(device.name!==names[side]){log(`Selected ${device.name||'unnamed'}; expected ${names[side]}.`);return}
-  if(Object.values(conn).some(c=>c?.device?.id===device.id)){log('That device is assigned to the other light.');return}
-  device.addEventListener('gattserverdisconnected',()=>{if(conn[side]?.device?.id===device.id){conn[side]=null;stopPlayback(`${names[side]} disconnected; playback halted.`);window.WRXCAL?.onDisconnect(side)}});
-  const server=await device.gatt.connect(),service=await server.getPrimaryService(SERVICE),characteristic=await service.getCharacteristic(WRITE_CHAR);
-  conn[side]={device,characteristic};log(`${device.name} connected. No-response: ${characteristic.properties?.writeWithoutResponse}.`);
- }catch(e){log(`Connection failed: ${e?.message||e}`)}finally{refresh()}
+function validFields(){const name=$('preset-name').value.trim().slice(0,28),mode=Number($('preset-mode').value),f=Number($('preset-full').value),c=Number($('preset-cut').value),fullMs=Math.round(f*1000),cutMs=Math.round(c*1000),transition=$('preset-transition').value,kind=$('preset-behavior').value;
+ if(!name||!goodMode(mode)||!goodMs(fullMs)||Math.abs(fullMs-f*1000)>0.0001||!['oneshot','continuous','unknown'].includes(kind)|| (transition==='cut'&&(!goodMs(cutMs)||cutMs>=fullMs||Math.abs(cutMs-c*1000)>0.0001))){log('Invalid favorite: use mode 1–256, duration 0.05–60.00s in 0.05s increments, and a cut shorter than full duration.');return null}
+ return {name,mode,fullMs,cutMs:(goodMs(cutMs)&&cutMs<fullMs)?cutMs:Math.max(50,fullMs-50),kind,transition:transition==='cut'?'cut':'finish'};
 }
-async function write(c,b){
- if(c.properties?.writeWithoutResponse!==false&&typeof c.writeValueWithoutResponse==='function'){lastTransport='Write without response';return c.writeValueWithoutResponse(b)}
- if(typeof c.writeValueWithResponse==='function'){lastTransport='Write with response';return c.writeValueWithResponse(b)}
- if(typeof c.writeValue==='function'){lastTransport='Legacy writeValue';return c.writeValue(b)}
- throw Error('No compatible GATT write method');
+function duration(item,nextMode,forSingle){if(forSingle){if(item.kind==='continuous')return item.fullMs;return item.fullMs+100;}
+ if(item.transition==='cut'&&nextMode!==item.mode)return item.cutMs;
+ if(item.transition==='cut'&&nextMode===item.mode)return item.fullMs+100;
+ return item.fullMs;
 }
-async function send(b,silent=false){const active=['left','right'].filter(isUp);if(!active.length){stopPlayback('No connected controllers.');return false}
- const result=await Promise.allSettled(active.map(side=>write(conn[side].characteristic,b)));
- const errors=result.map((v,i)=>v.status==='rejected'?`${names[active[i]]}: ${v.reason?.message||v.reason}`:null).filter(Boolean);
- if(errors.length){stopPlayback('BLE write failed.');log(errors.join(' | '));return false}
- if(!silent)log(`Sent ${fmt(b)} to ${active.join(' + ')}.`);return true;
+function draft(){return seqSteps.map(i=>({...presets[i],source:i}));}
+function renderPlaylist(){const sel=$('saved-sequence'),prev=activePlaylist;sel.replaceChildren();const o=document.createElement('option');o.value='';o.textContent='Unsaved playlist';sel.append(o);playlists.forEach(p=>{const option=document.createElement('option');option.value=p.id;option.textContent=p.name;sel.append(option)});sel.value=playlists.some(p=>p.id===prev)?prev:'';
+ const addSel=$('step-favorite'),previous=addSel.value;addSel.replaceChildren();presets.forEach((p,i)=>{let o=document.createElement('option');o.value=String(i);o.textContent=`${i+1}. ${p.name} (Mode ${p.mode})`;addSel.append(o)});addSel.value=/^\d+$/.test(previous)&&+previous<10?previous:'0';
+ const parent=$('sequence-steps');parent.replaceChildren();seqSteps.forEach((idx,pos)=>{const p=presets[idx],line=document.createElement('div');line.className='seq-item';let body=document.createElement('div');body.className='seq-detail';const strong=document.createElement('strong');strong.textContent=`${pos+1}. ${p.name}`;const sm=document.createElement('small');sm.textContent=`Mode ${p.mode} · ${kindLabel(p.kind)} · ${p.transition==='cut'?'cut':'finish'}`;body.append(strong,sm);line.append(body);
+ const btn=(title,symbol,fn,disabled)=>{let b=document.createElement('button');b.type='button';b.textContent=symbol;b.setAttribute('aria-label',title);b.title=title;b.disabled=disabled;b.addEventListener('click',fn);line.append(b)};
+ btn('Move step up','↑',()=>{[seqSteps[pos-1],seqSteps[pos]]=[seqSteps[pos],seqSteps[pos-1]];changedSequence()},pos===0);
+ btn('Move step down','↓',()=>{[seqSteps[pos+1],seqSteps[pos]]=[seqSteps[pos],seqSteps[pos+1]];changedSequence()},pos===seqSteps.length-1);
+ btn('Remove step','×',()=>{seqSteps.splice(pos,1);changedSequence()},false);parent.append(line)});
+ if(!seqSteps.length){const p=document.createElement('p');p.textContent='No steps. Add a favorite to build a playlist.';parent.append(p)}
+ const queue=draft(),preview=$('sequence-preview'),bar=$('timeline-bar');preview.replaceChildren();bar.replaceChildren();let total=0;
+ queue.forEach((p,i)=>{const next=queue[(i+1)%queue.length],ms=duration(p,next?.mode??-1,false),line=document.createElement('div');line.className='seqline';const a=document.createElement('span');a.textContent=`${i+1}. ${p.name}`;const b=document.createElement('small');b.textContent=`${formatSec(total)} → ${formatSec(total+ms)}${p.transition==='cut'&&next?.mode===p.mode?' · same-mode guard':''}`;line.append(a,b);preview.append(line);total+=ms});
+ queue.forEach((p,i)=>{const n=queue[(i+1)%queue.length],span=document.createElement('div');span.className='timing-segment';const colors=['#2b83d3','#6f6bdf','#2e9d9f','#b581c9','#3b7eaa'];span.style.background=colors[i%colors.length];span.style.width=total?(duration(p,n?.mode??-1,false)/total*100).toFixed(4)+'%':'0%';span.title=p.name;bar.append(span)});
+ $('sequence-total').textContent=`${seqSteps.length} steps`;const p=document.createElement('p');p.textContent=`Estimated cycle: ${formatSec(total)}. Factory continuous modes remain running until another mode or color is selected.`;preview.append(p);
+ $('delete-sequence').disabled=!activePlaylist;renderButtons();
 }
-async function playOnce(){if(busy){log('Bluetooth is busy.');return}stopPlayback();busy=true;writeSince=performance.now();refresh();try{if(await send(modeBytes(presets[selected].mode))){done++;log(`${presets[selected].name} triggered once.`)}}catch(e){log('Send error: '+(e?.message||e))}finally{busy=false;refresh()}}
-function start(type){if(run||busy)return;if(!isUp('left')&&!isUp('right')){log('Connect a device first.');return}
- const queue=type==='single'?[{...presets[selected]}]:presets.filter(p=>p.include).map(p=>({...p}));if(!queue.length){log('Check at least one favorite.');return}
- const selectedRepeat=$('repeat-count').value,cycleCount=selectedRepeat==='forever'?Infinity:Number(selectedRepeat);
- if(!(cycleCount===Infinity||(Number.isInteger(cycleCount)&&cycleCount>=1)))return;
- run={queue,total:cycleCount===Infinity?Infinity:cycleCount*queue.length,step:0,nextTime:performance.now(),type};done=0;steps=0;late=0;refresh();
- log(`${type==='single'?'Favorite loop':'Custom sequence'} started: ${queue.map(p=>p.name).join(' → ')}. ${selectedRepeat==='forever'?'Until stopped':cycleCount+' cycle(s)'}.`);tick(run);
+function changedSequence(){activePlaylist='';$('sequence-name').value='';savePlaylists();renderPlaylist()}
+function updatePlaylistSelection(){const id=$('saved-sequence').value;activePlaylist=id;const p=playlists.find(p=>p.id===id);if(p){seqSteps=p.steps.slice();$('sequence-name').value=p.name}else{$('sequence-name').value='';}savePlaylists();renderPlaylist()}
+let playing=null,timer=null,busy=false,writeStarted=0,done=0,steps=0,late=0,lastTransport='Not connected';
+function renderButtons(){const isAny=isUp('left')||isUp('right');for(const id of ['play-once','send-color','solid-red','loop-selected'])$(id).disabled=!isAny||Boolean(playing)||busy;
+ $('play-sequence').disabled=!isAny||Boolean(playing)||busy||!seqSteps.length;$('loop-stop').disabled=!playing&&!busy;
+ $('loop-status').textContent=playing?(playing.internal?'Internal loop':'Playing'):'Stopped';$('count-label').textContent=`Sends: ${done} · Steps: ${steps} · Late: ${late}`;
+ $('debug-label').textContent=`BLE transport: ${lastTransport}${busy?' · write pending':''}`;
 }
-// Each next step is scheduled from a monotonic target time, independently of BLE acknowledgements.
-// Timing refers to issuing a command, NOT receiving a firmware animation-completed callback.
-async function tick(session){if(run!==session)return;
- if(busy){late++;if(performance.now()-writeSince>6000){stopPlayback('BLE write stalled for more than 6 seconds.');return}timer=setTimeout(()=>tick(session),50);refresh();return}
- const item=session.queue[session.step%session.queue.length],durationMs=duration(item),startTime=performance.now();
- if(startTime>session.nextTime+100)late++;
- session.step++;steps=session.step;const thisIndex=session.step,final=thisIndex>=session.total;
- $('now-playing').textContent=`Now: ${item.name} · Mode ${item.mode} · ${item.transition==='cut'?'Cut at '+sec(item.cutMs):'Finish ~'+sec(item.fullMs)} · Step ${thisIndex}`;
- session.nextTime=Math.max(session.nextTime,startTime)+durationMs;
- const nextDelay=Math.max(0,session.nextTime-performance.now());
- if(!final)timer=setTimeout(()=>tick(session),nextDelay);
- else timer=setTimeout(()=>{if(run===session)stopPlayback(`Playback finished after ${steps} step(s); last effect may continue internally.`)},nextDelay);
- busy=true;writeSince=performance.now();refresh();
- try{if(await send(modeBytes(item.mode),true)){done++;if(thisIndex<=4||thisIndex%5===0||final)log(`${item.name} · Mode ${item.mode} · Step ${thisIndex} · ${item.transition} ${sec(durationMs)}`)}}
+function showDevices(){for(const side of ['left','right']){const on=isUp(side),node=$(side+'-status');node.replaceChildren();const dot=document.createElement('i');dot.className='dot'+(on?' on':'');node.append(dot,document.createTextNode(names[side]+' · '+(on?'Connected':'Disconnected')));$('connect-'+side).textContent=on?'Disconnect':'Connect'}renderButtons()}
+function stopPlayback(reason){playing=null;if(timer!==null){clearTimeout(timer);timer=null}if(reason)log(reason);renderButtons()}
+async function connect(side){if(!navigator.bluetooth){log('Bluetooth unavailable; Android Chrome or iPhone Bluefy required over HTTPS.');return}
+ if(isUp(side)){const old=conn[side];conn[side]=null;stopPlayback(`${names[side]} disconnected.`);old.device.gatt.disconnect();window.WRXCAL?.onDisconnect(side);showDevices();return}
+ try{const device=await navigator.bluetooth.requestDevice({filters:[{namePrefix:'Dream'}],optionalServices:[SERVICE]});if(device.name!==names[side]){log(`Selected ${device.name||'unnamed'}; expected ${names[side]}.`);return}
+ if(Object.values(conn).some(c=>c?.device?.id===device.id)){log('Device already used by the other connection.');return}
+ device.addEventListener('gattserverdisconnected',()=>{if(conn[side]?.device?.id===device.id){conn[side]=null;stopPlayback(`${names[side]} disconnected.`);showDevices();window.WRXCAL?.onDisconnect(side)}});
+ const server=await device.gatt.connect(),service=await server.getPrimaryService(SERVICE),char=await service.getCharacteristic(WRITE_CHAR);conn[side]={device,char};log(`${device.name} connected.`);
+ }catch(e){log('Connection error: '+(e?.message||e))}finally{showDevices()}
+}
+async function write(ch,b){if(ch.properties?.writeWithoutResponse!==false&&typeof ch.writeValueWithoutResponse==='function'){lastTransport='Write without response';return ch.writeValueWithoutResponse(b)}if(typeof ch.writeValueWithResponse==='function'){lastTransport='Write with response';return ch.writeValueWithResponse(b)}if(typeof ch.writeValue==='function'){lastTransport='Legacy writeValue';return ch.writeValue(b)}throw Error('No GATT write method')}
+async function send(b,quiet=false){const active=['left','right'].filter(isUp);if(!active.length){stopPlayback('No connected devices.');return false}
+ const results=await Promise.allSettled(active.map(side=>write(conn[side].char,b)));const errs=results.map((r,i)=>r.status==='rejected'?`${names[active[i]]}: ${r.reason?.message||r.reason}`:null).filter(Boolean);
+ if(errs.length){stopPlayback('BLE write error');log(errs.join(' | '));return false}if(!quiet)log(`Sent ${hex(b)} to ${active.join(' + ')}`);return true}
+function colorBytes(h){if(!/^#[0-9a-fA-F]{6}$/.test(h))throw Error('Invalid color');const rgb=h.slice(1).match(/../g).map(x=>parseInt(x,16));return Uint8Array.from([0x56,...rgb,0x00,0xf0,0xaa])}
+async function setColor(color,fromStop=false){if(!fromStop)stopPlayback();if(busy){log('Wait for pending Bluetooth write to finish.');return}busy=true;writeStarted=performance.now();renderButtons();try{await send(colorBytes(color))}catch(e){log('Color send: '+(e?.message||e))}finally{busy=false;renderButtons()}}
+async function playOnce(){stopPlayback();if(busy)return;const p=presets[selected];busy=true;writeStarted=performance.now();renderButtons();try{if(await send(modeBytes(p.mode))){done++;log(`${p.name} started once. ${p.kind==='continuous'?'This mode loops internally until another command.':''}`)}}catch(e){log('Playback error: '+e.message)}finally{busy=false;renderButtons()}}
+function start(type){if(playing||busy)return;const queue=type==='single'?[{...presets[selected]}]:draft();if(!queue.length){log('Add playlist steps first.');return}
+ const repeats=$('repeat-count').value==='forever'?Infinity:Number($('repeat-count').value);if(!(repeats===Infinity||(Number.isInteger(repeats)&&repeats>=1)))return;
+ done=0;steps=0;late=0;const run={queue,type,repeat:repeats,index:0,lastMode:null,nextAt:performance.now(),internal:type==='single'&&queue[0].kind==='continuous'&&repeats===Infinity};playing=run;
+ log(`Started ${type==='single'?'favorite':'playlist'}: ${queue.map(p=>p.name).join(' → ')}; ${repeats===Infinity?'until stopped':repeats+' cycle(s)'}.`);renderButtons();advance(run);
+}
+async function advance(run){if(playing!==run)return;
+ if(busy){if(performance.now()-writeStarted>6000){stopPlayback('Bluetooth write stalled beyond 6s.');return}late++;timer=setTimeout(()=>advance(run),45);return}
+ const len=run.queue.length,idx=run.index%len,cycle=Math.floor(run.index/len),item=run.queue[idx],nextItem=run.queue[(idx+1)%len];
+ if(run.repeat!==Infinity&&cycle>=run.repeat){stopPlayback('Finished requested playback cycles. Last factory effect may remain active.');return}
+ const planned=run.nextAt,now=performance.now();if(now-planned>100)late++;
+ const same=run.lastMode===item.mode,alreadyRunning= same && item.kind==='continuous';
+ run.index++;steps=run.index;run.lastMode=item.mode;
+ const d=duration(item,nextItem.mode,run.type==='single');run.nextAt=Math.max(planned,now)+d;
+ $('now-playing').textContent=`Step ${steps} · ${item.name} (Mode ${item.mode}, ${kindLabel(item.kind)}) · ${formatSec(d)}${alreadyRunning?' · continuing internal loop':''}`;
+ if(run.internal){log(`${item.name} selected for internal firmware looping; no periodic resends required.`)}
+ else{const ms=Math.max(0,run.nextAt-performance.now());timer=setTimeout(()=>advance(run),ms)}
+ if(alreadyRunning){renderButtons();return}
+ busy=true;writeStarted=performance.now();renderButtons();
+ try{if(await send(modeBytes(item.mode),true)){done++;if(steps<=4||steps%5===0||run.internal)log(`Sent Mode ${item.mode} · step ${steps} · duration ${formatSec(d)}`)}}
  catch(e){stopPlayback('BLE write error: '+(e?.message||e))}
- finally{busy=false;refresh()}
+ finally{busy=false;renderButtons()}
 }
-function colorBytes(hex){if(!/^#[a-f0-9]{6}$/i.test(hex))throw Error('Invalid color');const rgb=hex.slice(1).match(/../g).map(s=>parseInt(s,16));return Uint8Array.from([0x56,...rgb,0x00,0xf0,0xaa])}
-async function color(hex){stopPlayback();if(busy){log('Wait for Bluetooth write to complete.');return}busy=true;refresh();try{await send(colorBytes(hex))}catch(e){log('Color error: '+(e?.message||e))}finally{busy=false;refresh()}}
 for(const side of ['left','right'])$('connect-'+side).addEventListener('click',()=>connect(side));
-$('preset-transition').addEventListener('change',showCut);
-$('save-preset').addEventListener('click',()=>{
- const name=$('preset-name').value.trim().slice(0,28),modeRaw=$('preset-mode').value.trim(),mode=Number(modeRaw);
- const fullSeconds=Number($('preset-full').value),cutSeconds=Number($('preset-cut').value);
- const fullMs=Math.round(fullSeconds*1000),cutMs=Math.round(cutSeconds*1000);
- const transition=$('preset-transition').value;
- if(!name||!modeRaw||!validMode(mode)||!validDuration(fullMs)||Math.abs(fullSeconds-fullMs/1000)>0.00001||((transition==='cut')&&(!validDuration(cutMs)||Math.abs(cutSeconds-cutMs/1000)>0.00001||cutMs>=fullMs))){log('Not saved. Use a valid mode (1–256) and a full duration in 0.05s steps (0.05–60s); early cut must be at least 0.05s and shorter than full duration.');return}
- const safeCutMs=(validDuration(cutMs)&&Math.abs(cutSeconds-cutMs/1000)<=0.00001)?cutMs:50;
- presets[selected]={...presets[selected],name,mode,fullMs,cutMs:safeCutMs,transition:transition==='cut'?'cut':'finish'};persist();renderPresets();log(`Saved ${name}: Mode ${mode}, full ${sec(fullMs)}, cut ${sec(safeCutMs)}, ${transition}.`)
-});
-$('play-once').addEventListener('click',playOnce);$('loop-selected').addEventListener('click',()=>start('single'));
-$('play-sequence').addEventListener('click',()=>start('sequence'));$('loop-stop').addEventListener('click',()=>stopPlayback('Playback stopped. Existing internal effect may finish.'));
-$('clear-sequence').addEventListener('click',()=>{presets.forEach(p=>p.include=false);persist();renderPresets()});
-$('send-color').addEventListener('click',()=>color($('color').value));$('solid-red').addEventListener('click',()=>color('#ff0000'));
-$('clear-log').addEventListener('click',()=>{$('log').textContent=''});
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&run)stopPlayback('Page hidden; playback stopped to prevent unpredictable timing.')});
-const usable=Boolean(navigator.bluetooth&&window.isSecureContext);$('support').textContent=usable?'Web Bluetooth available':'Needs Bluetooth browser + HTTPS';
-if(!usable)log('On iPhone use Bluefy; on Android use Chrome. HTTPS required.');
-window.WRXBLE={
-  connect, isUp, getCharacteristic: side => isUp(side)?conn[side].characteristic:null,
-  stopPlayback, refresh,
-  onEnter:()=>refresh()
-};
-renderPresets();refresh();log('v4 ready. v3 saved favorites imported where available.');
+$('preset-transition').onchange=showCut;$('preset-mode').addEventListener('input',displayCalibration);
+$('use-calibration').onclick=()=>{const c=CAL[Number($('preset-mode').value)];if(!c)return;$('preset-full').value=(c.ms/1000).toFixed(2);$('preset-behavior').value=c.kind;const cut=Math.max(50,Math.min(round50(c.ms*.65),c.ms-50));$('preset-cut').value=(cut/1000).toFixed(2);log('Loaded estimated timing; tap Save favorite to persist.')};
+$('save-preset').onclick=()=>{const p=validFields();if(!p)return;presets[selected]=p;savePresets();displayPresets();log(`Saved ${p.name} / Mode ${p.mode}, ${formatSec(p.fullMs)}, ${p.kind}.`)};
+$('play-once').onclick=playOnce;$('loop-selected').onclick=()=>start('single');$('play-sequence').onclick=()=>start('playlist');
+$('loop-stop').onclick=()=>{stopPlayback('Playback stopped; requesting static red.');setColor('#ff0000',true)};
+$('send-color').onclick=()=>setColor($('color').value);$('solid-red').onclick=()=>setColor('#ff0000');$('clear-log').onclick=()=>$('log').textContent='Ready.';
+$('saved-sequence').onchange=updatePlaylistSelection;
+$('add-step').onclick=()=>{if(seqSteps.length>=50){log('Maximum 50 steps.');return}seqSteps.push(Number($('step-favorite').value));changedSequence()};
+$('clear-sequence').onclick=()=>{seqSteps=[];changedSequence()};
+$('new-sequence').onclick=()=>{seqSteps=[];changedSequence()};
+$('save-sequence').onclick=()=>{const name=$('sequence-name').value.trim().slice(0,36);if(!name||!seqSteps.length){log('Enter a playlist name and add at least one step.');return}if(activePlaylist){const p=playlists.find(p=>p.id===activePlaylist);if(p){p.name=name;p.steps=seqSteps.slice()}}
+ else{if(playlists.length>=30){log('Maximum 30 saved playlists.');return}activePlaylist='playlist-'+Date.now()+'-'+playlists.length;playlists.push({id:activePlaylist,name,steps:seqSteps.slice()})}
+ savePlaylists();renderPlaylist();log(`Saved playlist ${name}.`)};
+$('delete-sequence').onclick=()=>{if(!activePlaylist)return;playlists=playlists.filter(p=>p.id!==activePlaylist);activePlaylist='';seqSteps=[];$('sequence-name').value='';savePlaylists();renderPlaylist();log('Deleted saved playlist.')};
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing)stopPlayback('Browser hidden; timer stopped. Last selected factory effect may continue internally.')});
+const supported=Boolean(navigator.bluetooth&&window.isSecureContext);$('support').textContent=supported?'Web Bluetooth available':'Requires BLE browser / HTTPS';
+window.WRXBLE={connect,isUp,getCharacteristic:side=>isUp(side)?conn[side].char:null,stopPlayback,refresh:showDevices,onEnter:showDevices};
+displayPresets();if(activePlaylist){const initial=playlists.find(p=>p.id===activePlaylist);if(initial)$('sequence-name').value=initial.name;}savePresets();savePlaylists();showDevices();log('v5 ready. Video-derived timing estimates loaded; previous favorites and Calibration Mode retained.');
 })();
 </script>
 <script>
