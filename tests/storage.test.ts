@@ -16,6 +16,10 @@ import {
   importConfiguration,
 } from "../src/storage/persistence";
 import { MemoryStorage } from "./helpers";
+import {
+  legacyFixedButtons,
+  legacyFixedProfiles,
+} from "../src/storage/legacyFixedProfiles";
 const custom = {
   id: "mine",
   name: "My saved chase",
@@ -27,11 +31,11 @@ const custom = {
   ],
 };
 describe("non-destructive migrations", () => {
-  it("always supplies exactly 13 fixed profiles, separately from user profiles", () => {
+  it("always supplies exactly 10 fixed profiles, separately from user profiles", () => {
     const s = new MemoryStorage();
-    expect(initialProfiles).toHaveLength(13);
+    expect(initialProfiles).toHaveLength(10);
     expect(loadStudio(s).studio.profiles).toEqual([]);
-    expect(fixedProfiles(s)).toHaveLength(13);
+    expect(fixedProfiles(s)).toHaveLength(10);
   });
   it.each([6, 7, 8, 9])(
     "retains v%s custom timing, selected profile, assignments, ordering, and original source",
@@ -39,7 +43,7 @@ describe("non-destructive migrations", () => {
       const storage = new MemoryStorage(),
         raw = JSON.stringify({
           version,
-          profiles: [...initialProfiles, custom],
+          profiles: [...legacyFixedProfiles.values(), custom],
           buttons: [
             { id: "mine-button", label: "Saved button", profileId: "mine" },
             ...curatedButtons.slice().reverse(),
@@ -65,8 +69,8 @@ describe("non-destructive migrations", () => {
   );
   it("archives edited fixed slots and preserves Rainbow Blue override from v7", () => {
     const storage = new MemoryStorage(),
-      profiles = structuredClone(initialProfiles);
-    profiles[0].steps[1].ms = 1300;
+      profiles = structuredClone([...legacyFixedProfiles.values()]);
+    profiles.find((p) => p.id === "blue-overlap")!.steps[1].ms = 1300;
     const color = profiles.find((p) => p.id === "rainbow-blue")!.steps[0];
     if (color.type === "color") color.color = "#123456";
     storage.setItem(
@@ -98,12 +102,37 @@ describe("non-destructive migrations", () => {
         },
       ],
     });
-    expect(s.buttons).toHaveLength(14);
+    expect(s.buttons).toHaveLength(11);
     expect(s.buttons[0].profileId).toBe("mine");
     expect(
       s.buttons.find((b) => b.id === curatedButtons[0].id)?.profileId,
-    ).toBe("blue-overlap");
+    ).toBe("overlap-double");
   });
+  it.each([6, 7, 8, 9])(
+    "does not resurrect retired fixed presets from v%s storage or backup",
+    (version) => {
+      const studio = migrateStudio({
+        version,
+        profiles: [...legacyFixedProfiles.values(), custom],
+        buttons: [
+          ...legacyFixedButtons,
+          { id: "personal-button", label: "My sequence", profileId: custom.id },
+        ],
+        selectedId: "blue-overlap",
+      });
+      expect(studio.profiles).toEqual([custom]);
+      expect(studio.buttons).toHaveLength(11);
+      expect(
+        studio.buttons.some((b) =>
+          ["blue-overlap", "basic-chase", "flash"].includes(b.profileId),
+        ),
+      ).toBe(false);
+      expect(
+        studio.buttons.find((b) => b.id === "personal-button")?.profileId,
+      ).toBe(custom.id);
+      expect(studio.selectedId).toBe("overlap-double");
+    },
+  );
   it("retains malformed source and does not replace it with defaults", () => {
     const s = new MemoryStorage();
     s.setItem(keys.studio, "{broken");

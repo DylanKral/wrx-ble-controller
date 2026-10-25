@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { curatedIds } from "../animations/customPresets";
+import { curatedIds, initialProfiles } from "../animations/customPresets";
 import {
   type Profile,
   type Step,
@@ -121,10 +121,13 @@ export function ProfileStudio() {
         <span className="pill">Main presets are assigned here</span>
       </div>
       <p>
-        <strong>13 fixed presets are built into this app.</strong> They cannot
-        disappear when browser data is cleared. Select a fixed preset to test
-        it, or choose <strong>Duplicate profile</strong> to customize your own
-        copy. Your extra profiles remain saved in this browser.
+        <strong>
+          {initialProfiles.length} fixed presets are built into this app.
+        </strong>{" "}
+        They cannot disappear when browser data is cleared. Select a fixed
+        preset to test it, or choose <strong>Duplicate profile</strong> to
+        customize your own copy. Your extra profiles remain saved in this
+        browser.
       </p>
       <p>
         Build sequences with <strong>Mode</strong>, <strong>Color</strong>, and{" "}

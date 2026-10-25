@@ -4,8 +4,10 @@ import { expect, it } from "vitest";
 import { initialProfiles } from "../src/animations/customPresets";
 import { basicProfiles, CAL } from "../src/animations/factoryModes";
 import { modeSpecs, timingSpecs, compareSpecs } from "../src/calibration/specs";
+import { legacyFixedProfiles } from "../src/storage/legacyFixedProfiles";
+import type { Profile } from "../src/animations/types";
 const html = readFileSync("tests/fixtures/original-v8.2.html", "utf8");
-it("matches all 13 actual hard-coded profiles and all Basic mode values from the original source", () => {
+it("preserves original definitions except the requested Custom removals and overlap correction", () => {
   const code = html.slice(
     html.indexOf("const M=(mode"),
     html.indexOf("// These are immutable"),
@@ -13,7 +15,24 @@ it("matches all 13 actual hard-coded profiles and all Basic mode values from the
   const data = vm.runInNewContext(
     `(()=>{${code};return JSON.parse(JSON.stringify({initialProfiles,basicProfiles}))})()`,
   );
-  expect(initialProfiles).toEqual(data.initialProfiles);
+  const removed = new Set(["blue-overlap", "basic-chase", "flash"]);
+  const expected: Profile[] = data.initialProfiles
+    .filter((p: Profile) => !removed.has(p.id))
+    .map((p: Profile) =>
+      p.id === "overlap-cut"
+        ? {
+            ...p,
+            steps: [
+              { type: "mode", mode: 7, ms: 1300 },
+              { type: "mode", mode: 8, ms: 1300 },
+            ],
+          }
+        : p,
+    );
+  expect(initialProfiles).toEqual(expected);
+  // Legacy recognition must continue comparing old saved slots to old defaults.
+  for (const p of data.initialProfiles)
+    expect(legacyFixedProfiles.get(p.id)).toEqual(p);
   expect(basicProfiles).toEqual(data.basicProfiles);
   expect(CAL).toEqual(
     vm.runInNewContext("(" + html.match(/const CAL=(.*);\r?\n/)![1] + ")"),
