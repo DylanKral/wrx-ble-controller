@@ -1,0 +1,1928 @@
+[
+  {
+    "script": 1,
+    "line": 395,
+    "name": "anonymous callback / IIFE",
+    "kind": "FunctionExpression"
+  },
+  {
+    "script": 1,
+    "line": 396,
+    "name": "$",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 1,
+    "line": 398,
+    "name": "choose",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 1,
+    "line": 411,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 1,
+    "line": 415,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 421,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 424,
+    "name": "$",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 428,
+    "name": "goodMode",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 429,
+    "name": "goodMs",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 430,
+    "name": "round50",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 431,
+    "name": "formatSec",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 432,
+    "name": "fallback",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 434,
+    "name": "cleanPreset",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 444,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 446,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 448,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 449,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 452,
+    "name": "savePresets",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 454,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 454,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 454,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 454,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 454,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 456,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 458,
+    "name": "savePlaylists",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 459,
+    "name": "log",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 460,
+    "name": "isUp",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 461,
+    "name": "modeBytes",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 462,
+    "name": "hex",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 462,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 463,
+    "name": "kindLabel",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 464,
+    "name": "displayPresets",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 465,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 466,
+    "name": "b.onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 469,
+    "name": "displayCalibration",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 470,
+    "name": "showCut",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 471,
+    "name": "validFields",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 475,
+    "name": "duration",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 480,
+    "name": "draft",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 480,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 481,
+    "name": "renderPlaylist",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 481,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 481,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 482,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 483,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 484,
+    "name": "btn",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 485,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 486,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 487,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 490,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 491,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 495,
+    "name": "changedSequence",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 496,
+    "name": "updatePlaylistSelection",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 496,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 498,
+    "name": "renderButtons",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 503,
+    "name": "showDevices",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 504,
+    "name": "stopPlayback",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 507,
+    "name": "deviceName",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 508,
+    "name": "attachDisconnect",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 508,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 511,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 513,
+    "name": "linkDevice",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 516,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 524,
+    "name": "reconnect",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 526,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 528,
+    "name": "restoreDevices",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 533,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 540,
+    "name": "connect",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 547,
+    "name": "write",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 548,
+    "name": "send",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 549,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 549,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 551,
+    "name": "colorBytes",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 551,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 552,
+    "name": "setColor",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 553,
+    "name": "playOnce",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 554,
+    "name": "start",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 557,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 559,
+    "name": "advance",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 2,
+    "line": 560,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 569,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 576,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 578,
+    "name": "$('use-calibration').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 579,
+    "name": "$('save-preset').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 580,
+    "name": "$('loop-selected').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 580,
+    "name": "$('play-sequence').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 581,
+    "name": "$('loop-stop').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 582,
+    "name": "$('send-color').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 582,
+    "name": "$('solid-red').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 582,
+    "name": "$('clear-log').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 584,
+    "name": "$('add-step').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 585,
+    "name": "$('clear-sequence').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 586,
+    "name": "$('new-sequence').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 587,
+    "name": "$('save-sequence').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 587,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 590,
+    "name": "$('delete-sequence').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 590,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 591,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 593,
+    "name": "setRestoreEnabled",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 593,
+    "name": "getCharacteristic",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 593,
+    "name": "sendRaw",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 593,
+    "name": "sendMode",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 593,
+    "name": "sendColor",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 593,
+    "name": "isBusy",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 2,
+    "line": 594,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 598,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 599,
+    "name": "$",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 608,
+    "name": "hex",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 608,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 609,
+    "name": "packet",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 610,
+    "name": "colorPacket",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 611,
+    "name": "isConnected",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 612,
+    "name": "fmt",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 613,
+    "name": "iso",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 614,
+    "name": "updateLog",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 615,
+    "name": "persist",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 616,
+    "name": "entry",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 617,
+    "name": "uiConnections",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 618,
+    "name": "connect",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 631,
+    "name": "writeBLE",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 632,
+    "name": "targetSides",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 633,
+    "name": "dispatch",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 637,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 637,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 637,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 637,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 641,
+    "name": "flash",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 641,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 642,
+    "name": "wait",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 642,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 643,
+    "name": "until",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 644,
+    "name": "clock",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 645,
+    "name": "setRunStatus",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 646,
+    "name": "abort",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 647,
+    "name": "baseline",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 648,
+    "name": "performSingleTest",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 661,
+    "name": "startTest",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 661,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 663,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 663,
+    "name": "commands",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 664,
+    "name": "alternating",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 664,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 666,
+    "name": "commands",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 666,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 667,
+    "name": "commands",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 668,
+    "name": "commands",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 669,
+    "name": "commands",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 670,
+    "name": "commands",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 671,
+    "name": "commands",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 672,
+    "name": "commands",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 674,
+    "name": "commands",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 674,
+    "name": "commands",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 675,
+    "name": "makeButton",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 675,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 676,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 676,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 677,
+    "name": "$('run-all-modes').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 677,
+    "name": "$('mode-compare').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 677,
+    "name": "$('stop-test').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 678,
+    "name": "$('connect-'+side).onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 679,
+    "name": "setBaseline",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 680,
+    "name": "$('baseline-blue').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 680,
+    "name": "$('baseline-red').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 682,
+    "name": "csv",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 682,
+    "name": "q",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 682,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 682,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 683,
+    "name": "download",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 3,
+    "line": 683,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 684,
+    "name": "$('download-csv').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 685,
+    "name": "$('download-json').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 686,
+    "name": "$('copy-csv').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 687,
+    "name": "$('clear-data').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 688,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 692,
+    "name": "onDisconnect",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 693,
+    "name": "onLeave",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 3,
+    "line": 694,
+    "name": "isRunning",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 4,
+    "line": 700,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 4,
+    "line": 703,
+    "name": "message",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 4,
+    "line": 704,
+    "name": "auto.onchange",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 4,
+    "line": 706,
+    "name": "button.onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 4,
+    "line": 708,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 713,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 714,
+    "name": "$",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 716,
+    "name": "clone",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 717,
+    "name": "M",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 718,
+    "name": "C",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 719,
+    "name": "W",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 746,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 749,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 750,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 751,
+    "name": "isCurated",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 761,
+    "name": "now",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 762,
+    "name": "fmt",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 763,
+    "name": "safeMs",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 764,
+    "name": "makeId",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 765,
+    "name": "shortText",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 766,
+    "name": "cleanStep",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 772,
+    "name": "cleanProfile",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 773,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 775,
+    "name": "persist",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 787,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 788,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 788,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 793,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 794,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 806,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 807,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 807,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 811,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 816,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 820,
+    "name": "current",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 820,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 821,
+    "name": "setMsg",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 822,
+    "name": "refreshStatus",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 831,
+    "name": "switchPresetTab",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 836,
+    "name": "createTile",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 845,
+    "name": "tile.onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 848,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 849,
+    "name": "inp.oninput",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 849,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 853,
+    "name": "paintHome",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 857,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 865,
+    "name": "controls",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 865,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 872,
+    "name": "readFields",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 873,
+    "name": "drawSteps",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 874,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 875,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 875,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 875,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 877,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 877,
+    "name": "type.onchange",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 878,
+    "name": "val.onchange",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 879,
+    "name": "val.oninput",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 881,
+    "name": "inp.onchange",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 883,
+    "name": "move",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 884,
+    "name": "drawButtons",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 884,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 884,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 884,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 884,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 885,
+    "name": "input.onchange",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 886,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 886,
+    "name": "select.onchange",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 887,
+    "name": "moveButton",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 888,
+    "name": "sleepUntil",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 888,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 888,
+    "name": "tick",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 889,
+    "name": "colorBytes",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 889,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 890,
+    "name": "modeBytes",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 892,
+    "name": "serialWrite",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 892,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 892,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 892,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 893,
+    "name": "sendColor",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 894,
+    "name": "renderActive",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 894,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 894,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 895,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 898,
+    "name": "stepText",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 899,
+    "name": "renderStepCue",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 905,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 907,
+    "name": "stop",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 907,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 908,
+    "name": "stopRed",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 910,
+    "name": "startProfile",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 910,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 910,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 928,
+    "name": "createProfile",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 929,
+    "name": "saveEditor",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 930,
+    "name": "saveBackup",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 930,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 931,
+    "name": "$('studio-profile').onchange",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 934,
+    "name": "$('studio-preview').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 935,
+    "name": "$('studio-duplicate').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 936,
+    "name": "$('studio-delete').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 936,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 936,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 938,
+    "name": "$('studio-add-mode').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 938,
+    "name": "$('studio-add-color').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 938,
+    "name": "$('studio-add-wait').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 939,
+    "name": "addStep",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 940,
+    "name": "$('studio-add-button').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 942,
+    "name": "$('studio-import').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 943,
+    "name": "$('studio-import-file').onchange",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 943,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 943,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 943,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 943,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 943,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 944,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 945,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 947,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 948,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 950,
+    "name": "$('home-connect-'+side).onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 951,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 952,
+    "name": "savedStatic",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 954,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 955,
+    "name": "applyStaticColor",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 5,
+    "line": 961,
+    "name": "$('home-static-apply').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 962,
+    "name": "$('home-static-red').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 963,
+    "name": "$('global-play-test').onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 964,
+    "name": "$('studio-name').onchange",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 964,
+    "name": "$('studio-experimental').onchange",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 965,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 966,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 967,
+    "name": "refresh",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 5,
+    "line": 967,
+    "name": "isRunning",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 6,
+    "line": 972,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 6,
+    "line": 976,
+    "name": "closeMenu",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 6,
+    "line": 977,
+    "name": "show",
+    "kind": "FunctionDeclaration"
+  },
+  {
+    "script": 6,
+    "line": 982,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 6,
+    "line": 983,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 6,
+    "line": 988,
+    "name": "toggle.onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 6,
+    "line": 989,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 6,
+    "line": 989,
+    "name": "b.onclick",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 6,
+    "line": 990,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 6,
+    "line": 991,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  },
+  {
+    "script": 6,
+    "line": 992,
+    "name": "anonymous callback / IIFE",
+    "kind": "ArrowFunction"
+  }
+]
