@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Scheduler } from "../src/animations/scheduler";
+import { initialProfiles } from "../src/animations/customPresets";
 import { hex } from "../src/bluetooth/commands";
 import {
   favoriteDuration,
@@ -26,6 +27,25 @@ function setup() {
   return { scheduler: new Scheduler(send), send, writes };
 }
 describe("animation scheduling", () => {
+  it("alternates overlap modes every 1.30 seconds without color steps", async () => {
+    const { scheduler, writes } = setup();
+    const start = performance.now();
+    const run = scheduler.start(
+      initialProfiles.find((p) => p.id === "overlap-cut")!,
+      2,
+    );
+    await vi.advanceTimersByTimeAsync(5200);
+    await run;
+    expect(writes.map((w) => w.hex)).toEqual([
+      "9E0006819800E9",
+      "9E0007819800E9",
+      "9E0006819800E9",
+      "9E0007819800E9",
+    ]);
+    expect(writes.map((w) => Math.round(w.at - start))).toEqual([
+      0, 1300, 2600, 3900,
+    ]);
+  });
   it("sends a single mode, waits its full duration, then stops scheduling", async () => {
     const { scheduler, writes } = setup(),
       run = scheduler.start(makeProfile());

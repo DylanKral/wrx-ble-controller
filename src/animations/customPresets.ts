@@ -1,24 +1,7 @@
 import type { Profile } from "./types";
-// Verbatim values from initialProfiles at baseline 351e770. Never replace these from storage.
+// Baseline presets with the requested removals and overlap timing correction.
+// These fixed definitions are never replaced from browser storage.
 export const initialProfiles: readonly Profile[] = [
-  {
-    id: "blue-overlap",
-    name: "Blue Overlap",
-    repeat: true,
-    experimental: false,
-    steps: [
-      {
-        type: "color",
-        color: "#0000ff",
-        ms: 100,
-      },
-      {
-        type: "mode",
-        mode: 7,
-        ms: 3200,
-      },
-    ],
-  },
   {
     id: "overlap-double",
     name: "Infinite Overlap",
@@ -62,11 +45,6 @@ export const initialProfiles: readonly Profile[] = [
     experimental: false,
     steps: [
       {
-        type: "color",
-        color: "#0000ff",
-        ms: 100,
-      },
-      {
         type: "mode",
         mode: 7,
         ms: 1300,
@@ -74,7 +52,7 @@ export const initialProfiles: readonly Profile[] = [
       {
         type: "mode",
         mode: 8,
-        ms: 200,
+        ms: 1300,
       },
     ],
   },
@@ -167,32 +145,6 @@ export const initialProfiles: readonly Profile[] = [
         type: "mode",
         mode: 7,
         ms: 3500,
-      },
-    ],
-  },
-  {
-    id: "basic-chase",
-    name: "Chase",
-    repeat: true,
-    experimental: false,
-    steps: [
-      {
-        type: "mode",
-        mode: 4,
-        ms: 2350,
-      },
-    ],
-  },
-  {
-    id: "flash",
-    name: "Flash",
-    repeat: false,
-    experimental: false,
-    steps: [
-      {
-        type: "mode",
-        mode: 9,
-        ms: 1000,
       },
     ],
   },

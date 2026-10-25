@@ -12,7 +12,12 @@ test("mobile Main retains the fixed preset grid, Basic modes, tabs, colors, and 
   await expect(
     page.getByRole("heading", { name: "Lighting presets" }),
   ).toBeVisible();
-  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(13);
+  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(10);
+  for (const id of ["blue-overlap", "basic-chase", "flash"]) {
+    await expect(
+      page.locator(`#home-custom-grid [data-profile-id="${id}"]`),
+    ).toHaveCount(0);
+  }
   await expect(
     page.getByRole("button", { name: "Stop + Red", exact: true }),
   ).toBeInViewport();
@@ -158,10 +163,10 @@ test("fixed presets stay immutable while duplicate profile editing, step tools a
     "0.15",
   );
   await navigate(page, "Main presets");
-  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(14);
+  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(11);
   await expect(
-    page.locator('[data-profile-id="blue-overlap"] strong'),
-  ).toHaveText("Blue Overlap");
+    page.locator('[data-profile-id="overlap-double"] strong'),
+  ).toHaveText("Infinite Overlap");
   await expect(page.getByRole("button", { name: /My overlap/ })).toBeVisible();
 });
 
@@ -202,7 +207,7 @@ test("existing v7 data, calibration history and user button labels survive initi
     }
   });
   await page.goto("./");
-  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(14);
+  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(11);
   await expect(
     page.getByRole("button", { name: /My old button/ }),
   ).toBeVisible();
@@ -293,7 +298,7 @@ test("BLE failure stops playback and reports the failed controller", async ({
     "2 of 2 connected",
   );
   await page.evaluate(() => (window.__ble.fail = true));
-  await page.locator('[data-profile-id="basic-chase"]').click();
+  await page.locator('[data-profile-id="overlap-cut"]').click();
   await expect(page.locator(".home-active-step")).toContainText("Idle");
   await expect(page.getByRole("status")).toContainText("failed");
   expect(await page.evaluate(() => window.__ble.writes.length)).toBe(0);
@@ -311,7 +316,7 @@ test("blocked localStorage keeps Bluetooth controls and editable session profile
     }),
   );
   await page.goto("./");
-  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(13);
+  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(10);
   await expect(page.locator("#home-view [role=alert]")).toContainText(
     "Browser storage is unavailable",
   );
@@ -413,7 +418,7 @@ test("complete backup downloads raw existing data and restores configuration", a
   );
 });
 
-test("Main retains the original layout dimensions, theme and fixed preset labels", async ({
+test("Main retains the original layout and theme with the requested preset removals", async ({
   page,
 }, info) => {
   await mockBluetooth(page);
@@ -436,12 +441,15 @@ test("Main retains the original layout dimensions, theme and fixed preset labels
     });
   await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(13);
   const original = await measure();
+  original.labels = original.labels.filter(
+    (label) => !["Blue Overlap", "Chase", "Flash"].includes(label || ""),
+  );
   await page.screenshot({
     path: info.outputPath("original-main.png"),
     fullPage: true,
   });
   await page.goto("./");
-  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(13);
+  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(10);
   expect(await measure()).toEqual(original);
   await page.screenshot({
     path: info.outputPath("react-main.png"),

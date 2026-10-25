@@ -17,6 +17,7 @@ import {
   writeJSON,
   type StorageLike,
 } from "./persistence";
+import { legacyFixedButtons, legacyFixedProfiles } from "./legacyFixedProfiles";
 export interface Studio {
   version: 9;
   profiles: Profile[];
@@ -94,11 +95,11 @@ export function migrateStudio(raw: unknown): Studio {
   if (prior.some((p) => !p))
     throw new Error("Invalid saved profile; original storage retained.");
   const profiles = prior as Profile[],
-    extras = profiles.filter((p) => !curatedIds.has(p.id)),
+    extras = profiles.filter((p) => !legacyFixedProfiles.has(p.id)),
     archived: Profile[] = [];
   if (Number(data.version ?? 6) < 8)
-    for (const p of profiles.filter((p) => curatedIds.has(p.id))) {
-      const fixed = cleanProfile(initialProfiles.find((x) => x.id === p.id))!,
+    for (const p of profiles.filter((p) => legacyFixedProfiles.has(p.id))) {
+      const fixed = cleanProfile(legacyFixedProfiles.get(p.id))!,
         copy = clone(p);
       if (
         p.id === "rainbow-blue" &&
@@ -133,7 +134,7 @@ export function migrateStudio(raw: unknown): Studio {
       )
         continue;
       let id = b.id.slice(0, 80);
-      const pinned = curatedButtons.find((p) => p.id === id);
+      const pinned = legacyFixedButtons.find((p) => p.id === id);
       // Preserve old reassigned/renamed buttons as extra assignments, while fixed presets always exist.
       if (
         pinned &&

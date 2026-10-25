@@ -1,6 +1,6 @@
 # WRX Dream BLE Controller
 
-React + TypeScript + Vite migration of the existing two-controller WRX lighting app. Production URL: https://dylankral.github.io/wrx-ble-controller/ . The original navy UI, 13 fixed Custom presets, Basic Modes 3–10, favorites/playlists, profile studio and complete calibration lab are retained.
+React + TypeScript + Vite migration of the existing two-controller WRX lighting app. Production URL: https://dylankral.github.io/wrx-ble-controller/ . The navy UI, 10 fixed Custom presets, Basic Modes 3–10, favorites/playlists, profile studio and complete calibration lab are retained. Overlap · 1.30s cut alternates Mode 7 and Mode 8 for 1.30 seconds each. Blue Overlap, standalone Chase, and standalone Flash have been removed from the fixed Custom library; Chase and Flash remain in Basic.
 
 ## Develop on Windows / VS Code
 
@@ -38,7 +38,7 @@ npm.cmd run preview
 
 ## Browser data and backups
 
-All data remains local to the browser. The old storage keys are retained, and data is never cleared on initialization. All 13 fixed profiles are compiled into the app independently of storage; personal profiles remain separate. Previous edited fixed slots become saved editable copies. Favorite names, manual timing, playlist indices, button assignments/order, calibration logs, static color, Rainbow Chase Blue start color, tabs, and auto-restore preference are preserved.
+All data remains local to the browser. The old storage keys are retained, and data is never cleared on initialization. All 10 fixed profiles are compiled into the app independently of storage; personal profiles remain separate. Previous edited fixed slots become saved editable copies. Retired fixed slots and their direct buttons are omitted when reading old storage or backups, while personal copies and their assignments are retained. Favorite names, manual timing, playlist indices, button assignments/order, calibration logs, static color, Rainbow Chase Blue start color, tabs, and auto-restore preference are preserved.
 
 Development → Custom Testing offers the original profiles JSON export/import plus **Export complete backup**. Complete backups include all WRX preferences, legacy data, calibration history and existing backup keys. Restore JSON backup accepts both formats. Back up before manually clearing site data. Localhost, another browser, and a different hostname have separate storage; the existing GitHub Pages origin remains unchanged for production access to old data.
 

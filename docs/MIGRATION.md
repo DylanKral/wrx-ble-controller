@@ -2,6 +2,10 @@
 
 Authoritative baseline: [`351e770`](https://github.com/DylanKral/wrx-ble-controller/commit/351e770), the entire 994-line `index.html`. A byte-for-byte copy is retained in `tests/fixtures/original-v8.2.html` and the original remains recoverable through Git. It is a test fixture only: Vite publishes only `dist`, which does not contain the old application. The work stays in this repository on `feature/react-migration`.
 
+## Subsequent preset correction
+
+At the user's request, the active Custom library now contains 10 fixed presets. Blue Overlap, standalone Chase, and standalone Flash were retired. Overlap · 1.30s cut now repeats exactly Mode 7 for 1300 ms → Mode 8 for 1300 ms, with no intervening color step. The Basic library is unchanged. Historical definitions remain available only to storage migration so old fixed slots cannot reappear as personal profiles and original user edits can still be recovered. The baseline audit below describes the original migration before this requested change.
+
 ## Behavior captured before replacement
 
 - Main: navy mobile interface, two-column grid, Basic/Custom tabs (Custom initially), static color (red initially), collapsible connections, 13 immutable fixed Custom presets, optional personal button assignments, Rainbow Chase Blue starting-color override, experimental labels, command-step indicator, fixed Stop + Red bar.
