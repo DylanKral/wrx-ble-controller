@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#0c1424"/><title>WRX Dream BLE Controller v6 — Presets</title><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="#0c1424"/><title>WRX Dream BLE Controller v8 — Presets</title><style>
 :root{color-scheme:dark;--bg:#0c1424;--panel:#182438;--line:#334159;--txt:#edf4ff;--muted:#b0bfd3;--blue:#86c5ff;--green:#5cdda5}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% -5%,#1e3655,transparent 58%),var(--bg);color:var(--txt);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}main{max-width:610px;margin:auto;padding:calc(22px + env(safe-area-inset-top)) 17px calc(30px + env(safe-area-inset-bottom))}
 h1{font-size:27px;line-height:1.15;letter-spacing:-.7px;margin:5px 0 8px}h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 9px}p{margin:7px 0 0;color:var(--muted);font-size:13px}.kicker{font-size:11px;letter-spacing:1.2px;color:var(--blue);font-weight:750;text-transform:uppercase}
@@ -152,8 +152,55 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 #home-view .panel{margin-top:15px}
 #home-view input{font-size:14px}
 @media(max-width:360px){.home-tile{padding:12px 10px;min-height:104px}.home-tile strong{font-size:13px}.global-playbar .danger{min-width:90px}}
+/* v7 preset feedback and reconnect */
+.home-preset-wrap{min-width:0;display:flex;flex-direction:column;gap:7px}
+.home-preset-wrap>.home-tile{width:100%;height:100%;flex:1}
+.home-color-inline{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#c5d9f2;border:1px solid #445c77;padding:5px 9px;border-radius:8px;background:#1a304c;gap:5px}
+.home-color-inline input{width:48px;height:31px;border:0;padding:1px;background:transparent}
+
+.reconnect-panel{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.reconnect-panel button{padding:9px 12px;min-height:40px;background:#254870}
+.reconnect-label{display:flex;gap:7px;align-items:center;font-size:12px;color:#c5d9f2;flex:1;white-space:nowrap}
+.reconnect-label input{width:18px;height:18px;accent-color:#5faaf7}
+.home-active-step{border:1px solid #395b7c;background:#112840;border-radius:11px;padding:10px 12px;display:flex;align-items:center;gap:9px;margin-top:12px;font-size:13px;color:#d7eaff;min-height:44px}
+.cue-indicator{height:12px;width:12px;border-radius:3px;background:#445b73;flex-shrink:0}
+.home-active-step.active{border-color:#8bcbff;background:#1e426a}
+.home-active-step.active .cue-indicator{background:#d2ecff;box-shadow:0 0 12px #b1e8ff}
+.home-active-step.cue-flash{animation:stepCue .18s ease-out}
+@keyframes stepCue{0%{background:#c7e7ff;color:#092641;border-color:white}100%{background:#1e426a;color:#d7eaff}}
+.home-step-progress{display:flex;gap:3px;margin-top:6px;flex-wrap:wrap}
+.home-step-progress i{display:block;flex:1 0 6px;max-width:36px;height:5px;border-radius:3px;background:#3c526b}
+.home-step-progress i.now{background:#8dcfff;box-shadow:0 0 6px #87bdfa}
+.studio-step.is-playing{border-color:#91ccff;background:#22466c;box-shadow:inset 0 0 0 1px #70b9f9}
+.studio-step.is-playing .studio-step-head strong::after{content:'  · NOW';color:#b8eaff;font-size:10px}
+.global-playbar .global-test{min-width:88px;background:#286399;border-color:#5189c0;padding:10px 8px}
+@media(max-width:390px){.global-playbar{gap:6px}.global-playbar .global-test{min-width:78px;font-size:12px}.global-playbar .danger{min-width:85px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){.home-active-step.cue-flash{animation:none}}
+
+/* v8 mobile-first main page: connection disclosure, static color, tabbed factory and custom presets */
+#home-view [hidden]{display:none!important}
+#home-view .home-connect-panel{padding:0;overflow:hidden}
+.home-connect-summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 16px;min-height:56px}
+.home-connect-summary::-webkit-details-marker{display:none}
+.home-connect-summary strong{font-size:15px}
+.home-connect-summary span{font-size:12px;color:#c7daf2;white-space:nowrap}
+.home-connect-summary:after{content:'⌄';color:#9ac7f9;font-size:22px;line-height:1;transform:rotate(180deg);transition:transform .18s;margin-left:3px}
+.home-connect-panel:not([open]) .home-connect-summary:after{transform:none}
+.home-connect-body{padding:0 16px 14px;border-top:1px solid #2c4360}
+.home-connect-body>.pill{display:inline-block;margin:10px 0 0}
+.home-static-controls{display:grid;grid-template-columns:minmax(0,1fr) 1.4fr .75fr;align-items:center;gap:8px}
+.home-static-controls button{min-height:46px;padding:8px 9px;font-size:13px}
+.home-color-swatch{display:flex;flex-direction:column;gap:5px;font-size:12px;color:#cadbf0}
+#home-static-color{width:100%;min-height:43px;padding:3px 5px;border:1px solid #52739a;border-radius:10px;background:#162942;cursor:pointer}
+.home-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;border:1px solid #3a587b;padding:4px;border-radius:12px;background:#101f34}
+.home-tabs button{min-height:45px;padding:9px 5px;font-weight:750;font-size:14px;border:1px solid transparent;background:transparent;border-radius:9px;color:#a9bdd4}
+.home-tabs button[aria-selected="true"]{background:linear-gradient(140deg,#215d9c,#24476c);border-color:#6697ce;color:#fff;box-shadow:0 1px 10px #0004}
+.home-tabs button:focus-visible,.home-connect-summary:focus-visible{outline:2px solid #a5d5ff;outline-offset:2px}
+#home-basic-grid,#home-custom-grid{margin-top:12px}
+@media(max-width:380px){.home-static-controls{grid-template-columns:minmax(0,1fr) 1fr .67fr;gap:6px}.home-static-controls button{font-size:12px;padding:7px 6px}.home-color-swatch{font-size:11px}}
+
 </style></head><body><header class="site-nav">
- <span class="brand">WRX Dream BLE <span style="opacity:.6;font-weight:600">v6</span></span>
+ <span class="brand">WRX Dream BLE <span style="opacity:.6;font-weight:600">v8.2</span></span>
  <button id="menu-toggle" class="site-menu-btn" type="button" aria-label="Open navigation" aria-controls="site-menu" aria-expanded="false">☰</button>
  <nav id="site-menu" class="site-menu" aria-label="Pages" hidden>
    <button type="button" data-nav-view="home" aria-current="page">Main presets</button>
@@ -164,18 +211,46 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 </header><main id="home-view">
   <div class="home-header"><div><div class="home-kicker">WRX · Dream BLE</div><h1>Lighting presets</h1></div><div class="home-status" id="home-connection-pill">0 of 2 connected</div></div>
   <p class="home-sub">Tap a preset to play it on both tail lights. Configure buttons and sequences under Development.</p>
-  <div class="panel"><div class="sectionhead"><h2>Connect lights</h2><span class="pill" id="home-ble-support">BLE browser</span></div>
+  <details class="panel home-connect-panel" id="home-connect-details" open>
+    <summary class="home-connect-summary"><strong>Bluetooth connections</strong><span id="home-connection-summary">Connect both lights</span></summary>
+    <div class="home-connect-body"><span class="pill" id="home-ble-support">BLE browser</span>
   <div class="device"><div><strong>Left · CF4B</strong><div class="status" id="home-left-status">Disconnected</div></div><button type="button" id="home-connect-left">Connect</button></div>
   <div class="device"><div><strong>Right · A90F</strong><div class="status" id="home-right-status">Disconnected</div></div><button type="button" id="home-connect-right">Connect</button></div>
-  </div>
-  <section class="panel"><div class="sectionhead"><h2>Presets</h2><span class="pill" id="home-presets-count">0 profiles</span></div>
-  <div class="home-grid" id="home-grid"></div>
-  <p class="home-footnote">Each button runs its assigned saved profile; buttons cannot be edited on this page. To change a preset, open Development → Custom Testing.</p></section>
+   <div class="reconnect-panel"><button id="home-reconnect" type="button">Reconnect saved devices</button><label class="reconnect-label"><input id="home-auto-reconnect" type="checkbox" checked/> Auto-connect when possible</label></div>
+   <p id="reconnect-status" class="home-footnote">Previously approved Bluetooth devices may be restored automatically in compatible browsers.</p>
+    </div>
+  </details>
+  <section class="panel home-static-panel" aria-label="Static RGB control">
+    <div class="sectionhead"><h2>Static color</h2><span class="pill">Steady RGB</span></div>
+    <div class="home-static-controls">
+      <label class="home-color-swatch">Color <input type="color" id="home-static-color" value="#ff0000" aria-label="Static RGB color"/></label>
+      <button type="button" class="primary" id="home-static-apply">Apply color</button>
+      <button type="button" id="home-static-red">Red</button>
+    </div>
+    <p class="home-footnote">Applying a color stops the active custom sequence. The selected color is saved locally.</p>
+  </section>
+  <div id="home-startup-warning" role="alert" class="panel" hidden style="border-color:#d39c55;color:#ffe5ad"><strong>Controller initialization issue</strong><div id="home-startup-warning-text"></div><p>Existing saved presets have not been erased. Reload this page or use Development → Export backup.</p></div>
+  <section class="panel home-presets-panel">
+    <div class="sectionhead"><h2>Presets</h2><span class="pill" id="home-presets-count">0 custom</span></div>
+    <div class="home-tabs" role="tablist" aria-label="Preset categories">
+      <button type="button" id="home-tab-basic" role="tab" aria-selected="false" aria-controls="home-basic-panel">Basic</button>
+      <button type="button" id="home-tab-custom" role="tab" aria-selected="true" aria-controls="home-custom-panel">Custom</button>
+    </div>
+    <div id="home-active-step" class="home-active-step" aria-live="off"><span class="cue-indicator"></span><span id="home-step-text">Idle · Select a preset</span></div>
+    <div id="home-basic-panel" role="tabpanel" aria-labelledby="home-tab-basic" hidden>
+      <p class="home-footnote">Factory modes 3–10. One-pass modes are retriggered on a timed loop; internally looping modes continue until stopped. Mode 10 timing is unverified.</p>
+      <div class="home-grid" id="home-basic-grid"></div>
+    </div>
+    <div id="home-custom-panel" role="tabpanel" aria-labelledby="home-tab-custom">
+      <div class="home-grid" id="home-custom-grid"></div>
+      <p class="home-footnote">Fixed Custom presets are bundled with the page; duplicate any preset under Development to make an editable version. Personal profiles are saved locally.</p>
+    </div>
+  </section>
   <p class="safety-line"><strong>Parked-only show control.</strong> Bluetooth RGB commands do not replace factory brake or turn signals. Stop, restore red, and verify normal lighting before driving. A failed/disconnected controller may retain its last color.</p>
  </main>
 <main hidden id="controller-view">
 <div class="kicker">Development · Custom Testing</div>
-<h1>Custom Testing <span style="font-size:12px;color:#aab9cf">v6 · Calibrated sequencer</span></h1>
+<h1>Custom Testing <span style="font-size:12px;color:#aab9cf">v8.2 · Calibrated sequencer</span></h1>
 <p>Experiment with individual factory modes, reusable profile macros, and precisely timed transitions. Main-page buttons are assigned here.</p><div class="dev-shortcuts"><a href="#dev-presets">Favorites</a><a href="#dev-editor">Profile editor</a><a href="#dev-playlists">Legacy playlists</a></div>
 <div class="note"><strong>For parked testing only.</strong> Playback times are video-derived estimates, not firmware completion signals. An internal-looping factory effect may continue after the browser stops scheduling; <strong>Stop + solid red</strong> sends a solid-color request. This page is not a safety lighting controller. Restore and verify factory lights before driving.</div>
 <section class="panel">
@@ -186,7 +261,7 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 </section>
 <section class="panel" id="dev-editor">
  <div class="sectionhead"><h2>Profile studio</h2><span class="pill">Main presets are assigned here</span></div>
- <p>Build profiles from <strong>Mode</strong>, <strong>Color</strong>, and <strong>Wait</strong> steps. A duration determines when the next command is sent; timing runs from command start. Changes save in this browser.</p>
+ <p><strong>13 fixed presets are built into this file.</strong> They cannot disappear when browser data is cleared. Select a fixed preset to test it, or choose <strong>Duplicate profile</strong> to customize your own copy. Your extra profiles remain saved in this browser.</p><p>Build sequences with <strong>Mode</strong>, <strong>Color</strong>, and <strong>Wait</strong> steps; intervals are measured from command start.</p>
  <div class="studio-row"><label>Profile to edit<select id="studio-profile"></select></label><button type="button" id="studio-new" class="primary">New profile</button></div>
  <div class="studio-row"><label>Profile name<input id="studio-name" type="text" maxlength="44" placeholder="Chase / Overlap"/></label><label>Default playback<select id="studio-repeat"><option value="loop">Continuous</option><option value="once">One pass</option></select></label></div>
  <label class="check" style="margin-top:10px"><input type="checkbox" id="studio-experimental"/><span>Experimental behavior — show warning on preset</span></label>
@@ -312,8 +387,36 @@ body{padding-bottom:env(safe-area-inset-bottom)}
 </main>
 <div class="global-playbar" role="region" aria-label="Playback controls">
   <div class="playing-caption"><strong id="global-playing">Idle · Ready</strong><small id="global-play-detail">No profile running</small></div>
+  <button type="button" id="global-play-test" class="global-test" hidden>Play test</button>
   <button type="button" class="danger" id="global-stop">Stop + Red</button>
 </div>
+<script>
+/* This tab switcher deliberately runs outside the full BLE/preset editor. */
+(function(){
+ const $=id=>document.getElementById(id);
+ const key='wrx-dream-home-tab-v8';
+ function choose(tab){
+  tab=tab==='basic'?'basic':'custom';
+  for(const name of ['basic','custom']){
+   const selected=name===tab;
+   const button=$('home-tab-'+name),panel=$('home-'+name+'-panel');
+   if(button){button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1}
+   if(panel)panel.hidden=!selected;
+  }
+  try{localStorage.setItem(key,tab)}catch(e){}
+  return tab;
+ }
+ for(const name of ['basic','custom']){
+  const b=$('home-tab-'+name);
+  if(b)b.addEventListener('click',()=>{choose(name);window.dispatchEvent(new CustomEvent('wrx-home-tab-change',{detail:{tab:name}}))});
+ }
+ let initial='custom';try{initial=localStorage.getItem(key)==='basic'?'basic':'custom'}catch(e){}
+ choose(initial);window.WRXHomeTabs={choose};
+ window.addEventListener('error',(e)=>{
+  const warning=$('home-startup-warning');if(warning){warning.hidden=false;$('home-startup-warning-text').textContent=String(e?.message||'Unknown JavaScript error');}
+ });
+})();
+</script>
 <script>
 (()=>{'use strict';
 const SERVICE='0000ffd5-0000-1000-8000-00805f9b34fb';
@@ -399,13 +502,47 @@ function renderButtons(){const isAny=isUp('left')||isUp('right');for(const id of
 }
 function showDevices(){for(const side of ['left','right']){const on=isUp(side),node=$(side+'-status');node.replaceChildren();const dot=document.createElement('i');dot.className='dot'+(on?' on':'');node.append(dot,document.createTextNode(names[side]+' · '+(on?'Connected':'Disconnected')));$('connect-'+side).textContent=on?'Disconnect':'Connect'}renderButtons();window.WRXMODE?.refresh()}
 function stopPlayback(reason){playing=null;if(timer!==null){clearTimeout(timer);timer=null}if(reason)log(reason);renderButtons()}
+const remembered={left:null,right:null},pending={left:false,right:false},manualOff={left:false,right:false};
+let restoreEnabled=true;
+const deviceName=side=>names[side];
+function attachDisconnect(side,device){device.addEventListener('gattserverdisconnected',()=>{
+ if(conn[side]?.device?.id!==device.id)return;
+ conn[side]=null;stopPlayback(`${names[side]} disconnected.`);showDevices();window.WRXCAL?.onDisconnect(side);
+ if(restoreEnabled&&!manualOff[side]&&!document.hidden){log(`${names[side]} lost connection; retrying saved device.`);setTimeout(()=>reconnect(side,1),1500)}
+});}
+async function linkDevice(side,device){if(pending[side])return false;
+ if(isUp(side))return true;
+ if(device?.name!==names[side]){log('Incorrect device selected for '+side);return false}
+ if(Object.entries(conn).some(([k,c])=>k!==side&&c?.device?.id===device.id))return false;
+ pending[side]=true;showDevices();try{
+ const server=await device.gatt.connect(),service=await server.getPrimaryService(SERVICE),char=await service.getCharacteristic(WRITE_CHAR);
+ remembered[side]=device;conn[side]={device,char};if(!device.__wrxDisconnectAttached){attachDisconnect(side,device);device.__wrxDisconnectAttached=true}
+ log(`${names[side]} connected.`);return true;
+ }catch(e){log(`${names[side]} reconnect failed: ${e?.message||e}`);return false}
+ finally{pending[side]=false;showDevices()}
+}
+async function reconnect(side,attempt){if(!restoreEnabled||manualOff[side]||document.hidden||isUp(side)||pending[side]||!remembered[side])return;
+ if(await linkDevice(side,remembered[side]))return;
+ if(attempt<4)setTimeout(()=>reconnect(side,attempt+1),Math.min(15000,2000*2**attempt));
+}
+async function restoreDevices(quiet=false){if(!navigator.bluetooth||typeof navigator.bluetooth.getDevices!=='function'){
+ if(!quiet)log('This browser does not support previously authorized device discovery. Use Connect.');return false;
+ }
+ try{const devices=await navigator.bluetooth.getDevices();let found=0;
+ for(const side of ['left','right']){
+  const device=devices.find(d=>d.name===names[side]);if(!device)continue;
+  remembered[side]=device;manualOff[side]=false;found++;if(!isUp(side))await linkDevice(side,device);
+ }
+ if(!quiet)log(`Found ${found} previously authorized Dream controllers.`);
+ return found>0;
+ }catch(e){if(!quiet)log('Saved device lookup unavailable: '+(e?.message||e));return false}
+}
 async function connect(side){if(!navigator.bluetooth){log('Bluetooth unavailable; Android Chrome or iPhone Bluefy required over HTTPS.');return}
- if(isUp(side)){const old=conn[side];conn[side]=null;stopPlayback(`${names[side]} disconnected.`);old.device.gatt.disconnect();window.WRXCAL?.onDisconnect(side);showDevices();return}
+ if(isUp(side)){manualOff[side]=true;const old=conn[side];conn[side]=null;stopPlayback(`${names[side]} disconnected manually.`);old.device.gatt.disconnect();window.WRXCAL?.onDisconnect(side);showDevices();return}
+ if(pending[side])return;
  try{const device=await navigator.bluetooth.requestDevice({filters:[{namePrefix:'Dream'}],optionalServices:[SERVICE]});if(device.name!==names[side]){log(`Selected ${device.name||'unnamed'}; expected ${names[side]}.`);return}
- if(Object.values(conn).some(c=>c?.device?.id===device.id)){log('Device already used by the other connection.');return}
- device.addEventListener('gattserverdisconnected',()=>{if(conn[side]?.device?.id===device.id){conn[side]=null;stopPlayback(`${names[side]} disconnected.`);showDevices();window.WRXCAL?.onDisconnect(side)}});
- const server=await device.gatt.connect(),service=await server.getPrimaryService(SERVICE),char=await service.getCharacteristic(WRITE_CHAR);conn[side]={device,char};log(`${device.name} connected.`);
- }catch(e){log('Connection error: '+(e?.message||e))}finally{showDevices()}
+ manualOff[side]=false;remembered[side]=device;await linkDevice(side,device);
+ }catch(e){if(e.name!=='NotFoundError')log('Connection error: '+(e?.message||e))}finally{showDevices()}
 }
 async function write(ch,b){if(ch.properties?.writeWithoutResponse!==false&&typeof ch.writeValueWithoutResponse==='function'){lastTransport='Write without response';return ch.writeValueWithoutResponse(b)}if(typeof ch.writeValueWithResponse==='function'){lastTransport='Write with response';return ch.writeValueWithResponse(b)}if(typeof ch.writeValue==='function'){lastTransport='Legacy writeValue';return ch.writeValue(b)}throw Error('No GATT write method')}
 async function send(b,quiet=false){const active=['left','right'].filter(isUp);if(!active.length){stopPlayback('No connected devices.');return false}
@@ -453,8 +590,8 @@ $('save-sequence').onclick=()=>{const name=$('sequence-name').value.trim().slice
 $('delete-sequence').onclick=()=>{if(!activePlaylist)return;playlists=playlists.filter(p=>p.id!==activePlaylist);activePlaylist='';seqSteps=[];$('sequence-name').value='';savePlaylists();renderPlaylist();log('Deleted saved playlist.')};
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing)stopPlayback('Browser hidden; timer stopped. Last selected factory effect may continue internally.')});
 const supported=Boolean(navigator.bluetooth&&window.isSecureContext);$('support').textContent=supported?'Web Bluetooth available':'Requires BLE browser / HTTPS';
-window.WRXBLE={connect,isUp,getCharacteristic:side=>isUp(side)?conn[side].char:null,stopPlayback,refresh:showDevices,onEnter:showDevices,sendRaw:(b,quiet=true)=>send(b,quiet),sendMode:m=>send(modeBytes(m),true),sendColor:h=>send(colorBytes(h),true),isBusy:()=>busy};
-displayPresets();if(activePlaylist){const initial=playlists.find(p=>p.id===activePlaylist);if(initial)$('sequence-name').value=initial.name;}savePresets();savePlaylists();showDevices();log('v5 ready. Video-derived timing estimates loaded; previous favorites and Calibration Mode retained.');
+window.WRXBLE={connect,restoreDevices,setRestoreEnabled:v=>restoreEnabled=Boolean(v),isUp,getCharacteristic:side=>isUp(side)?conn[side].char:null,stopPlayback,refresh:showDevices,onEnter:showDevices,sendRaw:(b,quiet=true)=>send(b,quiet),sendMode:m=>send(modeBytes(m),true),sendColor:h=>send(colorBytes(h),true),isBusy:()=>busy};
+displayPresets();if(activePlaylist){const initial=playlists.find(p=>p.id===activePlaylist);if(initial)$('sequence-name').value=initial.name;}savePresets();savePlaylists();showDevices();log('v7 ready. Saved BLE device restore supported where available.');
 })();
 </script>
 <script>
@@ -561,25 +698,63 @@ updateLog('Calibration Mode ready. Capture both phone display and tail lights in
 </script>
 <script>
 (()=>{'use strict';
+ const auto=document.getElementById('home-auto-reconnect'),button=document.getElementById('home-reconnect'),status=document.getElementById('reconnect-status');
+ try{auto.checked=localStorage.getItem('wrx-auto-restore')!=='off'}catch(e){}
+ function message(s){status.textContent=s}
+ auto.onchange=()=>{window.WRXBLE.setRestoreEnabled(auto.checked);try{localStorage.setItem('wrx-auto-restore',auto.checked?'on':'off')}catch(e){}
+   message(auto.checked?'Reconnect enabled where supported':'Auto-connect on open disabled');};
+ button.onclick=async()=>{message('Looking for previously approved lights…');const found=await window.WRXBLE.restoreDevices();message(found?'Saved device connection attempted.':'No saved devices available. Use individual Connect buttons.');};
+ window.WRXBLE.setRestoreEnabled(auto.checked);
+ if(auto.checked){setTimeout(async()=>{message('Checking previously authorized lights…');const found=await window.WRXBLE.restoreDevices(true);message(found?'Attempted saved-device reconnection.':'Automatic lookup unavailable or no saved devices. Use Connect.');},400)}
+ else message('Auto-connect disabled.');
+})();
+</script>
+<script>
+(()=>{'use strict';
 const $=id=>document.getElementById(id),shared=window.WRXBLE;
-const STORE='wrx-dream-studio-v6';
+const STORE='wrx-dream-studio-v7',OLD_STORE='wrx-dream-studio-v6'; // Keep the same key; never erase or migrate away existing v7 custom profiles
+const clone=(v)=>typeof structuredClone==='function'?structuredClone(v):JSON.parse(JSON.stringify(v));
 const M=(mode,seconds)=>({type:'mode',mode,ms:Math.round(seconds*1000)});
 const C=(color,seconds)=>({type:'color',color,ms:Math.round(seconds*1000)});
 const W=(seconds)=>({type:'wait',ms:Math.round(seconds*1000)});
 const initialProfiles=[
- {id:'blue-overlap',name:'Blue Overlap',repeat:true,experimental:false,steps:[C('#0000ff',.10),M(7,3.5)]},
- {id:'overlap-double',name:'Infinite Overlap',repeat:true,experimental:false,steps:[C('#0000ff',.10),M(7,3.5),M(7,3.65)]},
- {id:'reverse-double',name:'Reverse Infinite Overlap',repeat:true,experimental:false,steps:[C('#0000ff',.10),M(8,3.5),M(8,3.65)]},
+ {id:'blue-overlap',name:'Blue Overlap',repeat:true,experimental:false,steps:[C('#0000ff',.10),M(7,3.20)]},
+ {id:'overlap-double',name:'Infinite Overlap',repeat:true,experimental:false,steps:[C('#0000ff',.10),M(7,3.20)]},
+ {id:'reverse-double',name:'Reverse Infinite Overlap',repeat:true,experimental:false,steps:[C('#0000ff',.10),M(8,3.20)]},
  {id:'overlap-cut',name:'Overlap · 1.30s cut',repeat:true,experimental:false,steps:[C('#0000ff',.10),M(7,1.30),M(8,.20)]},
  {id:'chase-breathe',name:'Chase → Breathe',repeat:true,experimental:true,steps:[M(4,2.20),M(10,1.80)]},
  {id:'chase-rainbow',name:'Chase / Rainbow chase',repeat:true,experimental:false,steps:[M(4,.70),M(3,.70)]},
  {id:'black-blue-chase',name:'Black / Blue chase test',repeat:true,experimental:true,steps:[M(4,.70),C('#000000',.10),M(4,.10),C('#0000ff',.70)]},
  {id:'breathe-to-overlap',name:'Breathe fade → Overlap',repeat:true,experimental:true,steps:[C('#0000ff',.10),M(10,1.80),C('#0000ff',.05),M(7,3.50)]},
  {id:'basic-chase',name:'Chase',repeat:true,experimental:false,steps:[M(4,2.35)]},
- {id:'flash',name:'Flash',repeat:false,experimental:false,steps:[M(9,1.00)]}
+ {id:'flash',name:'Flash',repeat:false,experimental:false,steps:[M(9,1.00)]},
+ {id:'forward-backwards',name:'Forward / Backwards',repeat:true,experimental:false,steps:[M(7,3.20),M(8,3.20)]},
+ {id:'rainbow-back-forth',name:'Rainbow Chase Back & Forth',repeat:true,experimental:false,steps:[C('#000000',.10),M(3,1.40)]},
+ {id:'rainbow-blue',name:'Rainbow Chase Blue',repeat:true,experimental:false,steps:[C('#0000ff',.10),M(3,.70),M(4,.60)]}
  ];
-let profiles=structuredClone(initialProfiles);
-let buttons=initialProfiles.map(p=>({id:'btn-'+p.id,label:p.name,profileId:p.id}));
+// Factory-only Basic category: independent of editable custom studio profiles.
+const BASIC_MODES=[
+ {mode:3,name:'Rainbow Chase',ms:2250},
+ {mode:4,name:'Chase',ms:2200},
+ {mode:5,name:'Rainbow',ms:4100,nativeLoop:true},
+ {mode:6,name:'Factory effect',ms:4000,nativeLoop:true},
+ {mode:7,name:'Overlap',ms:3500},
+ {mode:8,name:'Reverse Overlap',ms:3500},
+ {mode:9,name:'Flash',ms:500,nativeLoop:true},
+ {mode:10,name:'Unverified effect',ms:2500}
+];
+const basicProfiles=BASIC_MODES.map(m=>({id:'basic-'+m.mode,name:`Mode ${m.mode} · ${m.name}`,repeat:true,experimental:false,nativeLoop:!!m.nativeLoop,steps:[{type:'mode',mode:m.mode,ms:m.ms}]}));
+// These are immutable preset definitions compiled into index.html, not browser-storage defaults.
+// Their assignments and steps load even on a brand-new browser or after cache/site-data loss.
+const CURATED_IDS=new Set(initialProfiles.map(p=>p.id));
+const CURATED_BUTTONS=initialProfiles.map(p=>({id:'btn-'+p.id,label:p.name,profileId:p.id}));
+const isCurated=id=>CURATED_IDS.has(id);
+const RGB_OVERRIDE_KEY='wrx-rainbow-blue-start-color-v8';
+const STATIC_KEY='wrx-dream-home-static-v8',TAB_KEY='wrx-dream-home-tab-v8';
+let activeHomeTab='custom',connectionWasFull=false;
+try{activeHomeTab=localStorage.getItem(TAB_KEY)==='basic'?'basic':'custom'}catch(e){}
+let profiles=clone(initialProfiles);
+let buttons=clone(CURATED_BUTTONS);
 let selectedId=profiles[0].id,run=null,runCounter=0;
 let editorDirty=false;
 let messages=[];
@@ -597,38 +772,118 @@ function cleanStep(s){if(!s||!['mode','color','wait'].includes(s.type))return nu
 function cleanProfile(p){if(!p||typeof p.id!=='string'||!Array.isArray(p.steps))return null;
  const steps=p.steps.map(cleanStep);if(steps.some(x=>!x)||steps.length>250)return null;
  return {id:p.id.slice(0,80),name:shortText(p.name)||'Untitled',repeat:!!p.repeat,experimental:!!p.experimental,steps};}
-function persist(){try{localStorage.setItem(STORE,JSON.stringify({version:6,profiles,buttons,selectedId}))}catch(e){setMsg('Local storage is full; export your backup.')}}
-try{const raw=JSON.parse(localStorage.getItem(STORE)||'null');if(raw&&Array.isArray(raw.profiles)&&Array.isArray(raw.buttons)){
- const out=raw.profiles.map(cleanProfile);if(!out.some(x=>!x)&&out.length){profiles=out;buttons=raw.buttons.filter(x=>x&&typeof x.id==='string'&&typeof x.profileId==='string'&&profiles.some(p=>p.id===x.profileId)).map(x=>({id:x.id.slice(0,80),label:shortText(x.label,50)||'Preset',profileId:x.profileId}));selectedId=profiles.some(p=>p.id===raw.selectedId)?raw.selectedId:profiles[0].id;}
-}}catch(e){}
+function persist(){try{localStorage.setItem(STORE,JSON.stringify({version:8,profiles,buttons,selectedId}))}catch(e){setMsg('Local storage is full; export your backup.')}}
+// Always load the 13 in-code presets first. Browser storage contains ONLY user-added
+// profiles/buttons plus preferences; older v6/v7/v8 stores are migrated on read.
+try{
+ const raw=JSON.parse(localStorage.getItem(STORE)||localStorage.getItem(OLD_STORE)||'null');
+ if(raw&&Array.isArray(raw.profiles)){
+  // Archive previously edited fixed slots as user-editable copies, so switching
+  // to the code-defined presets cannot silently destroy past experimentation.
+  if(Number(raw.version)<8){
+   try{if(!localStorage.getItem('wrx-dream-before-fixed-v8.2'))localStorage.setItem('wrx-dream-before-fixed-v8.2',JSON.stringify(raw))}catch(e){}
+  }
+  const prior=raw.profiles.map(cleanProfile).filter(Boolean);
+  const extras=prior.filter(p=>!isCurated(p.id));
+  const savedRGB=prior.find(p=>p.id==='rainbow-blue')?.steps?.find(st=>st.type==='color')?.color;
+  if(/^#[0-9a-f]{6}$/i.test(savedRGB||'')&&!localStorage.getItem(RGB_OVERRIDE_KEY)){
+   localStorage.setItem(RGB_OVERRIDE_KEY,savedRGB);
+  }
+  const archived=[];
+  if(Number(raw.version)<8)for(const p of prior.filter(p=>isCurated(p.id))){
+   const fixed=initialProfiles.find(x=>x.id===p.id);
+   const normalizedFixed=cleanProfile(fixed);
+   const copy=clone(p);
+   // A user-selected start color for Rainbow Chase Blue is preserved above.
+   if(p.id==='rainbow-blue'&&copy.steps[0]?.type==='color')copy.steps[0].color=normalizedFixed.steps[0].color;
+   const changed=JSON.stringify(copy.steps)!==JSON.stringify(normalizedFixed.steps)||copy.name!==normalizedFixed.name||copy.repeat!==normalizedFixed.repeat||copy.experimental!==normalizedFixed.experimental;
+   if(changed){copy.id='saved-edit-'+p.id;copy.name=shortText('Saved edit · '+p.name,44);archived.push(copy)}
+  }
+  extras.push(...archived);
+  const ids=new Set(CURATED_IDS);
+  for(const p of extras){if(!ids.has(p.id)){profiles.push(p);ids.add(p.id)}}
+  if(Array.isArray(raw.buttons)){
+   const pinnedButtonIds=new Set(CURATED_BUTTONS.map(b=>b.id));
+   const added=raw.buttons.filter(b=>b&&typeof b.id==='string'&&typeof b.profileId==='string'&&ids.has(b.profileId)&&!pinnedButtonIds.has(b.id)).map(b=>({id:b.id.slice(0,80),label:shortText(b.label,50)||'Preset',profileId:b.profileId}));
+   const seen=new Set(pinnedButtonIds);
+   for(const b of added){if(!seen.has(b.id)){buttons.push(b);seen.add(b.id)}}
+  }
+  for(const p of archived){if(!buttons.some(b=>b.profileId===p.id))buttons.push({id:'btn-'+p.id,label:p.name,profileId:p.id})}
+  selectedId=ids.has(raw.selectedId)?raw.selectedId:initialProfiles[0].id;
+ }
+ // The Rainbow Chase Blue preset is the one deliberately customizable Main-page color.
+ const savedColor=localStorage.getItem(RGB_OVERRIDE_KEY);
+ if(/^#[0-9a-f]{6}$/i.test(savedColor||''))profiles.find(p=>p.id==='rainbow-blue').steps[0].color=savedColor.toLowerCase();
+}catch(e){console.warn('Preset storage could not load; built-in profiles remain available.',e)}
+// Save normalized store after legacy migration; never depend on it for built-in profiles.
+try{persist()}catch(e){}
 function current(){return profiles.find(p=>p.id===selectedId)||profiles[0]}
 function setMsg(str){messages.unshift(new Date().toLocaleTimeString()+' · '+str);messages=messages.slice(0,7);$('global-play-detail').textContent=str.slice(0,95)}
 function refreshStatus(){const live=['left','right'].filter(shared.isUp).length;$('home-connection-pill').textContent=live+' of 2 connected';
  for(const side of ['left','right']){$('home-'+side+'-status').textContent=shared.isUp(side)?'Connected':'Disconnected';$('home-connect-'+side).textContent=shared.isUp(side)?'Disconnect':'Connect'}
  $('home-ble-support').textContent=(navigator.bluetooth&&window.isSecureContext)?'Web BLE ready':'BLE browser needed';
- $('home-presets-count').textContent=buttons.length+' presets';}
-function paintHome(){const grid=$('home-grid');grid.replaceChildren();if(!buttons.length){const p=document.createElement('p');p.textContent='No buttons assigned. Add them under Development.';grid.append(p)}
- buttons.forEach((b,i)=>{const p=profiles.find(x=>x.id===b.profileId);if(!p)return;const tile=document.createElement('button');tile.type='button';tile.className='home-tile'+(p.experimental?' experimental':'')+(run?.profileId===p.id?' playing':'');
- const title=document.createElement('strong');title.textContent=b.label;const meta=document.createElement('small');meta.textContent=(p.repeat?'Loop':'One pass')+' · '+p.steps.length+' steps'+(p.experimental?' · TEST':'');tile.append(title,meta);tile.title='Play '+b.label;
- tile.onclick=()=>startProfile(p.id);grid.append(tile)});refreshStatus();}
+ $('home-presets-count').textContent=activeHomeTab==='basic'?'8 factory modes':(buttons.length||profiles.length)+' custom';
+ $('home-connection-summary').textContent=live===2?'2 of 2 connected · Manage':live===1?'1 of 2 connected · Finish setup':'Not connected · Tap to connect';
+ const disclosure=$('home-connect-details');
+ if(live===2 && !connectionWasFull){disclosure.open=false;connectionWasFull=true;}
+ else if(live<2){disclosure.open=true;connectionWasFull=false;}
+}
+function switchPresetTab(tab){
+ activeHomeTab=tab==='basic'?'basic':'custom';
+ if(window.WRXHomeTabs)window.WRXHomeTabs.choose(activeHomeTab);
+ refreshStatus();
+}
+function createTile(profile,label){
+ const wrap=document.createElement('div');wrap.className='home-preset-wrap';
+ const tile=document.createElement('button');tile.type='button';
+ tile.className='home-tile'+(profile.experimental?' experimental':'')+(run?.profileId===profile.id?' playing':'');
+ tile.dataset.profileId=profile.id;
+ const title=document.createElement('strong');title.textContent=label;
+ const meta=document.createElement('small');
+ const description=profile.nativeLoop?'Native loop':profile.repeat?'Timed repeat':'One pass';
+ meta.textContent=description+' · '+profile.steps.length+' step'+(profile.steps.length===1?'':'s')+(profile.experimental?' · TEST':'');
+ tile.append(title,meta);tile.title='Play '+label;tile.onclick=()=>startProfile(profile.id);wrap.append(tile);
+ if(profile.id==='rainbow-blue'){
+  const row=document.createElement('label');row.className='home-color-inline';row.textContent='Start color';
+  const inp=document.createElement('input');inp.type='color';inp.value=profile.steps.find(st=>st.type==='color')?.color||'#0000ff';inp.setAttribute('aria-label','Rainbow Chase starting color');
+  inp.oninput=e=>{const step=profile.steps.find(st=>st.type==='color');if(step){step.color=e.target.value;try{localStorage.setItem(RGB_OVERRIDE_KEY,step.color)}catch(e){}persist()}};row.append(inp);wrap.append(row);
+ }
+ return wrap;
+}
+function paintHome(){
+ const basicGrid=$('home-basic-grid'),customGrid=$('home-custom-grid');basicGrid.replaceChildren();customGrid.replaceChildren();
+ for(const p of basicProfiles)basicGrid.append(createTile(p,p.name));
+ let shown=0;
+ for(const b of buttons){const p=profiles.find(x=>x.id===b.profileId);if(p){customGrid.append(createTile(p,b.label));shown++}}
+ if(shown===0 && profiles.length){
+  const hint=document.createElement('p');hint.className='home-footnote';hint.textContent='Your saved profiles were found, but their Main-page button assignments are missing. Showing profiles directly. Reassign buttons under Development.';customGrid.append(hint);
+  for(const p of profiles){customGrid.append(createTile(p,p.name));shown++}
+ }
+ if(shown===0){const p=document.createElement('p');p.textContent='No custom profiles loaded. Open Development to restore a backup.';customGrid.append(p)}
+ switchPresetTab(activeHomeTab);
+}
 function controls(){const p=current(),sel=$('studio-profile');sel.replaceChildren();profiles.forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.name;sel.append(o)});sel.value=p.id;
  $('studio-name').value=p.name;$('studio-repeat').value=p.repeat?'loop':'once';$('studio-experimental').checked=p.experimental;
+ const fixed=isCurated(p.id);
+ for(const id of ['studio-name','studio-repeat','studio-experimental','studio-add-mode','studio-add-color','studio-add-wait','studio-save','studio-delete'])$(id).disabled=fixed;
+ $('studio-duplicate').disabled=false;
+ $('studio-save').textContent=fixed?'Fixed in app · Duplicate to edit':'Save profile';
  drawSteps();drawButtons();}
-function readFields(){const p=current();p.name=shortText($('studio-name').value)||'Untitled';p.repeat=$('studio-repeat').value==='loop';p.experimental=$('studio-experimental').checked;persist()}
-function drawSteps(){const parent=$('studio-steps'),p=current();parent.replaceChildren();$('studio-step-count').textContent=p.steps.length+' steps';
+function readFields(){const p=current();if(isCurated(p.id))return;p.name=shortText($('studio-name').value)||'Untitled';p.repeat=$('studio-repeat').value==='loop';p.experimental=$('studio-experimental').checked;persist()}
+function drawSteps(){const parent=$('studio-steps'),p=current();parent.replaceChildren();$('studio-step-count').textContent=p.steps.length+' steps'+(isCurated(p.id)?' · fixed preset':'');
  p.steps.forEach((step,i)=>{const box=document.createElement('div');box.className='studio-step';const head=document.createElement('div');head.className='studio-step-head';const strong=document.createElement('strong');strong.textContent=`${i+1}. ${step.type==='mode'?'Factory animation':step.type==='color'?'RGB color':'Timed wait'}`;head.append(strong);
- const tools=document.createElement('div');tools.className='studio-buttons';for(const [symbol,fn,disabled] of [['↑',()=>move(i,-1),i===0],['↓',()=>move(i,1),i===p.steps.length-1],['×',()=>{p.steps.splice(i,1);persist();drawSteps()},false]]){const b=document.createElement('button');b.type='button';b.textContent=symbol;b.disabled=disabled;b.onclick=fn;tools.append(b)}head.append(tools);box.append(head);
+ const tools=document.createElement('div');tools.className='studio-buttons';for(const [symbol,fn,disabled] of [['↑',()=>move(i,-1),isCurated(p.id)||i===0],['↓',()=>move(i,1),isCurated(p.id)||i===p.steps.length-1],['×',()=>{if(isCurated(p.id))return;p.steps.splice(i,1);persist();drawSteps()},isCurated(p.id)]]){const b=document.createElement('button');b.type='button';b.textContent=symbol;b.disabled=disabled;b.onclick=fn;tools.append(b)}head.append(tools);box.append(head);
  const row=document.createElement('div');row.className='studio-row';
- const typeField=document.createElement('label');typeField.textContent='Action';const type=document.createElement('select');[['mode','Animation mode'],['color','Set RGB color'],['wait','Wait only']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;type.append(o)});type.value=step.type;type.onchange=()=>{const old=step.ms;const x=type.value;p.steps[i]=x==='mode'?{type:'mode',mode:4,ms:old}:x==='color'?{type:'color',color:'#0000ff',ms:old}:{type:'wait',ms:old};persist();drawSteps()};typeField.append(type);row.append(typeField);
- const valLabel=document.createElement('label');valLabel.textContent=step.type==='mode'?'Mode (1–256)':step.type==='color'?'Color':'Wait step';let val;if(step.type==='mode'){val=document.createElement('input');val.type='number';val.min=1;val.max=256;val.step=1;val.value=step.mode;val.onchange=()=>{const m=Number(val.value);if(Number.isInteger(m)&&m>=1&&m<=256){step.mode=m;persist()}else val.value=step.mode}}
- else if(step.type==='color'){val=document.createElement('input');val.type='color';val.style.width='100%';val.value=step.color;val.oninput=()=>{step.color=val.value;persist()}}
+ const typeField=document.createElement('label');typeField.textContent='Action';const type=document.createElement('select');[['mode','Animation mode'],['color','Set RGB color'],['wait','Wait only']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;type.append(o)});type.value=step.type;type.disabled=isCurated(p.id);type.onchange=()=>{const old=step.ms;const x=type.value;p.steps[i]=x==='mode'?{type:'mode',mode:4,ms:old}:x==='color'?{type:'color',color:'#0000ff',ms:old}:{type:'wait',ms:old};persist();drawSteps()};typeField.append(type);row.append(typeField);
+ const valLabel=document.createElement('label');valLabel.textContent=step.type==='mode'?'Mode (1–256)':step.type==='color'?'Color':'Wait step';let val;if(step.type==='mode'){val=document.createElement('input');val.type='number';val.min=1;val.max=256;val.step=1;val.value=step.mode;val.disabled=isCurated(p.id);val.onchange=()=>{const m=Number(val.value);if(Number.isInteger(m)&&m>=1&&m<=256){step.mode=m;persist()}else val.value=step.mode}}
+ else if(step.type==='color'){val=document.createElement('input');val.type='color';val.style.width='100%';val.value=step.color;val.disabled=isCurated(p.id);val.oninput=()=>{step.color=val.value;persist()}}
  else{val=document.createElement('div');val.className='hint';val.textContent='No command';}valLabel.append(val);row.append(valLabel);box.append(row);
- const time=document.createElement('label');time.className='field';time.textContent='Time until next step (seconds)';const inp=document.createElement('input');inp.type='number';inp.min='0';inp.max='60';inp.step='.05';inp.inputMode='decimal';inp.value=(step.ms/1000).toFixed(2);inp.onchange=()=>{const ms=Math.round(Number(inp.value)*1000);if(safeMs(ms)&&Math.abs(ms-Number(inp.value)*1000)<.0001){step.ms=ms;persist()}else inp.value=(step.ms/1000).toFixed(2)};time.append(inp);box.append(time);parent.append(box)});
+ const time=document.createElement('label');time.className='field';time.textContent='Time until next step (seconds)';const inp=document.createElement('input');inp.type='number';inp.min='0';inp.max='60';inp.step='.05';inp.inputMode='decimal';inp.value=(step.ms/1000).toFixed(2);inp.disabled=isCurated(p.id);inp.onchange=()=>{const ms=Math.round(Number(inp.value)*1000);if(safeMs(ms)&&Math.abs(ms-Number(inp.value)*1000)<.0001){step.ms=ms;persist()}else inp.value=(step.ms/1000).toFixed(2)};time.append(inp);box.append(time);parent.append(box)});
 }
-function move(i,by){const a=current().steps,j=i+by;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];persist();drawSteps()}
-function drawButtons(){const div=$('studio-buttons');div.replaceChildren();buttons.forEach((b,i)=>{const x=document.createElement('div');x.className='studio-entry';const top=document.createElement('div');top.className='rowtop';const title=document.createElement('strong');title.textContent='Button '+(i+1);const ops=document.createElement('div');ops.className='studio-buttons';for(const [symbol,fn,disabled] of [['↑',()=>moveButton(i,-1),i===0],['↓',()=>moveButton(i,1),i===buttons.length-1],['×',()=>{buttons.splice(i,1);persist();drawButtons();paintHome()},false]]){const z=document.createElement('button');z.textContent=symbol;z.disabled=disabled;z.type='button';z.onclick=fn;ops.append(z)}top.append(title,ops);x.append(top);
- const row=document.createElement('div');row.className='studio-row';const l=document.createElement('label');l.textContent='Main label';const input=document.createElement('input');input.type='text';input.maxLength=50;input.value=b.label;input.onchange=()=>{b.label=shortText(input.value,50)||'Preset';persist();paintHome()};l.append(input);row.append(l);
- const lr=document.createElement('label');lr.textContent='Assigned profile';const select=document.createElement('select');profiles.forEach(p=>{const opt=document.createElement('option');opt.value=p.id;opt.textContent=p.name;select.append(opt)});select.value=b.profileId;select.onchange=()=>{b.profileId=select.value;persist();paintHome()};lr.append(select);row.append(lr);x.append(row);div.append(x)});}
+function move(i,by){if(isCurated(selectedId))return;const a=current().steps,j=i+by;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];persist();drawSteps()}
+function drawButtons(){const div=$('studio-buttons');div.replaceChildren();buttons.forEach((b,i)=>{const x=document.createElement('div');x.className='studio-entry';const top=document.createElement('div');top.className='rowtop';const title=document.createElement('strong');title.textContent='Button '+(i+1);const ops=document.createElement('div');ops.className='studio-buttons';for(const [symbol,fn,disabled] of [['↑',()=>moveButton(i,-1),i===0],['↓',()=>moveButton(i,1),i===buttons.length-1],['×',()=>{if(isCurated(b.profileId)&&b.id==='btn-'+b.profileId)return;buttons.splice(i,1);persist();drawButtons();paintHome()},b.id==='btn-'+b.profileId&&isCurated(b.profileId)]]){const z=document.createElement('button');z.textContent=symbol;z.disabled=disabled;z.type='button';z.onclick=fn;ops.append(z)}top.append(title,ops);x.append(top);
+ const row=document.createElement('div');row.className='studio-row';const l=document.createElement('label');l.textContent='Main label';const input=document.createElement('input');input.type='text';input.maxLength=50;input.value=b.label;input.disabled=isCurated(b.profileId)&&b.id==='btn-'+b.profileId;input.onchange=()=>{b.label=shortText(input.value,50)||'Preset';persist();paintHome()};l.append(input);row.append(l);
+ const lr=document.createElement('label');lr.textContent='Assigned profile';const select=document.createElement('select');profiles.forEach(p=>{const opt=document.createElement('option');opt.value=p.id;opt.textContent=p.name;select.append(opt)});select.value=b.profileId;select.disabled=isCurated(b.profileId)&&b.id==='btn-'+b.profileId;select.onchange=()=>{b.profileId=select.value;persist();paintHome()};lr.append(select);row.append(lr);x.append(row);div.append(x)});}
 function moveButton(i,delta){const j=i+delta;if(j<0||j>=buttons.length)return;[buttons[i],buttons[j]]=[buttons[j],buttons[i]];persist();drawButtons();paintHome()}
 function sleepUntil(deadline,token){return new Promise(resolve=>{function tick(){if(run!==token||token.aborted)return resolve(false);const remain=deadline-now();if(remain<=0)return resolve(true);setTimeout(tick,Math.min(remain,45));}tick()})}
 const colorBytes=(color)=>Uint8Array.from([0x56,...color.slice(1).match(/../g).map(x=>parseInt(x,16)),0x00,0xf0,0xaa]);
@@ -636,14 +891,32 @@ const modeBytes=(m)=>Uint8Array.from([0x9e,0x00,m-1,0x81,0x98,0x00,0xe9]);
 let writer=Promise.resolve();
 function serialWrite(bytes){const task=writer.catch(()=>{}).then(()=>shared.sendRaw(bytes,true));writer=task.catch(()=>{});return task}
 async function sendColor(color){return serialWrite(colorBytes(color))}
-function renderActive(){const profile=profiles.find(x=>x.id===run?.profileId);$('global-playing').textContent=run?'Playing · '+(profile?.name||'Profile'):'Idle · Ready';
- document.querySelectorAll('.home-tile').forEach((tile,i)=>tile.classList.toggle('playing',!!run&&buttons[i]?.profileId===run.profileId));}
-function stop(silent=false){if(run){run.aborted=true;run=null;renderActive();if(!silent)setMsg('Stopped profile playback; request solid red if finished testing.')}}
+function renderActive(){const profile=profiles.find(x=>x.id===run?.profileId)||basicProfiles.find(x=>x.id===run?.profileId);$('global-playing').textContent=run?'Playing · '+(profile?.name||'Profile'):'Idle · Ready';
+ document.querySelectorAll('.home-tile').forEach(tile=>tile.classList.toggle('playing',!!run&&tile.dataset.profileId===run.profileId));
+ if(!run){$('home-step-text').textContent='Idle · Select a preset';$('home-active-step').classList.remove('active','cue-flash');}
+}
+const stepText=s=>s.type==='mode'?`Mode ${s.mode}`:s.type==='color'?`RGB ${s.color.toUpperCase()}`:'Wait';
+function renderStepCue(p,step,i,token){if(run!==token)return;token.step=i;
+ const label=`${p.name} · ${i+1}/${p.steps.length}: ${stepText(step)}`;
+ $('home-step-text').textContent=label;$('home-active-step').classList.add('active');
+ const flash=$('home-active-step');flash.classList.remove('cue-flash');void flash.offsetWidth;flash.classList.add('cue-flash');
+ const text=`Step ${i+1}/${p.steps.length} · ${stepText(step)} · ${(step.ms/1000).toFixed(2)}s`;
+ $('global-play-detail').textContent=text;
+ document.querySelectorAll('.studio-step').forEach((el,j)=>el.classList.toggle('is-playing',p.id===selectedId&&j===i));
+}
+function stop(silent=false){if(run){run.aborted=true;run=null;renderActive();document.querySelectorAll('.studio-step').forEach(el=>el.classList.remove('is-playing'));if(!silent)setMsg('Stopped profile playback; request solid red if finished testing.')}}
 async function stopRed(){stop(true);shared.stopPlayback('Stopped by global Stop + Red button.');if(!shared.isUp('left')&&!shared.isUp('right')){setMsg('No connected lights; cannot confirm red.');renderActive();return}
  try{const ok=await sendColor('#ff0000');setMsg(ok?'Static red requested; verify lights':'Failed to send red. Verify lights.')}catch(e){setMsg('Red request failed: '+e.message)}renderActive()}
-async function startProfile(id){const p=profiles.find(x=>x.id===id);if(!p||!p.steps.length)return setMsg('No steps in selected profile.');if(!shared.isUp('left')&&!shared.isUp('right'))return setMsg('Connect at least one tail light first.');
+async function startProfile(id){const p=profiles.find(x=>x.id===id)||basicProfiles.find(x=>x.id===id);if(!p||!p.steps.length)return setMsg('No steps in selected profile.');if(!shared.isUp('left')&&!shared.isUp('right'))return setMsg('Connect at least one tail light first.');
  stop(true);shared.stopPlayback('Profile playback started from Main.');const token={profileId:id,aborted:false};run=token;renderActive();setMsg((p.experimental?'TEST: ':'')+p.name+' · '+(p.repeat?'repeating':'once'));
- try{let deadline=now(),cycles=0;do{for(let i=0;i<p.steps.length;i++){const step=p.steps[i];if(!(await sleepUntil(deadline,token)))return;const issued=now();
+ try{
+ if(p.nativeLoop){
+  renderStepCue(p,p.steps[0],0,token);
+  if(!(await serialWrite(modeBytes(p.steps[0].mode)))){stop(true);setMsg('BLE write failed; playback stopped.');return;}
+  if(run===token)setMsg(`${p.name} · controller running built-in loop. Stop + Red to finish.`);
+  return;
+ }
+ let deadline=now(),cycles=0;do{for(let i=0;i<p.steps.length;i++){const step=p.steps[i];if(!(await sleepUntil(deadline,token)))return;const issued=now();renderStepCue(p,step,i,token);
  if(issued-deadline>100&&i>0)setMsg('Timing delay '+(issued-deadline).toFixed(0)+'ms on step '+(i+1));
  if(step.type!=='wait'){
  const ok=await serialWrite(step.type==='mode'?modeBytes(step.mode):colorBytes(step.color));if(!ok){setMsg('BLE write failed; playback stopped.');stop(true);return}
@@ -659,22 +932,40 @@ $('studio-profile').onchange=()=>{selectedId=$('studio-profile').value;persist()
 $('studio-new').onclick=createProfile;
 $('studio-save').onclick=saveEditor;
 $('studio-preview').onclick=()=>{readFields();persist();startProfile(selectedId)};
-$('studio-duplicate').onclick=()=>{readFields();const p=structuredClone(current());p.id=makeId();p.name=(p.name+' copy').slice(0,44);profiles.push(p);selectedId=p.id;persist();controls();paintHome()};
-$('studio-delete').onclick=()=>{if(profiles.length===1)return setMsg('Keep at least one profile.');const id=selectedId;if(!confirm('Delete this profile? Assigned main buttons will be removed.'))return;profiles=profiles.filter(p=>p.id!==id);buttons=buttons.filter(b=>b.profileId!==id);selectedId=profiles[0].id;persist();controls();paintHome()};
+$('studio-duplicate').onclick=()=>{readFields();const p=clone(current());p.id=makeId();p.name=(p.name+' copy').slice(0,44);profiles.push(p);selectedId=p.id;persist();controls();paintHome()};
+$('studio-delete').onclick=()=>{if(isCurated(selectedId))return setMsg('Fixed preset: Duplicate to customize.');if(profiles.length===1)return setMsg('Keep at least one profile.');const id=selectedId;if(!confirm('Delete this profile? Assigned main buttons will be removed.'))return;profiles=profiles.filter(p=>p.id!==id);buttons=buttons.filter(b=>b.profileId!==id);selectedId=profiles[0].id;persist();controls();paintHome()};
 $('studio-reset').onclick=controls;
 $('studio-add-mode').onclick=()=>addStep(M(4,2.20));$('studio-add-color').onclick=()=>addStep(C('#0000ff',.10));$('studio-add-wait').onclick=()=>addStep(W(.10));
-function addStep(step){const p=current();if(p.steps.length>=250)return setMsg('Max 250 steps per profile.');p.steps.push(step);persist();drawSteps()}
+function addStep(step){const p=current();if(isCurated(p.id))return setMsg('Fixed preset: Duplicate profile to customize.');if(p.steps.length>=250)return setMsg('Max 250 steps per profile.');p.steps.push(step);persist();drawSteps()}
 $('studio-add-button').onclick=()=>{readFields();buttons.push({id:makeId(),label:current().name,profileId:current().id});persist();drawButtons();paintHome()};
 $('studio-export').onclick=saveBackup;
 $('studio-import').onclick=()=>$('studio-import-file').click();
-$('studio-import-file').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.format!=='WRX_Studio_v6'||!Array.isArray(data.profiles)||!Array.isArray(data.buttons))throw Error('Invalid backup type');const ps=data.profiles.map(cleanProfile);if(!ps.length||ps.some(x=>!x)||new Set(ps.map(x=>x.id)).size!==ps.length)throw Error('Invalid profiles');const bs=data.buttons.filter(x=>typeof x?.profileId==='string'&&ps.some(p=>p.id===x.profileId)).map(x=>({id:String(x.id),label:shortText(x.label,50),profileId:x.profileId}));if(!confirm('Replace current profile library and Main buttons with this backup?'))return;stop(true);profiles=ps;buttons=bs;selectedId=ps.some(p=>p.id===data.selectedId)?data.selectedId:ps[0].id;persist();controls();paintHome();setMsg('Backup restored.')}catch(err){setMsg('Import rejected: '+err.message)}finally{e.target.value=''}};
+$('studio-import-file').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.format!=='WRX_Studio_v6'||!Array.isArray(data.profiles)||!Array.isArray(data.buttons))throw Error('Invalid backup type');const ps=data.profiles.map(cleanProfile);if(!ps.length||ps.some(x=>!x)||new Set(ps.map(x=>x.id)).size!==ps.length)throw Error('Invalid profiles');const bs=data.buttons.filter(x=>typeof x?.profileId==='string'&&ps.some(p=>p.id===x.profileId)).map(x=>({id:String(x.id),label:shortText(x.label,50),profileId:x.profileId}));if(!confirm('Import custom profiles and buttons? The fixed presets will remain unchanged.'))return;stop(true);
+ const extra=ps.filter(p=>!isCurated(p.id));profiles=clone(initialProfiles).concat(extra);
+ const used=new Set(CURATED_BUTTONS.map(b=>b.id));buttons=clone(CURATED_BUTTONS);
+ for(const b of bs){if(!used.has(b.id)){buttons.push(b);used.add(b.id)}}
+ selectedId=profiles.some(p=>p.id===data.selectedId)?data.selectedId:profiles[0].id;
+ try{const c=localStorage.getItem(RGB_OVERRIDE_KEY);if(/^#[0-9a-f]{6}$/i.test(c||''))profiles.find(p=>p.id==='rainbow-blue').steps[0].color=c.toLowerCase()}catch(e){}
+ persist();controls();paintHome();setMsg('Custom profiles restored; fixed presets retained.')}catch(err){setMsg('Import rejected: '+err.message)}finally{e.target.value=''}};
 for(const side of ['left','right'])$('home-connect-'+side).onclick=async()=>{await shared.connect(side);refreshStatus()};
-$('global-stop').onclick=stopRed;
+window.addEventListener('wrx-home-tab-change',event=>{activeHomeTab=event.detail.tab;refreshStatus()});
+function savedStatic(){try{const c=localStorage.getItem(STATIC_KEY);return /^#[0-9a-f]{6}$/i.test(c||'')?c:'#ff0000'}catch(e){return '#ff0000'}}
+$('home-static-color').value=savedStatic();
+$('home-static-color').addEventListener('input',e=>{try{localStorage.setItem(STATIC_KEY,e.target.value)}catch(err){}});
+async function applyStaticColor(hex){
+ stop(true);shared.stopPlayback('Applying home static color.');
+ if(!shared.isUp('left')&&!shared.isUp('right')){setMsg('Connect at least one tail light first.');return}
+ try{const ok=await sendColor(hex);setMsg(ok?'Static RGB '+hex.toUpperCase()+' sent; verify lights':'Static color write failed');}
+ catch(e){setMsg('Static RGB error: '+(e?.message||e))}
+}
+$('home-static-apply').onclick=()=>applyStaticColor($('home-static-color').value);
+$('home-static-red').onclick=()=>{const color='#ff0000';$('home-static-color').value=color;try{localStorage.setItem(STATIC_KEY,color)}catch(e){};applyStaticColor(color)};
+$('global-stop').onclick=stopRed;$('global-play-test').onclick=()=>{readFields();persist();startProfile(selectedId)};
 $('studio-name').onchange=()=>{readFields();paintHome()};$('studio-repeat').onchange=readFields;$('studio-experimental').onchange=()=>{readFields();paintHome()};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stop(true)});
 $('controller-view').addEventListener('click',e=>{if(e.target.closest('#play-once,#loop-selected,#play-sequence,#send-color,#solid-red'))stop(true)},true);
 window.WRXMODE={stop,refresh:()=>{refreshStatus();renderActive()},isRunning:()=>!!run};
-controls();paintHome();renderActive();setMsg('v6 ready; Main buttons and profile studio saved locally.');
+controls();paintHome();renderActive();setMsg('v8.2 ready: Basic/Custom tabs, saved custom presets, solid RGB, and compact Bluetooth connections.');
 })();
 </script>
 <script>
@@ -690,6 +981,7 @@ function show(view){if(!views[view])return;closeMenu();if(view===active)return;
  if(active==='calibration')window.WRXCAL?.onLeave();
  active=view;Object.entries(views).forEach(([k,el])=>el.hidden=k!==view);
  document.querySelectorAll('[data-nav-view]').forEach(b=>{if(b.dataset.navView===view)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+ document.getElementById('global-play-test').hidden=view!=='controller';
  if(view==='calibration')window.WRXCAL?.onEnter();else window.WRXBLE?.onEnter();window.WRXMODE?.refresh();
  window.scrollTo(0,0);try{history.replaceState(null,'','#'+(view==='home'?'home':view==='controller'?'development':'calibration'))}catch(e){}
 }
