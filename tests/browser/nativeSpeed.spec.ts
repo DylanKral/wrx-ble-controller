@@ -13,7 +13,7 @@ test("linked speed defaults remain 81 and intermediate requests share the select
   await page
     .getByLabel("Playback output", { exact: true })
     .selectOption("combined");
-  await page.getByText("Native animation speed", { exact: true }).click();
+  await page.getByText("Advanced Settings", { exact: true }).click();
   await expect(
     page.getByLabel("Native speed byte", { exact: true }),
   ).toHaveValue("129");
@@ -21,7 +21,7 @@ test("linked speed defaults remain 81 and intermediate requests share the select
     "global",
   );
   await expect(
-    page.getByLabel("Follow Animation Speed for bundled Custom presets", {
+    page.getByLabel("Automatically adjust preset cut timing", {
       exact: true,
     }),
   ).toBeChecked();
@@ -77,7 +77,7 @@ test("linked speed defaults remain 81 and intermediate requests share the select
     page.getByText(/Mode 10 remains a 2.50s captured window/),
   ).toBeVisible();
   await page.reload();
-  await page.getByText("Native animation speed", { exact: true }).click();
+  await page.getByText("Advanced Settings", { exact: true }).click();
   await page
     .getByLabel("Native speed mode", { exact: true })
     .selectOption("10");
@@ -106,7 +106,7 @@ test("Simulation Only speed changes never write and leave saved manual Custom ti
   await page
     .getByLabel("Playback output", { exact: true })
     .selectOption("simulation");
-  await page.getByText("Native animation speed", { exact: true }).click();
+  await page.getByText("Advanced Settings", { exact: true }).click();
   await page.getByLabel("Native speed byte", { exact: true }).fill("1");
   await page
     .getByRole("button", { name: "Apply speed and reissue mode", exact: true })
@@ -139,13 +139,16 @@ test("calibration logs the chosen native byte and locks speed editing during the
   await page
     .getByLabel("Playback output", { exact: true })
     .selectOption("combined");
-  await page.getByText("Native animation speed", { exact: true }).click();
+  await page.getByText("Advanced Settings", { exact: true }).click();
   await page.getByLabel("Native speed byte", { exact: true }).fill("65");
   await navigate(page, "Calibration Mode");
   await page.getByRole("button", { name: /^M04 · Mode 4 / }).click();
-  await page.getByText("Native animation speed", { exact: true }).click();
+  await page.getByText("Advanced Settings", { exact: true }).click();
   await expect(
     page.getByLabel("Native speed byte", { exact: true }),
+  ).toBeDisabled();
+  await expect(
+    page.getByRole("slider", { name: "Animation speed", exact: true }),
   ).toBeDisabled();
   await expect
     .poll(() =>
@@ -201,7 +204,7 @@ test("Studio shows live original/effective cuts, keeps old personal profiles fix
     );
   });
   await page.goto("./#development");
-  await page.getByText("Native animation speed", { exact: true }).click();
+  await page.getByText("Advanced Settings", { exact: true }).click();
   await expect(page.getByLabel("Speed scope", { exact: true })).toHaveValue(
     "per-mode",
   );
@@ -230,13 +233,14 @@ test("Studio shows live original/effective cuts, keeps old personal profiles fix
   await expect(page.getByTestId("step-2-timing")).toContainText(
     "Effective Cut: 1.300s",
   );
-  await page.getByLabel("Native speed slider", { exact: true }).fill("192");
+  await page.getByLabel("Animation speed", { exact: true }).fill("192");
+  await page.getByRole("button", { name: "Save speed", exact: true }).click();
   for (const step of [1, 2])
     await expect(page.getByTestId(`step-${step}-timing`)).toContainText(
       `Effective Cut: ${(1.3 * durationFactor(7, 192)).toFixed(3)}s`,
     );
   await page
-    .getByLabel("Follow Animation Speed for bundled Custom presets", {
+    .getByLabel("Automatically adjust preset cut timing", {
       exact: true,
     })
     .uncheck();
@@ -282,7 +286,7 @@ test("expanded speed and Studio timing controls fit a 320px screen", async ({
   await mockBluetooth(page);
   await page.setViewportSize({ width: 320, height: 844 });
   await page.goto("./#development");
-  await page.getByText("Native animation speed", { exact: true }).click();
+  await page.getByText("Advanced Settings", { exact: true }).click();
   await page.getByText("Timing model correction", { exact: true }).click();
   await page
     .getByLabel("Profile to edit", { exact: true })
@@ -345,7 +349,7 @@ test("active Apply rebases the Custom cut while future edits wait for the next s
   // Keep browser actions and CI host load from advancing the deadline under test.
   await page.clock.install({ time: new Date("2026-10-25T12:00:00Z") });
   await page.clock.pauseAt(new Date("2026-10-25T12:01:00Z"));
-  await page.getByText("Native animation speed", { exact: true }).click();
+  await page.getByText("Advanced Settings", { exact: true }).click();
   await page.getByLabel("Native speed mode", { exact: true }).selectOption("7");
   await page.locator('[data-profile-id="overlap-cut"]').click();
   await page.clock.runFor(600);

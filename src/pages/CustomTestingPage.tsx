@@ -5,6 +5,7 @@ import { Favorites } from "../components/Favorites";
 import { Playlists } from "../components/Playlists";
 import { useApp } from "../context/AppContext";
 import { SimulatorPanel } from "../components/SimulatorPanel";
+import { NativeSpeedControls } from "../components/NativeSpeedControls";
 export function CustomTestingPage({ hidden }: { hidden: boolean }) {
   const app = useApp(),
     [repeats, setRepeats] = useState(Infinity),
@@ -34,6 +35,7 @@ export function CustomTestingPage({ hidden }: { hidden: boolean }) {
       </div>
       <ConnectionPanel />
       {!hidden && <SimulatorPanel />}
+      {!hidden && <NativeSpeedControls />}
       {app.warning && (
         <div className="note" role="alert">
           {app.warning}

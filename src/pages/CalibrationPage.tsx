@@ -11,6 +11,7 @@ import {
 import { csv, formatClock, json } from "../calibration/exports";
 import { download } from "../storage/persistence";
 import { SimulatorPanel } from "../components/SimulatorPanel";
+import { NativeSpeedControls } from "../components/NativeSpeedControls";
 export function CalibrationPage({
   hidden,
   navigate,
@@ -108,6 +109,7 @@ export function CalibrationPage({
       </div>
       <ConnectionPanel disabled={s.running} />
       {!hidden && <SimulatorPanel />}
+      {!hidden && <NativeSpeedControls />}
       {simulationOnly && (
         <p className="note">
           Physical calibration timing tests require Hardware Only or Combined

@@ -36,6 +36,8 @@ The approved 75-frame capture spans 8.584–11.084 seconds of IMG_1573, only 2.5
 
 ## Independent delivery and interface
 
+The later [Main speed control update](MAIN_SPEED_CONTROLS.md) relocates everyday speed selection below the Presets tabs and moves scope/calibration controls under Advanced Settings outside the simulator. It preserves the timing architecture and preferences documented here.
+
 `PlaybackOutput.send()` returns whether playback may continue, not proof of hardware delivery. Its subscribed status reports simulator update separately from left/right queued, writing, sent, error, disabled and disconnected states. Combined continues its valid preview on failed/disconnected hardware. Static/apply notifications include those independent results instead of interpreting Combined's continuation boolean as successful delivery. Physical calibration retains its existing per-side recorder and exact offsets.
 
 The existing navy Native animation speed section contains scope, slider/byte entry, bundled Follow Animation Speed, reference/effective capture durations, current active cut, and per-mode curve correction. Profile Studio shows each Original Cut and Effective Cut or an unchanged fixed time; personal opt-in and explicit RGB/Wait timing links are stored separately from reference values. The main preset grid and deployment configuration remain unchanged. Combined stays the default output when no valid saved output choice exists.

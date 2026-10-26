@@ -1,0 +1,86 @@
+.native-speed-controls {
+  min-width: 0;
+  margin: 12px 0;
+  padding: 10px;
+  background: #0b1525;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.speed-heading,
+.speed-slider-row,
+.speed-scale {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.speed-heading {
+  flex-wrap: wrap;
+  font-size: 13px;
+  font-weight: 650;
+}
+.speed-heading .speed-value {
+  color: #b2dcff;
+  font-variant-numeric: tabular-nums;
+}
+.speed-slider-row {
+  margin-top: 8px;
+}
+.speed-slider-row input {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  margin: 0;
+  padding: 0;
+  accent-color: #86c5ff;
+}
+.speed-slider-row button {
+  flex-shrink: 0;
+  min-height: 40px;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+.speed-scale {
+  margin-right: 92px;
+  gap: 4px;
+  font-size: 9px;
+  white-space: nowrap;
+  color: var(--muted);
+}
+.speed-hint {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+.speed-cut-timing {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.speed-cut-timing input {
+  flex: 0 0 auto;
+}
+.speed-advanced {
+  margin-top: 8px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.speed-advanced summary {
+  min-height: 30px;
+  padding-top: 5px;
+  color: #b2dcff;
+  cursor: pointer;
+}
+.speed-advanced[open] > summary {
+  margin-bottom: 10px;
+}
+.speed-advanced select,
+.speed-advanced input[type="number"] {
+  width: 100%;
+  min-width: 0;
+}
