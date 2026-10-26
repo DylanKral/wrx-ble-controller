@@ -57,7 +57,7 @@ test("dual controllers connect, collapse the panel, retain connections across na
     .getByRole("button", { name: "Connect right", exact: true })
     .filter({ visible: true })
     .click();
-  await expect(page.locator("#home-view details")).not.toHaveAttribute("open");
+  await expect(page.locator("#home-view .home-connect-panel")).not.toHaveAttribute("open");
   await expect(page.locator("#home-view .home-status")).toHaveText(
     "2 of 2 connected",
   );
@@ -124,7 +124,7 @@ test("authorized-device restore, internally looping mode, disconnect and automat
   await page.waitForTimeout(4500);
   expect(await page.evaluate(() => window.__ble.writes.length)).toBe(2);
   await page.evaluate(() => window.__ble.disconnect("left"));
-  await expect(page.locator("#home-view details")).toHaveAttribute("open", "");
+  await expect(page.locator("#home-view .home-connect-panel")).toHaveAttribute("open", "");
   await expect(page.locator(".home-active-step")).toContainText("Idle");
   await expect(page.locator("#home-view .home-status")).toHaveText(
     "2 of 2 connected",

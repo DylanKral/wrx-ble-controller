@@ -1,0 +1,14 @@
+mode,file,setting_inferred,metric,start_s,end_s,duration_s,confidence
+4,IMG_1585(1).mp4,middle,illuminated_transition,6.00,7.67,1.67,medium
+4,IMG_1585(1).mp4,middle,illuminated_transition,11.30,13.00,1.70,medium
+4,IMG_1585(1).mp4,minimum,illuminated_transition,17.20,20.97,3.77,medium
+4,IMG_1585(1).mp4,minimum,illuminated_transition,25.10,28.90,3.80,medium
+4,IMG_1585(1).mp4,maximum,illuminated_transition,38.57,39.17,0.60,medium
+4,IMG_1585(1).mp4,maximum,illuminated_transition,42.97,43.57,0.60,medium
+10,IMG_1586(1).mp4,middle,full_breath_cycle,2.10,5.63,3.53,high
+10,IMG_1586(1).mp4,middle,full_breath_cycle,5.63,9.20,3.57,high
+10,IMG_1586(1).mp4,middle,full_breath_cycle,9.20,12.73,3.53,high
+10,IMG_1587(1).mp4,minimum,full_breath_cycle,8.67,14.97,6.30,medium-low
+10,IMG_1587(1).mp4,maximum,full_breath_cycle,25.57,26.13,0.56,medium
+10,IMG_1587(1).mp4,maximum,full_breath_cycle,26.13,26.67,0.54,medium
+10,IMG_1587(1).mp4,maximum,full_breath_cycle,26.67,27.20,0.53,medium
