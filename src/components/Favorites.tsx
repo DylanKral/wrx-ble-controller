@@ -9,7 +9,6 @@ import {
 import { useApp } from "../context/AppContext";
 import { useBluetooth } from "../context/BluetoothContext";
 import { favoriteProfile } from "../storage/legacy";
-import { modeBytes } from "../bluetooth/commands";
 export const kindLabel = (kind: string) =>
   kind === "continuous"
     ? "Internal loop"
@@ -18,7 +17,7 @@ export const kindLabel = (kind: string) =>
       : "Uncalibrated";
 export function Favorites({ repeats }: { repeats: number }) {
   const app = useApp(),
-    { manager, connected, transport } = useBluetooth(),
+    { transport } = useBluetooth(),
     { legacy } = app,
     p = legacy.presets[legacy.selected];
   const [draft, setDraft] = useState(p),
@@ -29,7 +28,7 @@ export function Favorites({ repeats }: { repeats: number }) {
     setFull((p.fullMs / 1000).toFixed(2));
     setCut((p.cutMs / 1000).toFixed(2));
   }, [p]);
-  const available = connected.left || connected.right;
+  const available = app.canPlay;
   function save() {
     const f = Number(full) * 1000,
       c = Number(cut) * 1000,
@@ -229,20 +228,7 @@ export function Favorites({ repeats }: { repeats: number }) {
             type="button"
             disabled={!available}
             onClick={() => {
-              app.stop();
-              void manager
-                .send(modeBytes(p.mode))
-                .then((ok) =>
-                  app.notify(
-                    ok
-                      ? p.name +
-                          " started once. " +
-                          (p.kind === "continuous"
-                            ? "This mode loops internally until another command."
-                            : "")
-                      : "BLE write failed.",
-                  ),
-                );
+              void app.playModeOnce(p.mode);
             }}
           >
             Play selected once
@@ -293,7 +279,7 @@ export function Favorites({ repeats }: { repeats: number }) {
             : "No active animation."}
         </p>
         <p className="metric">
-          Sends: {app.playback?.sends || 0} · Steps:{" "}
+          Commands: {app.playback?.sends || 0} · Steps:{" "}
           {app.playback
             ? app.playback.cycles * app.playback.total + app.playback.step + 1
             : 0}{" "}

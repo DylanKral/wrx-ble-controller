@@ -1,5 +1,6 @@
 import { colorBytes, modeBytes } from "../bluetooth/commands";
 import type { Profile, Step } from "./types";
+import { DEFAULT_NATIVE_SPEED } from "./nativeSpeed";
 export interface Playback {
   profileId: string;
   name: string;
@@ -22,6 +23,8 @@ export class Scheduler {
       valid: () => boolean,
     ) => Promise<boolean>,
     private now = () => performance.now(),
+    private getNativeSpeed: (mode: number) => number = () =>
+      DEFAULT_NATIVE_SPEED,
   ) {}
   subscribe = (fn: () => void) => {
     this.listeners.add(fn);
@@ -98,7 +101,8 @@ export class Scheduler {
     this.emit();
     try {
       let deadline = this.now(),
-        lastMode: number | null = null;
+        lastMode: number | null = null,
+        lastSpeed: number | null = null;
       for (let cycle = 0; cycle < repeatCount && valid(); cycle++) {
         for (let i = 0; i < profile.steps.length; i++) {
           if (!(await this.until(deadline, token.signal)) || !valid()) return;
@@ -113,14 +117,17 @@ export class Scheduler {
             late: state.late + (issued - deadline > 100 ? 1 : 0),
           };
           this.emit();
+          const nativeSpeed =
+            step.type === "mode" ? this.getNativeSpeed(step.mode) : null;
           const continuing =
             step.type === "mode" &&
             step.suppressRepeated &&
-            lastMode === step.mode;
+            lastMode === step.mode &&
+            lastSpeed === nativeSpeed;
           if (step.type !== "wait" && !continuing) {
             const ok = await this.send(
               step.type === "mode"
-                ? modeBytes(step.mode)
+                ? modeBytes(step.mode, nativeSpeed!)
                 : colorBytes(step.color),
               valid,
             );
@@ -132,6 +139,7 @@ export class Scheduler {
             this.state = { ...this.state!, sends: this.state!.sends + 1 };
             this.emit();
             lastMode = step.type === "mode" ? step.mode : null;
+            lastSpeed = nativeSpeed;
           }
           if (this.state?.internal) {
             this.message =

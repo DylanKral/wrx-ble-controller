@@ -1,0 +1,58 @@
+{
+  "3": {
+    "name": "Rainbow Chase",
+    "frames": 67,
+    "duration": 2.25,
+    "selectedColor": "recorded-rgb",
+    "firstFrameLength": 19
+  },
+  "4": {
+    "name": "Chase",
+    "frames": 66,
+    "duration": 2.2,
+    "selectedColor": "previously-selected-rgb",
+    "firstFrameLength": 19
+  },
+  "5": {
+    "name": "Rainbow",
+    "frames": 123,
+    "duration": 4.1,
+    "selectedColor": "recorded-rgb",
+    "firstFrameLength": 19
+  },
+  "6": {
+    "name": "Factory Effect",
+    "frames": 106,
+    "duration": 4,
+    "selectedColor": "recorded-rgb",
+    "firstFrameLength": 19
+  },
+  "7": {
+    "name": "Overlap",
+    "frames": 105,
+    "duration": 3.5,
+    "selectedColor": "recorded-rgb",
+    "firstFrameLength": 19
+  },
+  "8": {
+    "name": "Reverse Overlap",
+    "frames": 105,
+    "duration": 3.5,
+    "selectedColor": "recorded-rgb",
+    "firstFrameLength": 19
+  },
+  "9": {
+    "name": "Flash",
+    "frames": 15,
+    "duration": 0.5,
+    "selectedColor": "recorded-rgb",
+    "firstFrameLength": 19
+  },
+  "10": {
+    "name": "Breathe",
+    "frames": 75,
+    "duration": 2.5,
+    "selectedColor": "previously-selected-rgb",
+    "firstFrameLength": 19
+  }
+}

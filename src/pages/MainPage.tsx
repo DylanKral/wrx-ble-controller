@@ -5,6 +5,7 @@ import { PresetButton } from "../components/PresetButton";
 import { useApp } from "../context/AppContext";
 import { useBluetooth } from "../context/BluetoothContext";
 import { stepText } from "../animations/types";
+import { SimulatorPanel } from "../components/SimulatorPanel";
 export function MainPage({ hidden }: { hidden: boolean }) {
   const app = useApp(),
     { connected } = useBluetooth(),
@@ -57,6 +58,7 @@ export function MainPage({ hidden }: { hidden: boolean }) {
           is saved locally.
         </p>
       </section>
+      {!hidden && <SimulatorPanel />}
       {app.warning && (
         <div role="alert" className="panel startup-warning">
           <strong>Controller initialization issue</strong>

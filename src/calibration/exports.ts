@@ -17,6 +17,7 @@ export const fields = [
   "label",
   "error",
   "note",
+  "native_speed",
 ];
 export function csv(events: CalibrationEvent[]) {
   const q = (v: unknown) => '"' + String(v ?? "").replace(/"/g, '""') + '"';

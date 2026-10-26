@@ -4,6 +4,7 @@ import { ProfileStudio } from "../components/ProfileStudio";
 import { Favorites } from "../components/Favorites";
 import { Playlists } from "../components/Playlists";
 import { useApp } from "../context/AppContext";
+import { SimulatorPanel } from "../components/SimulatorPanel";
 export function CustomTestingPage({ hidden }: { hidden: boolean }) {
   const app = useApp(),
     [repeats, setRepeats] = useState(Infinity),
@@ -32,6 +33,7 @@ export function CustomTestingPage({ hidden }: { hidden: boolean }) {
         verify factory lights before driving.
       </div>
       <ConnectionPanel />
+      {!hidden && <SimulatorPanel />}
       {app.warning && (
         <div className="note" role="alert">
           {app.warning}
@@ -71,7 +73,10 @@ export function CustomTestingPage({ hidden }: { hidden: boolean }) {
             id="dev-color"
             type="color"
             value={color}
-            onChange={(e) => setColor(e.target.value)}
+            onChange={(e) => {
+              setColor(e.target.value);
+              app.simulator.setSelectedColor(e.target.value);
+            }}
           />
         </div>
         <div className="actions">
