@@ -38,7 +38,7 @@ npm.cmd run preview
 
 ## Calibrated animation previews
 
-Animation preview is available on Main, Custom Testing, and Calibration Mode. Choose **Simulation Only** to run Basic or Custom presets without connected lights; it sends no Bluetooth commands. **Combined** previews the same requests while sending them to connected controllers. **Hardware Only** retains the existing operation and is the initial default. The selected output and remembered RGB color are saved locally without changing existing profile keys.
+Animation preview is available on Main, Custom Testing, and Calibration Mode. **Combined** is the default: it previews requests while sending them to connected controllers. Choose **Simulation Only** to run Basic or Custom presets without Bluetooth commands, or **Hardware Only** to control the lights without a live preview. An explicitly saved output choice is restored on subsequent visits. The selected output and remembered RGB color are saved locally without changing existing profile keys.
 
 The eight visual tracks, approved SVG and rendering helper are imported directly from `Animations/`. Mode 4 uses its approved 66 frames over 2.20 seconds. Mode 10 uses the revised 75 frames over a 2.50-second captured window, with approved enhanced fade on at 100%. Modes 4/10 use the latest selected or issued RGB color, including Custom color steps; other modes preserve recorded RGB. Factory loop classification and all Custom step durations are unchanged.
 
