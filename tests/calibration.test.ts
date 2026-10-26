@@ -87,3 +87,29 @@ it("cancels the countdown and retains saved history across engine recreation", a
 it("exports quoted multiline event data without corrupting CSV", () => {
   expect(csv([{ event: 'a,"b"\nc' }])).toContain('"a,""b""\nc"');
 });
+it("records the actual native speed byte for future synchronized video measurements", async () => {
+  const { ble, storage } = await setup();
+  const engine = new CalibrationEngine(
+    ble,
+    storage,
+    undefined,
+    undefined,
+    () => 65,
+  );
+  engine.observation = 100;
+  const run = engine.start([modeSpecs[2]], "modes");
+  await vi.advanceTimersByTimeAsync(4000);
+  await run;
+  const requests = engine.state.events.filter(
+    (e) => e.event === "command_request" && e.mode === 4,
+  );
+  expect(requests).toHaveLength(1);
+  expect(requests[0].native_speed).toBe(65);
+  expect(requests[0].hex).toBe("9E0003419800E9");
+  expect(
+    engine.state.events
+      .filter((e) => e.event === "write_completed" && e.mode === 4)
+      .every((e) => e.native_speed === 65),
+  ).toBe(true);
+  expect(csv(engine.state.events).split("\r\n")[0]).toMatch(/,native_speed$/);
+});

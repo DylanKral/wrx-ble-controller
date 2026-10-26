@@ -1,0 +1,113 @@
+.simulator-panel {
+  min-width: 0;
+}
+.simulator-panel .sectionhead {
+  flex-wrap: wrap;
+}
+.sim-art {
+  margin-top: 12px;
+  background: #08121d;
+  border: 1px solid #273d53;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.sim-art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.sim-readout {
+  display: grid;
+  gap: 3px;
+  margin-top: 9px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.sim-readout span {
+  color: var(--muted);
+}
+.sim-tools {
+  margin-top: 10px;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+.sim-tools summary {
+  cursor: pointer;
+  min-height: 34px;
+  color: #c7daf2;
+  font-size: 13px;
+}
+.sim-controls {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.sim-controls button {
+  flex: 1 1 100px;
+  font-size: 12px;
+}
+.sim-color {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+.sim-color span {
+  font:
+    11px ui-monospace,
+    monospace;
+}
+.sim-repeat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+.sim-tools input[type="range"] {
+  width: 100%;
+  accent-color: #86c5ff;
+}
+.sim-led-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+  padding: 0;
+  margin: 12px 0 0;
+  list-style: none;
+}
+.sim-led-grid li {
+  min-width: 0;
+  background: #101b2d;
+  border: 1px solid #334966;
+  border-radius: 6px;
+  padding: 5px 2px;
+  text-align: center;
+}
+.sim-led-grid span {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+}
+.sim-led-grid i {
+  display: block;
+  height: 18px;
+  margin: 4px 0;
+  border-radius: 3px;
+}
+.sim-led-grid small {
+  display: block;
+  font:
+    8px ui-monospace,
+    monospace;
+  overflow-wrap: anywhere;
+}
+.sim-approved {
+  color: #b2dcff;
+}
+@media (max-width: 390px) {
+  .sim-led-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}

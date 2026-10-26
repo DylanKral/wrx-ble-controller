@@ -1,0 +1,112 @@
+{
+  "videos": [
+    {
+      "file": "IMG_1563(1).mp4",
+      "width": 512,
+      "height": 910,
+      "fps": 30.0,
+      "frames": 303,
+      "duration_seconds": 10.1
+    },
+    {
+      "file": "IMG_1564(1).mp4",
+      "width": 512,
+      "height": 910,
+      "fps": 30.0,
+      "frames": 280,
+      "duration_seconds": 9.333333333333334
+    },
+    {
+      "file": "IMG_1566(1).mp4",
+      "width": 512,
+      "height": 910,
+      "fps": 30.0,
+      "frames": 264,
+      "duration_seconds": 8.8
+    },
+    {
+      "file": "IMG_1567(1).mp4",
+      "width": 512,
+      "height": 910,
+      "fps": 30.0,
+      "frames": 199,
+      "duration_seconds": 6.633333333333334
+    },
+    {
+      "file": "IMG_1570.mp4",
+      "width": 512,
+      "height": 910,
+      "fps": 30.0,
+      "frames": 344,
+      "duration_seconds": 11.466666666666667
+    },
+    {
+      "file": "IMG_1571.mp4",
+      "width": 512,
+      "height": 910,
+      "fps": 30.0,
+      "frames": 284,
+      "duration_seconds": 9.466666666666667
+    },
+    {
+      "file": "IMG_1572.mp4",
+      "width": 512,
+      "height": 910,
+      "fps": 30.0,
+      "frames": 272,
+      "duration_seconds": 9.066666666666666
+    },
+    {
+      "file": "IMG_1573.mp4",
+      "width": 512,
+      "height": 910,
+      "fps": 30.0,
+      "frames": 367,
+      "duration_seconds": 12.233333333333333
+    },
+    {
+      "file": "IMG_1585(1).mp4",
+      "width": 512,
+      "height": 910,
+      "fps": 30.0,
+      "frames": 1357,
+      "duration_seconds": 45.233333333333334
+    },
+    {
+      "file": "IMG_1586(1).mp4",
+      "width": 512,
+      "height": 910,
+      "fps": 30.0,
+      "frames": 431,
+      "duration_seconds": 14.366666666666667
+    },
+    {
+      "file": "IMG_1587(1).mp4",
+      "width": 512,
+      "height": 910,
+      "fps": 30.0,
+      "frames": 851,
+      "duration_seconds": 28.366666666666667
+    }
+  ],
+  "speed_clips_found": [
+    "IMG_1585(1).mp4",
+    "IMG_1586(1).mp4",
+    "IMG_1587(1).mp4"
+  ],
+  "mode10": {
+    "file": "IMG_1573.mp4",
+    "capture_start_seconds": 8.584,
+    "capture_end_seconds": 11.084,
+    "capture_seconds": 2.5,
+    "capture_frames": 75,
+    "calibration_first_frame_mean_blue": 233.1578947368421,
+    "calibration_last_frame_mean_blue": 243.6315789473684,
+    "candidate_low_brightness_times_seconds": [
+      4.1333,
+      7.6667,
+      11.2333
+    ],
+    "note": "Candidate minima are exploratory from original point samples, not a validated full-cycle or speed-byte measurement."
+  }
+}

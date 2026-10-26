@@ -2,6 +2,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
   useSyncExternalStore,
   type ReactNode,
@@ -16,7 +17,13 @@ import {
   type Studio,
 } from "../storage/migrations";
 import { loadLegacy, type LegacyState } from "../storage/legacy";
-import { colorBytes } from "../bluetooth/commands";
+import { colorBytes, modeBytes } from "../bluetooth/commands";
+import { Simulator } from "../simulation/Simulator";
+import {
+  PlaybackOutput,
+  isOutputMode,
+  type OutputMode,
+} from "../simulation/PlaybackOutput";
 import {
   getBrowserStorage,
   keys,
@@ -24,6 +31,16 @@ import {
   writeJSON,
 } from "../storage/persistence";
 import type { Profile } from "../animations/types";
+import { validMode } from "../animations/types";
+import {
+  provisionalDurationFactor,
+  validNativeSpeed,
+} from "../animations/nativeSpeed";
+import {
+  loadNativeSpeedPreferences,
+  nativeSpeedFor,
+  type NativeSpeedPreferences,
+} from "../storage/nativeSpeedPreferences";
 
 function useApplication() {
   const { manager } = useBluetooth();
@@ -47,10 +64,59 @@ function useApplication() {
   const [tab, setTabState] = useState<"basic" | "custom">(() =>
     readText(storage, keys.tab) === "basic" ? "basic" : "custom",
   );
-  const [scheduler] = useState(
-    () => new Scheduler((bytes, valid) => manager.send(bytes, valid)),
+  const [outputMode, setOutputState] = useState<OutputMode>(() => {
+    const saved = readText(storage, keys.outputMode);
+    return isOutputMode(saved) ? saved : "hardware";
+  });
+  const [nativeSpeedPreferences, setSpeedPreferences] = useState(() =>
+    loadNativeSpeedPreferences(storage),
   );
-  const [calibration] = useState(() => new CalibrationEngine(manager, storage));
+  const speedPreferencesRef = useRef(nativeSpeedPreferences);
+  function getNativeSpeed(mode: number) {
+    return nativeSpeedFor(speedPreferencesRef.current, mode);
+  }
+  function getSpeedTimeFactor(mode: number, speed: number) {
+    return provisionalDurationFactor(
+      mode,
+      speed,
+      speedPreferencesRef.current.previewTiming[mode] === true,
+    );
+  }
+  const [simulator] = useState(() => {
+    const saved =
+      [
+        readText(storage, keys.selectedColor),
+        readText(storage, keys.staticColor),
+        readText(storage, "wrx-visual-demo-selected-color"),
+      ].find((color) => /^#[0-9a-f]{6}$/i.test(color)) ?? "#ff0000";
+    return new Simulator(
+      saved,
+      (color) => preference(keys.selectedColor, color),
+      undefined,
+      getSpeedTimeFactor,
+    );
+  });
+  const [output] = useState(
+    () => new PlaybackOutput(manager, simulator, outputMode),
+  );
+  const [scheduler] = useState(
+    () =>
+      new Scheduler(
+        (bytes, valid) => output.send(bytes, valid),
+        undefined,
+        getNativeSpeed,
+      ),
+  );
+  const [calibration] = useState(
+    () =>
+      new CalibrationEngine(
+        output,
+        storage,
+        undefined,
+        output.observe,
+        getNativeSpeed,
+      ),
+  );
   const playback = useSyncExternalStore(
     scheduler.subscribe,
     scheduler.getSnapshot,
@@ -111,12 +177,41 @@ function useApplication() {
       notify("Browser storage unavailable; preference may not persist.");
     }
   }
+  function saveSpeedPreferences(next: NativeSpeedPreferences) {
+    speedPreferencesRef.current = next;
+    setSpeedPreferences(next);
+    try {
+      writeJSON(storage, keys.nativeSpeed, next);
+    } catch {
+      notify(
+        "Native speed settings could not be saved; export a backup before closing.",
+      );
+    }
+  }
+  function setNativeSpeed(mode: number, speed: number) {
+    if (!validMode(mode) || !validNativeSpeed(speed)) return;
+    const current = speedPreferencesRef.current;
+    saveSpeedPreferences({
+      ...current,
+      speeds: { ...current.speeds, [mode]: speed },
+    });
+  }
+  function setSpeedTimingEnabled(mode: number, enabled: boolean) {
+    if (mode !== 4 && mode !== 10) return;
+    const current = speedPreferencesRef.current;
+    saveSpeedPreferences({
+      ...current,
+      previewTiming: { ...current.previewTiming, [mode]: enabled },
+    });
+    simulator.refreshSpeedMapping();
+  }
   function setRainbow(color: string) {
     preference(keys.rainbow, color);
     setColorRevision((r) => r + 1);
   }
   function setStaticColor(color: string) {
     setStaticState(color);
+    simulator.setSelectedColor(color);
     preference(keys.staticColor, color);
   }
   function setTab(value: "basic" | "custom") {
@@ -131,22 +226,34 @@ function useApplication() {
   function stop(reason?: string) {
     scheduler.stop(reason);
     calibration.abort(reason);
+    simulator.pause();
   }
+  function setOutputMode(mode: OutputMode) {
+    stop("Playback output changed; active experiments stopped.");
+    output.setMode(mode);
+    setOutputState(mode);
+    preference(keys.outputMode, mode);
+    simulator.color(simulator.state.selectedColor);
+  }
+  const canPlay =
+    outputMode !== "hardware" || manager.isUp("left") || manager.isUp("right");
   async function applyColor(color: string) {
     stop("Applying static color.");
-    if (!manager.isUp("left") && !manager.isUp("right")) {
+    if (!canPlay) {
       notify("Connect at least one tail light first.");
       return;
     }
-    const ok = await manager.send(colorBytes(color));
+    const ok = await output.send(colorBytes(color));
     notify(
-      ok
-        ? "Static RGB " + color.toUpperCase() + " requested; verify lights"
-        : "Static color write failed. Verify lights.",
+      output.mode === "simulation"
+        ? "Preview RGB " + color.toUpperCase() + " applied · Simulation Only"
+        : ok
+          ? "Static RGB " + color.toUpperCase() + " requested; verify lights"
+          : "Static color write failed. Verify lights.",
     );
   }
   function play(profile: Profile, repeats?: number) {
-    if (!manager.isUp("left") && !manager.isUp("right")) {
+    if (!canPlay) {
       notify("Connect at least one tail light first.");
       return;
     }
@@ -162,16 +269,24 @@ function useApplication() {
     });
   }
   function startCalibration(...args: Parameters<CalibrationEngine["start"]>) {
+    if (!output.hardwareEnabled) {
+      notify(
+        "Calibration timing tests require Hardware Only or Combined output.",
+      );
+      return;
+    }
     scheduler.stop("Calibration started.");
     void calibration.start(...args);
   }
   useEffect(() => {
     const off = manager.onDisconnect((side) => {
-      scheduler.stop("Bluetooth " + side + " disconnected.");
+      if (output.mode === "hardware")
+        scheduler.stop("Bluetooth " + side + " disconnected.");
       calibration.abort("Bluetooth " + side + " disconnected during test.");
     });
     const visibility = () => {
       if (document.hidden) {
+        simulator.pause();
         scheduler.stop(
           "Browser hidden; timer stopped. Last factory effect may continue internally.",
         );
@@ -188,7 +303,7 @@ function useApplication() {
       calibration.dispose();
       manager.dispose();
     };
-  }, [manager, scheduler, calibration]);
+  }, [manager, scheduler, calibration, simulator, output]);
   useEffect(() => {
     manager.setRestoreEnabled(autoRestore);
     if (!autoRestore) return;
@@ -208,10 +323,50 @@ function useApplication() {
   useEffect(() => {
     if (manager.state.message !== "Ready.") notify(manager.state.message);
   }, [manager.state.message]);
+  async function playModeOnce(mode: number) {
+    stop();
+    if (!canPlay) {
+      notify("Connect at least one tail light first.");
+      return;
+    }
+    const ok = await output.send(modeBytes(mode, getNativeSpeed(mode)));
+    notify(
+      ok
+        ? `Mode ${mode} started once${output.mode === "simulation" ? " · Simulation Only" : "; last effect may remain active."}`
+        : "BLE write failed.",
+    );
+  }
+  async function applyNativeSpeed(mode: number) {
+    if (calibrationState.running) {
+      notify("Stop the calibration test before reissuing a mode.");
+      return;
+    }
+    if (!canPlay) {
+      notify("Connect at least one tail light first.");
+      return;
+    }
+    const speed = getNativeSpeed(mode),
+      ok = await output.send(modeBytes(mode, speed));
+    notify(
+      ok
+        ? `Mode ${mode} requested at native speed ${speed} (0x${speed.toString(16).padStart(2, "0").toUpperCase()}); sequence dwell times are unchanged.`
+        : "Native speed write failed.",
+    );
+  }
   const profiles = [...fixedProfiles(storage), ...studio.profiles];
   const warning = [dataWarning, storageInfo.warning].filter(Boolean).join("\n");
   void colorRevision;
   return {
+    nativeSpeedPreferences,
+    getNativeSpeed,
+    setNativeSpeed,
+    setSpeedTimingEnabled,
+    applyNativeSpeed,
+    simulator,
+    outputMode,
+    setOutputMode,
+    canPlay,
+    playModeOnce,
     storage,
     studio,
     updateStudio,

@@ -10,6 +10,7 @@ import {
 } from "../calibration/specs";
 import { csv, formatClock, json } from "../calibration/exports";
 import { download } from "../storage/persistence";
+import { SimulatorPanel } from "../components/SimulatorPanel";
 export function CalibrationPage({
   hidden,
   navigate,
@@ -33,7 +34,9 @@ export function CalibrationPage({
     tick();
     return () => cancelAnimationFrame(frame);
   }, [s.running, s.t0]);
-  const disabled = s.running || (!connected.left && !connected.right);
+  const simulationOnly = app.outputMode === "simulation";
+  const disabled =
+    simulationOnly || s.running || (!connected.left && !connected.right);
   const start = (specs: TestSpec[], kind: "modes" | "timing") => {
     app.startCalibration(specs, kind);
     document
@@ -104,6 +107,13 @@ export function CalibrationPage({
         normal lighting before driving.
       </div>
       <ConnectionPanel disabled={s.running} />
+      {!hidden && <SimulatorPanel />}
+      {simulationOnly && (
+        <p className="note">
+          Physical calibration timing tests require Hardware Only or Combined
+          output.
+        </p>
+      )}
       <section className="panel">
         <h2>Recording settings</h2>
         <div
@@ -197,7 +207,7 @@ export function CalibrationPage({
           </button>
           <button
             type="button"
-            disabled={s.running}
+            disabled={s.running || simulationOnly}
             onClick={() => {
               app.scheduler.stop();
               c.baseline("#0000ff", "BLUE");
@@ -207,7 +217,7 @@ export function CalibrationPage({
           </button>
           <button
             type="button"
-            disabled={s.running}
+            disabled={s.running || simulationOnly}
             onClick={() => {
               app.scheduler.stop();
               c.baseline("#ff0000", "RED");

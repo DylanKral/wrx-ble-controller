@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { useApp } from "../context/AppContext";
-import { useBluetooth } from "../context/BluetoothContext";
 import { favoriteDuration, favoriteProfile } from "../storage/legacy";
 import { formatSec } from "../animations/types";
 import { kindLabel } from "./Favorites";
 export function Playlists({ repeats }: { repeats: number }) {
   const app = useApp(),
     { legacy: l } = app,
-    { connected } = useBluetooth(),
     [name, setName] = useState(
       l.items.find((p) => p.id === l.active)?.name || "",
     ),
@@ -238,7 +236,7 @@ export function Playlists({ repeats }: { repeats: number }) {
         <button
           type="button"
           className="primary"
-          disabled={(!connected.left && !connected.right) || !queue.length}
+          disabled={!app.canPlay || !queue.length}
           onClick={() =>
             app.play(favoriteProfile(queue, repeats === Infinity), repeats)
           }

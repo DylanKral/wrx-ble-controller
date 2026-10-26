@@ -1,4 +1,4 @@
-import { BLEManager } from "../bluetooth/BLEManager";
+import type { BLEManager } from "../bluetooth/BLEManager";
 import { colorBytes, hex, modeBytes } from "../bluetooth/commands";
 import { sides, type Side } from "../bluetooth/types";
 import {
@@ -9,6 +9,7 @@ import {
 } from "../storage/persistence";
 import type { CalibrationEvent } from "./exports";
 import type { TestSpec } from "./specs";
+import { DEFAULT_NATIVE_SPEED } from "../animations/nativeSpeed";
 interface Run {
   runId: string;
   testId: string;
@@ -49,9 +50,12 @@ export class CalibrationEngine {
   target: "both" | Side = "both";
   observation = 10000;
   constructor(
-    private ble: BLEManager,
+    private ble: Pick<BLEManager, "isUp" | "isWriting" | "writeSide">,
     private storage: StorageLike,
     private now = () => performance.now(),
+    private onCommand: (bytes: Uint8Array<ArrayBuffer>) => void = () => {},
+    private getNativeSpeed: (mode: number) => number = () =>
+      DEFAULT_NATIVE_SPEED,
   ) {
     try {
       const saved = readJSON(storage, keys.calibration);
@@ -118,12 +122,14 @@ export class CalibrationEngine {
     const targets = this.targetSides(),
       context = this.run ? { ...this.run } : null,
       tReq = this.now();
+    const nativeSpeed = bytes[0] === 0x9e && bytes.length === 7 ? bytes[3] : "";
     this.update({ requested: this.state.requested + 1 });
     this.record(
       "command_request",
       {
         mode: meta.mode ?? "",
         hex: hex(bytes),
+        native_speed: nativeSpeed,
         planned_ms: meta.atMs ?? "",
         label: meta.label ?? "",
         requested_at_ms:
@@ -136,12 +142,18 @@ export class CalibrationEngine {
       this.record("no_connected_target", {}, context);
       return;
     }
+    this.onCommand(bytes);
     for (const side of targets) {
       if (this.ble.isWriting(side)) {
         this.update({ skipped: this.state.skipped + 1 });
         this.record(
           "write_skipped_pending",
-          { side, mode: meta.mode ?? "", planned_ms: meta.atMs ?? "" },
+          {
+            side,
+            mode: meta.mode ?? "",
+            planned_ms: meta.atMs ?? "",
+            native_speed: nativeSpeed,
+          },
           context,
         );
         continue;
@@ -153,6 +165,7 @@ export class CalibrationEngine {
           side,
           mode: meta.mode ?? "",
           hex: hex(bytes),
+          native_speed: nativeSpeed,
           planned_ms: meta.atMs ?? "",
           dispatch_lateness_ms:
             meta.atMs != null && context?.t0 != null
@@ -171,6 +184,7 @@ export class CalibrationEngine {
             {
               side,
               mode: meta.mode ?? "",
+              native_speed: nativeSpeed,
               ble_write_promise_ms: +(this.now() - t).toFixed(3),
             },
             context,
@@ -187,6 +201,7 @@ export class CalibrationEngine {
               mode: meta.mode ?? "",
               planned_ms: meta.atMs ?? "",
               error: String(e),
+              native_speed: nativeSpeed,
             },
             context,
           );
@@ -282,7 +297,7 @@ export class CalibrationEngine {
             planned_ms: e.atMs,
             marker_lateness_ms: +(this.now() - run.t0 - e.atMs).toFixed(3),
           });
-          this.dispatch(modeBytes(e.mode), {
+          this.dispatch(modeBytes(e.mode, this.getNativeSpeed(e.mode)), {
             mode: e.mode,
             atMs: e.atMs,
             label: e.label,

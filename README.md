@@ -36,6 +36,24 @@ npm.cmd run preview
 
 [Migration checklist and complete behavior/storage audit](docs/MIGRATION.md). The archived HTML is the regression oracle, not a runtime dependency. `node scripts/extract-baseline.mjs` reproduces baseline data and the function/key inventory from that fixture; do not run it after editing extracted definitions unless intentionally resetting them to baseline.
 
+## Calibrated animation previews
+
+Animation preview is available on Main, Custom Testing, and Calibration Mode. Choose **Simulation Only** to run Basic or Custom presets without connected lights; it sends no Bluetooth commands. **Combined** previews the same requests while sending them to connected controllers. **Hardware Only** retains the existing operation and is the initial default. The selected output and remembered RGB color are saved locally without changing existing profile keys.
+
+The eight visual tracks, approved SVG and rendering helper are imported directly from `Animations/`. Mode 4 uses its approved 66 frames over 2.20 seconds. Mode 10 uses the revised 75 frames over a 2.50-second captured window, with approved enhanced fade on at 100%. Modes 4/10 use the latest selected or issued RGB color, including Custom color steps; other modes preserve recorded RGB. Factory loop classification and all Custom step durations are unchanged.
+
+Open **Preview controls and numbered LEDs** for visual-only play/pause, frame stepping, timeline scrubbing, RGB selection, and numbered indicators. These inspector controls never transmit commands or change the hardware scheduler. Physical calibration timing tests require Hardware Only or Combined. Combined can continue previewing if hardware is unavailable, with connection/write failures still reported.
+
+See [integration review and validation](docs/CALIBRATED_PREVIEWS.md). The original package is preserved. Modes 4/10 match the approved reference; the other six tracks retain their source data and have not all been visually approved. Browser simulation does not establish physical LED response timing.
+
+## Native animation speed
+
+Open **Native animation speed** to choose a per-mode byte (1–255). The default remains `0x81` (129). Editing the setting prepares future requests; **Apply speed and reissue mode** sends one request now, or only previews it in Simulation Only. Native speed does not change a Custom step's dwell or cut time.
+
+The optional preview timing model is off by default and is available only for Modes 4 and 10. It uses tentative 01/81/FF anchor assignments and log-duration interpolation based on the supplied measurements. Mode 4 keeps its original 2.20-second frame calibration; Mode 10 keeps its 2.50-second capture separate from the measured ~3.54-second breathing cycle. Exact intermediate response, startup latency and phase-reset behavior are not verified. Calibration exports now include the actual `native_speed` byte.
+
+See [native speed evidence and assumptions](docs/NATIVE_SPEED.md), including the original-video review and measurement CSV. No speed-response curve is invented for the other six modes.
+
 ## Browser data and backups
 
 All data remains local to the browser. The old storage keys are retained, and data is never cleared on initialization. All 10 fixed profiles are compiled into the app independently of storage; personal profiles remain separate. Previous edited fixed slots become saved editable copies. Retired fixed slots and their direct buttons are omitted when reading old storage or backups, while personal copies and their assignments are retained. Favorite names, manual timing, playlist indices, button assignments/order, calibration logs, static color, Rainbow Chase Blue start color, tabs, and auto-restore preference are preserved.
