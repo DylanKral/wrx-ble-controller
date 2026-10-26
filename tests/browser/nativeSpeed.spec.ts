@@ -342,7 +342,9 @@ test("active Apply rebases the Custom cut while future edits wait for the next s
   await expect(page.locator("#home-view .home-status")).toHaveText(
     "2 of 2 connected",
   );
-  await page.clock.install();
+  // Keep browser actions and CI host load from advancing the deadline under test.
+  await page.clock.install({ time: new Date("2026-10-25T12:00:00Z") });
+  await page.clock.pauseAt(new Date("2026-10-25T12:01:00Z"));
   await page.getByText("Native animation speed", { exact: true }).click();
   await page.getByLabel("Native speed mode", { exact: true }).selectOption("7");
   await page.locator('[data-profile-id="overlap-cut"]').click();
@@ -382,6 +384,15 @@ test("active Apply rebases the Custom cut while future edits wait for the next s
       ),
     )
     .toBe(2);
+  const transitionWrites = await page.evaluate(() =>
+    window.__ble.writes.filter((w) => w.side === "left"),
+  );
+  const reapplied = transitionWrites.find((w) => w.hex === "9E0006FF9800E9")!;
+  const transitioned = transitionWrites.find(
+    (w) => w.hex === "9E0007FF9800E9",
+  )!;
+  expect(transitioned.at - reapplied.at).toBeGreaterThanOrEqual(cutMs);
+  expect(transitioned.at - reapplied.at).toBeLessThan(cutMs + 2);
   await page.getByRole("button", { name: "Stop + Red", exact: true }).click();
   await page.clock.runFor(5000);
   const writes = await page.evaluate(() => window.__ble.writes);
