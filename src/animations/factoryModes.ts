@@ -40,6 +40,11 @@ export const CAL: Record<number, Calibration> = {
     kind: "continuous",
     note: "Internally-looping rainbow; 4.00s illustrative dwell, not measured",
   },
+  "10": {
+    ms: 3540,
+    kind: "continuous",
+    note: "~3.54s breathing cycle in recordings; preview is only a 2.50s capture",
+  },
 };
 export const starter = [
   {
@@ -86,6 +91,7 @@ export const starter = [
 export const basicProfiles: readonly Profile[] = [
   {
     id: "basic-3",
+    followAnimationSpeed: true,
     name: "Mode 3 · Rainbow Chase",
     repeat: true,
     experimental: false,
@@ -100,6 +106,7 @@ export const basicProfiles: readonly Profile[] = [
   },
   {
     id: "basic-4",
+    followAnimationSpeed: true,
     name: "Mode 4 · Chase",
     repeat: true,
     experimental: false,
@@ -114,6 +121,7 @@ export const basicProfiles: readonly Profile[] = [
   },
   {
     id: "basic-5",
+    followAnimationSpeed: true,
     name: "Mode 5 · Rainbow",
     repeat: true,
     experimental: false,
@@ -128,6 +136,7 @@ export const basicProfiles: readonly Profile[] = [
   },
   {
     id: "basic-6",
+    followAnimationSpeed: true,
     name: "Mode 6 · Factory effect",
     repeat: true,
     experimental: false,
@@ -142,6 +151,7 @@ export const basicProfiles: readonly Profile[] = [
   },
   {
     id: "basic-7",
+    followAnimationSpeed: true,
     name: "Mode 7 · Overlap",
     repeat: true,
     experimental: false,
@@ -156,6 +166,7 @@ export const basicProfiles: readonly Profile[] = [
   },
   {
     id: "basic-8",
+    followAnimationSpeed: true,
     name: "Mode 8 · Reverse Overlap",
     repeat: true,
     experimental: false,
@@ -170,6 +181,7 @@ export const basicProfiles: readonly Profile[] = [
   },
   {
     id: "basic-9",
+    followAnimationSpeed: true,
     name: "Mode 9 · Flash",
     repeat: true,
     experimental: false,
@@ -184,15 +196,16 @@ export const basicProfiles: readonly Profile[] = [
   },
   {
     id: "basic-10",
-    name: "Mode 10 · Unverified effect",
+    followAnimationSpeed: true,
+    name: "Mode 10 · Breathe",
     repeat: true,
     experimental: false,
-    nativeLoop: false,
+    nativeLoop: true,
     steps: [
       {
         type: "mode",
         mode: 10,
-        ms: 2500,
+        ms: 3540,
       },
     ],
   },

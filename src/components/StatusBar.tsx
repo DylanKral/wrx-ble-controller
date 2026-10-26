@@ -22,7 +22,7 @@ export function StatusBar({ development }: { development: boolean }) {
         </strong>
         <small role="status">
           {p?.current
-            ? `Step ${p.step + 1}/${p.total} · ${stepText(p.current)} · ${(p.current.ms / 1000).toFixed(2)}s`
+            ? `Step ${p.step + 1}/${p.total} · ${stepText(p.current)} · ${((p.timing?.effectiveMs ?? p.current.ms) / 1000).toFixed(2)}s effective`
             : app.message}
         </small>
       </div>

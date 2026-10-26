@@ -108,7 +108,7 @@ describe("native speed protocol and provisional model", () => {
     );
     const ble = new BLEManager(() => undefined),
       send = vi.spyOn(ble, "send"),
-      output = new PlaybackOutput(ble, sim, "simulation");
+      output = new PlaybackOutput(ble, sim, "simulation", () => now);
     await output.send(modeBytes(4, 1));
     now = 600;
     const frame = sim.sample().frame;
@@ -210,7 +210,11 @@ describe("native speed protocol and provisional model", () => {
     expect(storage.getItem(keys.studio)).toBe(profile);
     storage.setItem(keys.nativeSpeed, "{bad");
     expect(loadNativeSpeedPreferences(storage)).toEqual({
-      version: 1,
+      version: 2,
+      scope: "global",
+      globalSpeed: 129,
+      bundledFollow: true,
+      corrections: {},
       speeds: {},
       previewTiming: {},
     });

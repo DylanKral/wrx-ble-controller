@@ -4,6 +4,10 @@ import {
   WRITE_SERVICE,
 } from "./commands";
 import { writeCharacteristic } from "./connections";
+export interface DeliveryHooks {
+  dispatch?: (side: Side, at: number) => void;
+  result?: (side: Side, error?: string) => void;
+}
 import {
   names,
   sides,
@@ -239,6 +243,7 @@ export class BLEManager {
   send(
     bytes: Uint8Array<ArrayBuffer>,
     valid: () => boolean = () => true,
+    hooks: DeliveryHooks = {},
   ): Promise<boolean> {
     const task = this.queue
       .catch(() => {})
@@ -263,7 +268,17 @@ export class BLEManager {
               });
             if (expired || !valid())
               throw new Error("Cancelled queued command");
-            return this.writeSide(side, bytes);
+            try {
+              if (!this.isUp(side))
+                throw new Error("Disconnected before dispatch");
+              hooks.dispatch?.(side, performance.now());
+              const transport = await this.writeSide(side, bytes);
+              if (!expired && valid()) hooks.result?.(side);
+              return transport;
+            } catch (error) {
+              if (!expired && valid()) hooks.result?.(side, String(error));
+              throw error;
+            }
           }),
         ).then((results) => {
           const errors = results.flatMap((r, i) =>
@@ -281,7 +296,13 @@ export class BLEManager {
             new Promise<boolean>((resolve) => {
               timeout = setTimeout(() => {
                 expired = true;
-                this.report("Bluetooth write stalled beyond 6s.");
+                if (valid()) {
+                  active.forEach((side) => {
+                    if (this.isWriting(side))
+                      hooks.result?.(side, "Bluetooth write stalled beyond 6s");
+                  });
+                  this.report("Bluetooth write stalled beyond 6s.");
+                }
                 resolve(false);
               }, 6000);
             }),

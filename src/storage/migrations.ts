@@ -41,8 +41,22 @@ export function cleanStep(value: unknown): Step | null {
     typeof s.color === "string" &&
     /^#[0-9a-f]{6}$/i.test(s.color)
   )
-    return { type: "color", color: s.color.toLowerCase(), ms };
-  if (s.type === "wait") return { type: "wait", ms };
+    return {
+      type: "color",
+      color: s.color.toLowerCase(),
+      ms,
+      ...(validMode(Number(s.timingMode))
+        ? { timingMode: Number(s.timingMode) }
+        : {}),
+    };
+  if (s.type === "wait")
+    return {
+      type: "wait",
+      ms,
+      ...(validMode(Number(s.timingMode))
+        ? { timingMode: Number(s.timingMode) }
+        : {}),
+    };
   return null;
 }
 export function cleanProfile(value: unknown): Profile | null {
@@ -62,6 +76,9 @@ export function cleanProfile(value: unknown): Profile | null {
     name: shortText(p.name) || "Untitled",
     repeat: !!p.repeat,
     experimental: !!p.experimental,
+    ...(typeof p.followAnimationSpeed === "boolean"
+      ? { followAnimationSpeed: p.followAnimationSpeed }
+      : {}),
     steps: steps as Step[],
   };
 }

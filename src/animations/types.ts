@@ -1,13 +1,14 @@
 export type Step =
   | { type: "mode"; mode: number; ms: number; suppressRepeated?: boolean }
-  | { type: "color"; color: string; ms: number }
-  | { type: "wait"; ms: number };
+  | { type: "color"; color: string; ms: number; timingMode?: number }
+  | { type: "wait"; ms: number; timingMode?: number };
 export interface Profile {
   id: string;
   name: string;
   repeat: boolean;
   experimental: boolean;
   nativeLoop?: boolean;
+  followAnimationSpeed?: boolean;
   steps: Step[];
 }
 export interface PresetButton {

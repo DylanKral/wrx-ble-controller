@@ -8,7 +8,7 @@ import {
 } from "../animations/types";
 import { useApp } from "../context/AppContext";
 import { useBluetooth } from "../context/BluetoothContext";
-import { favoriteProfile } from "../storage/legacy";
+import { favoriteProfile, validFavoriteDuration } from "../storage/legacy";
 export const kindLabel = (kind: string) =>
   kind === "continuous"
     ? "Internal loop"
@@ -37,7 +37,7 @@ export function Favorites({ repeats }: { repeats: number }) {
     if (
       !draft.name.trim() ||
       !validMode(draft.mode) ||
-      !validMs(fullMs, 50) ||
+      !validFavoriteDuration(fullMs, draft.mode) ||
       Math.abs(fullMs - f) > 0.0001 ||
       (draft.transition === "cut" &&
         (!validMs(cutMs, 50) ||
@@ -45,7 +45,7 @@ export function Favorites({ repeats }: { repeats: number }) {
           Math.abs(cutMs - c) > 0.0001))
     ) {
       app.notify(
-        "Invalid favorite: use mode 1–256, duration 0.05–60.00s in 0.05s increments, and a cut shorter than full duration.",
+        "Invalid favorite: use mode 1–256, duration 0.05–60.00s in 0.05s increments (or the measured reference), and a cut shorter than full duration.",
       );
       return;
     }
