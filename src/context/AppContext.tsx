@@ -66,7 +66,7 @@ function useApplication() {
   );
   const [outputMode, setOutputState] = useState<OutputMode>(() => {
     const saved = readText(storage, keys.outputMode);
-    return isOutputMode(saved) ? saved : "hardware";
+    return isOutputMode(saved) ? saved : "combined";
   });
   const [nativeSpeedPreferences, setSpeedPreferences] = useState(() =>
     loadNativeSpeedPreferences(storage),

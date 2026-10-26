@@ -9,6 +9,7 @@ test("mobile Main retains the fixed preset grid, Basic modes, tabs, colors, and 
   page.on("pageerror", (e) => errors.push(e.message));
   await mockBluetooth(page);
   await page.goto("./");
+  await expect(page.getByLabel("Playback output", { exact: true })).toHaveValue("combined");
   await expect(
     page.getByRole("heading", { name: "Lighting presets" }),
   ).toBeVisible();
@@ -113,6 +114,7 @@ test("authorized-device restore, internally looping mode, disconnect and automat
 }) => {
   await mockBluetooth(page, true);
   await page.goto("./");
+  await page.getByLabel("Playback output", { exact: true }).selectOption("hardware");
   await expect(page.locator("#home-view .home-status")).toHaveText(
     "2 of 2 connected",
   );
@@ -294,6 +296,7 @@ test("BLE failure stops playback and reports the failed controller", async ({
 }) => {
   await mockBluetooth(page, true);
   await page.goto("./");
+  await page.getByLabel("Playback output", { exact: true }).selectOption("hardware");
   await expect(page.locator("#home-view .home-status")).toHaveText(
     "2 of 2 connected",
   );

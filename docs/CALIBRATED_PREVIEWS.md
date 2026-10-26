@@ -14,7 +14,7 @@ Files to modify: application context to route normal commands through the output
 
 ## Behavior
 
-Hardware Only remains the initial default so existing operation does not change. Simulation Only plays without connections and never calls the BLE writer. Combined previews commands and also sends them to connected controllers; a missing/failed hardware connection is reported without stopping the preview. Switching outputs cancels active experiments and invalidates queued commands. Calibration's physical timing tests require a hardware output; their request logging and scheduling remain unchanged.
+Combined is the default when there is no valid saved output preference. Explicitly saved Simulation Only, Hardware Only, or Combined choices are restored. Simulation Only plays without connections and never calls the BLE writer. Combined previews commands and also sends them to connected controllers; a missing/failed hardware connection is reported without stopping the preview. Switching outputs cancels active experiments and invalidates queued commands. Calibration's physical timing tests require a hardware output; their request logging and scheduling remain unchanged.
 
 Main and Development share one simulator state and the exact same imported tracks. A static color selection and any issued RGB command update the remembered preview color; only Modes 4 and 10 use it to tint captured brightness. Color steps interrupt an active factory animation, wait steps let it continue, different mode commands interrupt immediately, and native loops follow the existing factory classification. Individual Custom step durations are unchanged.
 
