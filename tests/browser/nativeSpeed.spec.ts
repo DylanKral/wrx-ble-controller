@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { mockBluetooth, navigate } from "./mockBluetooth";
+import { durationFactor } from "../../src/animations/timing";
 
-test("native speed defaults remain 81, intermediate requests use the chosen byte, and mapping remains opt-in", async ({
+test("linked speed defaults remain 81 and intermediate requests share the selected byte and timing", async ({
   page,
 }) => {
   await mockBluetooth(page, true);
@@ -16,9 +17,14 @@ test("native speed defaults remain 81, intermediate requests use the chosen byte
   await expect(
     page.getByLabel("Native speed byte", { exact: true }),
   ).toHaveValue("129");
+  await expect(page.getByLabel("Speed scope", { exact: true })).toHaveValue(
+    "global",
+  );
   await expect(
-    page.getByLabel("Use provisional timing for Mode 4", { exact: true }),
-  ).not.toBeChecked();
+    page.getByLabel("Follow Animation Speed for bundled Custom presets", {
+      exact: true,
+    }),
+  ).toBeChecked();
   await page
     .getByRole("button", { name: "Apply speed and reissue mode", exact: true })
     .click();
@@ -39,9 +45,9 @@ test("native speed defaults remain 81, intermediate requests use the chosen byte
         .getByLabel("Native speed byte", { exact: true })
         .fill(String(speed));
       const before = await page.evaluate(() => window.__ble.writes.length);
-      await page
-        .getByLabel(`Use provisional timing for Mode ${mode}`, { exact: true })
-        .check();
+      await expect(page.getByTestId("timing-estimate")).toContainText(
+        "provisional curve",
+      );
       expect(await page.evaluate(() => window.__ble.writes.length)).toBe(
         before,
       );
@@ -78,12 +84,12 @@ test("native speed defaults remain 81, intermediate requests use the chosen byte
   await expect(
     page.getByLabel("Native speed byte", { exact: true }),
   ).toHaveValue("192");
-  await expect(
-    page.getByLabel("Use provisional timing for Mode 10", { exact: true }),
-  ).toBeChecked();
+  await expect(page.getByLabel("Speed scope", { exact: true })).toHaveValue(
+    "global",
+  );
 });
 
-test("Simulation Only speed changes and model switches never write and leave saved Custom timing intact", async ({
+test("Simulation Only speed changes never write and leave saved manual Custom timing intact", async ({
   page,
 }) => {
   await mockBluetooth(page, true);
@@ -103,9 +109,6 @@ test("Simulation Only speed changes and model switches never write and leave sav
   await page.getByText("Native animation speed", { exact: true }).click();
   await page.getByLabel("Native speed byte", { exact: true }).fill("1");
   await page
-    .getByLabel("Use provisional timing for Mode 4", { exact: true })
-    .check();
-  await page
     .getByRole("button", { name: "Apply speed and reissue mode", exact: true })
     .click();
   await expect(page.locator(".sim-readout")).toContainText("2.243×");
@@ -114,15 +117,15 @@ test("Simulation Only speed changes and model switches never write and leave sav
   ).toBe(saved);
   expect(await page.evaluate(() => window.__ble.writes)).toEqual([]);
   await page.getByLabel("Native speed mode", { exact: true }).selectOption("7");
+  await expect(page.getByTestId("timing-estimate")).toContainText(
+    "Estimated curve · unmeasured mode",
+  );
   await expect(
-    page.getByLabel("Use provisional timing for Mode 7", { exact: true }),
-  ).toBeDisabled();
-  await expect(
-    page.getByText(
-      "No speed-to-time measurements are available for this mode. Its preview timing is unchanged.",
-      { exact: true },
-    ),
-  ).toBeVisible();
+    page.getByLabel("Follow Animation Speed for this profile", { exact: true }),
+  ).not.toBeChecked();
+  await expect(page.getByTestId("step-1-timing")).toHaveText(
+    "Fixed time: 1.30s · unchanged",
+  );
 });
 
 test("calibration logs the chosen native byte and locks speed editing during the recording", async ({
@@ -166,4 +169,279 @@ test("calibration logs the chosen native byte and locks speed editing during the
     )
     .toBe(1);
   await page.getByRole("button", { name: "Stop test", exact: true }).click();
+});
+
+test("Studio shows live original/effective cuts, keeps old personal profiles fixed, and preserves independent speeds", async ({
+  page,
+}) => {
+  await mockBluetooth(page);
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      "wrx-native-speed-preferences-v1",
+      JSON.stringify({ version: 1, speeds: { 7: 1, 8: 255 } }),
+    );
+    localStorage.setItem(
+      "wrx-dream-studio-v7",
+      JSON.stringify({
+        version: 9,
+        selectedId: "saved-personal",
+        profiles: [
+          {
+            id: "saved-personal",
+            name: "My existing cuts",
+            repeat: false,
+            experimental: false,
+            steps: [
+              { type: "mode", mode: 7, ms: 1300 },
+              { type: "mode", mode: 8, ms: 1300 },
+            ],
+          },
+        ],
+      }),
+    );
+  });
+  await page.goto("./#development");
+  await page.getByText("Native animation speed", { exact: true }).click();
+  await expect(page.getByLabel("Speed scope", { exact: true })).toHaveValue(
+    "per-mode",
+  );
+  await expect(
+    page.getByLabel("Follow Animation Speed for this profile", { exact: true }),
+  ).not.toBeChecked();
+  await expect(page.getByTestId("step-1-timing")).toHaveText(
+    "Fixed time: 1.30s · unchanged",
+  );
+  await page
+    .getByLabel("Profile to edit", { exact: true })
+    .selectOption("overlap-cut");
+  await expect(page.getByTestId("step-1-timing")).toContainText(
+    `Original Cut: 1.30s · Effective Cut: ${(1.3 * durationFactor(7, 1)).toFixed(3)}s`,
+  );
+  await expect(page.getByTestId("step-2-timing")).toContainText(
+    `Effective Cut: ${(1.3 * durationFactor(8, 255)).toFixed(3)}s`,
+  );
+  await page.getByLabel("Speed scope", { exact: true }).selectOption("global");
+  await expect(
+    page.getByLabel("Native speed byte", { exact: true }),
+  ).toHaveValue("129");
+  await expect(page.getByTestId("step-1-timing")).toContainText(
+    "Effective Cut: 1.300s",
+  );
+  await expect(page.getByTestId("step-2-timing")).toContainText(
+    "Effective Cut: 1.300s",
+  );
+  await page.getByLabel("Native speed slider", { exact: true }).fill("192");
+  for (const step of [1, 2])
+    await expect(page.getByTestId(`step-${step}-timing`)).toContainText(
+      `Effective Cut: ${(1.3 * durationFactor(7, 192)).toFixed(3)}s`,
+    );
+  await page
+    .getByLabel("Follow Animation Speed for bundled Custom presets", {
+      exact: true,
+    })
+    .uncheck();
+  await expect(page.getByTestId("step-1-timing")).toHaveText(
+    "Fixed time: 1.30s · unchanged",
+  );
+  await page
+    .getByLabel("Profile to edit", { exact: true })
+    .selectOption("saved-personal");
+  await page
+    .getByLabel("Follow Animation Speed for this profile", { exact: true })
+    .check();
+  await expect(page.getByTestId("step-1-timing")).toContainText(
+    "Original Cut: 1.30s",
+  );
+  const stored = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("wrx-dream-studio-v7")!),
+  );
+  expect(stored.profiles[0]).toMatchObject({
+    followAnimationSpeed: true,
+    steps: [
+      { type: "mode", mode: 7, ms: 1300 },
+      { type: "mode", mode: 8, ms: 1300 },
+    ],
+  });
+  await page
+    .getByLabel("Speed scope", { exact: true })
+    .selectOption("per-mode");
+  await page.getByLabel("Native speed mode", { exact: true }).selectOption("7");
+  await expect(
+    page.getByLabel("Native speed byte", { exact: true }),
+  ).toHaveValue("1");
+  await page.getByLabel("Native speed mode", { exact: true }).selectOption("8");
+  await expect(
+    page.getByLabel("Native speed byte", { exact: true }),
+  ).toHaveValue("255");
+  expect(await page.evaluate(() => window.__ble.writes)).toEqual([]);
+});
+
+test("expanded speed and Studio timing controls fit a 320px screen", async ({
+  page,
+}, info) => {
+  await mockBluetooth(page);
+  await page.setViewportSize({ width: 320, height: 844 });
+  await page.goto("./#development");
+  await page.getByText("Native animation speed", { exact: true }).click();
+  await page.getByText("Timing model correction", { exact: true }).click();
+  await page
+    .getByLabel("Profile to edit", { exact: true })
+    .selectOption("overlap-cut");
+  await page.getByLabel("Native speed byte", { exact: true }).fill("192");
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await expect(page.getByTestId("step-1-timing")).toContainText(
+    "Original Cut: 1.30s",
+  );
+  await page.screenshot({
+    path: info.outputPath("speed-controls-320.png"),
+    fullPage: true,
+  });
+});
+
+test("Breathe measured favorite timing saves and survives refresh without rounding", async ({
+  page,
+}) => {
+  await mockBluetooth(page);
+  await page.goto("./#development");
+  await page.getByLabel("Factory mode (1–256)", { exact: true }).fill("10");
+  await page
+    .getByRole("button", { name: "Use measured timing", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Save favorite + timing", exact: true })
+    .click();
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          JSON.parse(localStorage.getItem("wrx-dream-presets-v5") || "{}")
+            .presets?.[0]?.fullMs,
+      ),
+    )
+    .toBe(3540);
+  await page.reload();
+  const saved = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("wrx-dream-presets-v5")!),
+  );
+  expect(saved.presets[0]).toMatchObject({
+    mode: 10,
+    kind: "continuous",
+    fullMs: 3540,
+  });
+});
+
+test("active Apply rebases the Custom cut while future edits wait for the next step, then Stop + Red cancels", async ({
+  page,
+}) => {
+  await mockBluetooth(page, true);
+  await page.goto("./");
+  await expect(page.locator("#home-view .home-status")).toHaveText(
+    "2 of 2 connected",
+  );
+  await page.clock.install();
+  await page.getByText("Native animation speed", { exact: true }).click();
+  await page.getByLabel("Native speed mode", { exact: true }).selectOption("7");
+  await page.locator('[data-profile-id="overlap-cut"]').click();
+  await page.clock.runFor(600);
+  await page.getByLabel("Native speed byte", { exact: true }).fill("255");
+  expect(
+    await page.evaluate(
+      () => window.__ble.writes.filter((w) => w.hex.startsWith("9E")).length,
+    ),
+  ).toBe(2);
+  await page
+    .getByRole("button", { name: "Apply speed and reissue mode", exact: true })
+    .click();
+  await page.clock.runFor(10);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          window.__ble.writes.filter((w) => w.hex === "9E0006FF9800E9").length,
+      ),
+    )
+    .toBe(2);
+  const cutMs = 1300 * durationFactor(7, 255);
+  await page.clock.runFor(Math.floor(cutMs) - 30);
+  expect(
+    await page.evaluate(
+      () =>
+        window.__ble.writes.filter((w) => w.hex === "9E0007FF9800E9").length,
+    ),
+  ).toBe(0);
+  await page.clock.runFor(40);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          window.__ble.writes.filter((w) => w.hex === "9E0007FF9800E9").length,
+      ),
+    )
+    .toBe(2);
+  await page.getByRole("button", { name: "Stop + Red", exact: true }).click();
+  await page.clock.runFor(5000);
+  const writes = await page.evaluate(() => window.__ble.writes);
+  expect(writes.filter((w) => w.hex.startsWith("9E"))).toHaveLength(6);
+  expect(writes.slice(-2).map((w) => w.hex)).toEqual([
+    "56FF000000F0AA",
+    "56FF000000F0AA",
+  ]);
+  await expect(page.locator(".sim-readout")).toHaveAttribute(
+    "data-mode",
+    "static",
+  );
+});
+
+test("Combined reports independent side failures while Breathe sends once and its partial preview holds", async ({
+  page,
+}) => {
+  await mockBluetooth(page, true);
+  await page.goto("./");
+  await expect(page.locator("#home-view .home-status")).toHaveText(
+    "2 of 2 connected",
+  );
+  await page.evaluate(() => {
+    window.__ble.failSide = "right";
+  });
+  await page.clock.install();
+  await page.getByRole("tab", { name: "Basic", exact: true }).click();
+  await page.locator('[data-profile-id="basic-10"]').click();
+  await page.clock.runFor(10000);
+  await expect(
+    page.getByLabel("Playback delivery", { exact: true }),
+  ).toContainText("Left: sent · Right: error");
+  await expect(
+    page.getByLabel("Playback delivery", { exact: true }),
+  ).toContainText("Mock radio failure");
+  await expect(page.locator(".home-active-step")).toContainText("Breathe");
+  const readout = page.locator(".sim-readout");
+  await expect(readout).toHaveAttribute("data-mode", "10");
+  await expect(readout).toContainText("2.500 / 2.500s");
+  expect(
+    await page.evaluate(
+      () =>
+        window.__ble.writes.filter((w) => w.hex === "9E0009819800E9").length,
+    ),
+  ).toBe(1);
+  await page
+    .getByText("Preview controls and numbered LEDs", { exact: true })
+    .click();
+  await expect(
+    page.getByRole("checkbox", { name: "Repeat captured preview window" }),
+  ).toBeDisabled();
+  await page.getByRole("button", { name: "Stop + Red", exact: true }).click();
+  await page.evaluate(() => {
+    window.__ble.disconnect("left");
+    window.__ble.disconnect("right");
+  });
+  await page.locator('[data-profile-id="basic-4"]').click();
+  await page.clock.runFor(100);
+  await expect(
+    page.getByLabel("Playback delivery", { exact: true }),
+  ).toContainText("Left: disconnected · Right: disconnected");
+  await expect(page.locator(".sim-readout")).toHaveAttribute("data-mode", "4");
 });

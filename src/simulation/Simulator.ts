@@ -1,4 +1,5 @@
 import { CAL } from "../animations/factoryModes";
+import { durationFactor as sharedDurationFactor } from "../animations/timing";
 import {
   DEFAULT_NATIVE_SPEED,
   validNativeSpeed,
@@ -26,7 +27,10 @@ export class Simulator {
     color = "#ff0000",
     private rememberColor: (color: string) => void = () => {},
     private now = () => performance.now(),
-    private durationFactor: (mode: number, speed: number) => number = () => 1,
+    private durationFactor: (
+      mode: number,
+      speed: number,
+    ) => number = sharedDurationFactor,
   ) {
     this.state = {
       mode: null,
@@ -59,31 +63,43 @@ export class Simulator {
     this.setSelectedColor(color);
     this.update({ mode: null, playing: false, offset: 0 });
   }
-  mode(mode: number, nativeSpeed = DEFAULT_NATIVE_SPEED) {
+  resolveTimeFactor(mode: number, speed: number) {
+    return this.durationFactor(mode, speed);
+  }
+  mode(
+    mode: number,
+    nativeSpeed = DEFAULT_NATIVE_SPEED,
+    restart = false,
+    dispatchedAt = this.now(),
+    timeFactor = this.resolveTimeFactor(mode, nativeSpeed),
+  ) {
     if (!validNativeSpeed(nativeSpeed)) throw new Error("Invalid native speed");
+    if (!Number.isFinite(timeFactor) || timeFactor < 0.05 || timeFactor > 10)
+      throw new Error("Invalid preview timing factor");
     const sample = this.sample();
     // Repeated selections cannot force a running factory effect to restart.
     if (
       this.state.mode === mode &&
       this.state.nativeSpeed === nativeSpeed &&
+      !restart &&
       sample.running
     )
       return;
     this.update({
       mode,
       playing: true,
-      repeat: CAL[mode]?.kind === "continuous",
-      startedAt: this.now(),
+      repeat: mode !== 10 && CAL[mode]?.kind === "continuous",
+      startedAt: dispatchedAt,
       offset: 0,
       nativeSpeed,
-      timeFactor: this.durationFactor(mode, nativeSpeed),
+      timeFactor,
     });
   }
   inspectMode(mode: number, nativeSpeed = DEFAULT_NATIVE_SPEED) {
     this.update({
       mode,
       playing: false,
-      repeat: CAL[mode]?.kind === "continuous",
+      repeat: mode !== 10 && CAL[mode]?.kind === "continuous",
       startedAt: this.now(),
       offset: 0,
       nativeSpeed,
@@ -106,7 +122,8 @@ export class Simulator {
         : calibrationByMode.get(this.state.mode);
     const duration = record?.cycleSeconds ?? 0,
       rawElapsed = this.elapsed(at);
-    const repeating = this.state.playing && this.state.repeat;
+    const repeating =
+      this.state.mode !== 10 && this.state.playing && this.state.repeat;
     const elapsed =
       repeating && duration > 0
         ? rawElapsed % duration
@@ -126,9 +143,7 @@ export class Simulator {
       duration,
       wallDuration: duration * this.state.timeFactor,
       running:
-        this.state.playing &&
-        !!record &&
-        (this.state.repeat || rawElapsed < duration),
+        this.state.playing && !!record && (repeating || rawElapsed < duration),
     };
   }
   pause() {
@@ -163,7 +178,11 @@ export class Simulator {
   }
   setRepeat(repeat: boolean) {
     const offset = this.sample().elapsed;
-    this.update({ repeat, offset, startedAt: this.now() });
+    this.update({
+      repeat: this.state.mode !== 10 && repeat,
+      offset,
+      startedAt: this.now(),
+    });
   }
   refreshSpeedMapping() {
     if (this.state.mode === null) return;

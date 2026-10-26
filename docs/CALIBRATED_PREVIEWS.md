@@ -1,5 +1,7 @@
 # Local calibrated preview integration
 
+This document records the original preview integration. The subsequent [synchronization update](SYNCHRONIZED_TIMING.md) supersedes its fixed-dwell and Mode 10 loop behavior: timing is now shared, bundled cuts follow speed, and Breathe requests a native loop once while its partial visual capture holds at the end. Approved source assets remain unchanged.
+
 ## Review and file plan
 
 Reviewed all six files in `Animations/`, including README_FOR_CODEX.md, all eight records and every frame's timing/color shape, the full SVG's IDs/mirroring, the supplied TypeScript sampler/renderer, validation_report.json, and the approved Mode 4/10 HTML. The package remains unchanged and is imported directly. Mode 4: 66 frames, 2.20 s, brightness floor 70. Mode 10: revised 75 frames, 2.50 s, per-LED blue-channel normalization, enhanced fade on at 100%. All other modes retain recorded RGB.
@@ -30,7 +32,7 @@ No physical hardware testing was performed. Preview-only controls do not pause o
 
 ## Native-speed extension
 
-The subsequent native-speed work extends mode packet generation with an optional speed byte, while retaining the default 0x81. Scheduler transitions remain based on the existing step durations. Opt-in relative timing, source-video findings and the distinction between Mode 10's captured window and full breathing cycle are documented in [NATIVE_SPEED.md](NATIVE_SPEED.md). The earlier validation counts above describe the initial calibrated-preview integration; the completed speed extension passes 68 unit tests and 23 browser tests.
+The initial native-speed work extended mode packet generation with an optional speed byte, retaining default 0x81, and passed 68 unit tests and 23 browser tests. The current shared timing resolver scales effective steps from preserved reference durations. Source-video findings and the distinction between Mode 10's capture window and full breathing cycle are documented in [NATIVE_SPEED.md](NATIVE_SPEED.md); the latest architecture and validation are in [SYNCHRONIZED_TIMING.md](SYNCHRONIZED_TIMING.md).
 
 ## Publication
 

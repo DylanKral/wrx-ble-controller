@@ -40,7 +40,7 @@ npm.cmd run preview
 
 Animation preview is available on Main, Custom Testing, and Calibration Mode. **Combined** is the default: it previews requests while sending them to connected controllers. Choose **Simulation Only** to run Basic or Custom presets without Bluetooth commands, or **Hardware Only** to control the lights without a live preview. An explicitly saved output choice is restored on subsequent visits. The selected output and remembered RGB color are saved locally without changing existing profile keys.
 
-The eight visual tracks, approved SVG and rendering helper are imported directly from `Animations/`. Mode 4 uses its approved 66 frames over 2.20 seconds. Mode 10 uses the revised 75 frames over a 2.50-second captured window, with approved enhanced fade on at 100%. Modes 4/10 use the latest selected or issued RGB color, including Custom color steps; other modes preserve recorded RGB. Factory loop classification and all Custom step durations are unchanged.
+The eight visual tracks, approved SVG and rendering helper are imported directly from `Animations/`. Mode 4 uses its approved 66 frames over 2.20 seconds. Mode 10 uses the revised 75 frames over a 2.50-second captured window, with approved enhanced fade on at 100%. Modes 4/10 use the latest selected or issued RGB color, including Custom color steps; other modes preserve recorded RGB. Basic Breathe requests its native loop once; the partial preview holds its final frame rather than inventing a full-cycle loop. Reference Custom step durations remain unchanged; effective playback times can follow speed.
 
 Open **Preview controls and numbered LEDs** for visual-only play/pause, frame stepping, timeline scrubbing, RGB selection, and numbered indicators. These inspector controls never transmit commands or change the hardware scheduler. Physical calibration timing tests require Hardware Only or Combined. Combined can continue previewing if hardware is unavailable, with connection/write failures still reported.
 
@@ -48,11 +48,13 @@ See [integration review and validation](docs/CALIBRATED_PREVIEWS.md). The origin
 
 ## Native animation speed
 
-Open **Native animation speed** to choose a per-mode byte (1–255). The default remains `0x81` (129). Editing the setting prepares future requests; **Apply speed and reissue mode** sends one request now, or only previews it in Simulation Only. Native speed does not change a Custom step's dwell or cut time.
+Open **Native animation speed** to choose linked/global speed or independent saved per-mode bytes (1–255). The default remains `0x81` (129). Existing saved per-mode preferences migrate to independent scope without losing values. Editing prepares future steps; **Apply speed and reissue mode** restarts the current selected Mode step through the scheduler and rebases its deadline from dispatch. Simulation Only never transmits BLE.
 
-The optional preview timing model is off by default and is available only for Modes 4 and 10. It uses tentative 01/81/FF anchor assignments and log-duration interpolation based on the supplied measurements. Mode 4 keeps its original 2.20-second frame calibration; Mode 10 keeps its 2.50-second capture separate from the measured ~3.54-second breathing cycle. Exact intermediate response, startup latency and phase-reset behavior are not verified. Calibration exports now include the actual `native_speed` byte.
+One timing resolver drives the preview and scheduler. Basic retriggers and the 10 bundled Custom presets follow native speed by default. **Follow Animation Speed** can be disabled for bundled cuts; personal profiles retain fixed timing unless explicitly enabled in Profile Studio. Mode steps scale their original cuts at playback time; RGB delays and independent Wait steps stay fixed unless explicitly linked to a mode. Studio displays original and calculated effective cuts without rewriting saved values.
 
-See [native speed evidence and assumptions](docs/NATIVE_SPEED.md), including the original-video review and measurement CSV. No speed-response curve is invented for the other six modes.
+Modes 4/10 retain their provisional video-derived ratios with tentative 01/81/FF anchor assignments. Unmeasured modes use a clearly labeled adjustable estimate derived from those observations. Byte 129 always gives exactly 1×. Mode 4 scales its 2.20-second capture/retrigger interval, while Mode 10 keeps its 2.50-second capture separate from the measured ~3.54-second breathing period. Startup latency, exact intermediate response and restart/phase behavior still need physical validation. Calibration exports include the actual `native_speed` byte.
+
+See [timing architecture, local validation and hardware test plan](docs/SYNCHRONIZED_TIMING.md) and [native speed evidence](docs/NATIVE_SPEED.md), including the original-video review and measurement CSV. Combined shows simulator updates and left/right sent, error or disconnected statuses independently; continuing the preview never establishes hardware delivery.
 
 ## Browser data and backups
 

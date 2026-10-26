@@ -1,6 +1,6 @@
 # Native speed calibration and local integration
 
-Mode packets now accept a native speed byte: `9E 00 [mode−1] [speed] 98 00 E9`, speed 1–255, default `81` (129). With no new settings the verified Mode 4 packet remains `9E0003819800E9`. RGB packets, custom step durations, early cuts, fixed profiles and recorded LED colors/brightness are unchanged.
+Mode packets accept a native speed byte: `9E 00 [mode−1] [speed] 98 00 E9`, speed 1–255, default `81` (129). With no new settings the verified Mode 4 packet remains `9E0003819800E9`. RGB packets, reference cut values, fixed profile definitions and approved LED colors/brightness are unchanged. Effective playback timing now uses the shared resolver described in [SYNCHRONIZED_TIMING.md](SYNCHRONIZED_TIMING.md).
 
 ## Evidence and uncertainty
 
@@ -29,7 +29,7 @@ For IMG_1586, the local minima occur at 2.100/5.633/9.200/12.733 seconds, giving
 
 Chase threshold crossings are endpoint-sensitive: at a 75% local hot-pixel baseline threshold the reference windows are approximately 1.70/1.77 seconds, slow windows 3.90/3.87 seconds, and fast windows 0.63/0.63 seconds. Higher thresholds yield longer intervals and may include exposure/steady-state noise. This supports distinct timing groups and the transition-versus-complete-animation distinction; it does not justify silently replacing the user's 1.69/3.79/0.60-second grouped estimates or the approved 2.20-second frame calibration. The implementation retains the user-supplied ratios.
 
-The visible app slider positions and lamp behavior support qualitative grouping. They do not supply independently logged native bytes, two verified intermediate speed samples per mode, or a controlled phase-reset test. The mapping remains opt-in and provisional after reviewing these videos.
+The visible app slider positions and lamp behavior support qualitative grouping. They do not supply independently logged native bytes, two verified intermediate speed samples per mode, or a controlled phase-reset test. The mapping remains provisional. The synchronization update uses it consistently for all playback clocks rather than as a separate opt-in simulator clock.
 
 To reproduce the optional video review from the repository root (these Python tools are not application dependencies):
 
@@ -42,24 +42,24 @@ Playwright cleans `test-results`, so reinstall the temporary analysis tools if n
 
 ## Provisional timing model
 
-Each mode has an independent, opt-in preview-timing preference, off initially. Only Modes 4 and 10 have a model. Other modes accept native bytes but keep their original preview clock because speed-response measurements are unavailable.
+Modes 4 and 10 retain their video-derived models. Unmeasured modes use an explicitly estimated fallback: the geometric mean of the Mode 4/10 relative slow factors and fast factors, interpolated in log-duration space on the same tentative byte anchors. This is a provisional approximation of relative response, not a measurement of those modes. A per-mode response exponent can adjust curve strength while preserving the exact 129 reference; factors are bounded to 0.05–10.
 
 For each modeled mode, interpolate observed **duration** logarithmically between tentative byte anchors 1/129/255, then divide by its observed reference duration. This yields a relative duration factor. Mode 4 uses ratios 3.79/1.69, 1 and 0.60/1.69; its approved 66-frame 2.20-second capture is preserved and played with that relative clock factor. The 1.69-second transition measurement never replaces its 2.20-second calibration.
 
-Mode 10 uses ratios 6.30/3.54, 1 and 0.54/3.54. Those factors adjust playback of the existing 75-frame **capture window**. The separately displayed estimated full cycle is 3.54 seconds × factor. The capture is never stretched into a supposed complete breathing waveform or silently replaced with a 3.54-second loop. Existing factory loop classifications and Custom dwell times remain intact. Preview repetition explicitly repeats the captured window.
+Mode 10 uses ratios 6.30/3.54, 1 and 0.54/3.54. Those factors adjust playback of the existing 75-frame **capture window**. The separately displayed estimated full cycle is 3.54 seconds × factor. The capture is never stretched into a supposed complete breathing waveform. Basic Breathe now requests a native continuous loop once, based on successive cycles in the recordings without repeated visible mode selections. This is an evidence-based inference; the videos alone cannot exclude unseen BLE traffic. The preview holds its final frame after the partial window and disables captured-window repetition for Mode 10. Physical single-command confirmation remains required.
 
-The simulator uses an absolute monotonic clock. Toggling the provisional mapping keeps the current frame position. A reissued mode with a different byte restarts the preview at frame zero as a stated assumption; whether hardware restarts is still unverified. Resending the same mode at the same byte keeps the existing same-mode behavior.
+The simulator uses an absolute monotonic clock and the factor captured with each request. Intentional scheduler retriggers and explicit Apply restart its preview at frame zero; legacy redundant continuous sends remain suppressed. Whether the physical controller resets its phase on reissue is still unverified. First browser write dispatch anchors the preview and deadline, not a claim of physical activation or shared phase between controllers.
 
 ## Controls, persistence and logs
 
-Open **Native animation speed** on Main or either Development view. Choose the mode and speed byte. Editing the value prepares future requests without sending anything. **Apply speed and reissue mode** issues one mode request at the selected byte; Simulation Only routes it solely to the preview. An active custom sequence retains its deadlines and continues independently. Its future mode requests use the saved per-mode byte. Speed controls are locked during a physical calibration run to avoid unintended mid-test changes.
+Open **Native animation speed** on Main or either Development view. Choose global linked speed or independent saved mode speeds. Editing prepares future requests without sending anything or changing the active deadline. **Apply speed and reissue mode** coordinates with the active scheduler: choose its current Mode step, invalidate stale queued requests, reissue it and rebase its duration from dispatch. With no active sequence, Apply requests the selected mode once. Simulation Only routes requests solely to the preview. Speed controls are locked during a physical calibration run.
 
-Speeds and opt-in flags use the new `wrx-native-speed-preferences-v1` key; old profile/favorite/playlist data is untouched. Missing speeds use 129. Malformed settings are not overwritten on initialization. The complete existing configuration backup includes this key automatically.
+Version 2 preferences use the existing `wrx-native-speed-preferences-v1` key. Version 1 independent speeds migrate in memory without rewriting source data; old preview flags are retained for backup compatibility but no longer split the clocks. Clean installs default to global 129. Bundled cuts follow speed by default; existing personal profiles stay fixed unless opted in. Original reference values and optional profile/step timing fields survive import/export. Malformed settings are not overwritten on initialization. The complete configuration backup includes these preferences automatically.
 
 Calibration tests use the chosen per-mode bytes and append `native_speed` to request/start/completion/skip/error events and CSV exports. Full HEX remains recorded, allowing exact native bytes to be matched with future footage. Existing timing offsets remain unchanged.
 
 ## Verification limits
 
-Automated tests check defaults, all 255 legal bytes, anchor ratios, two intermediate bytes per modeled mode, monotonic interpolation, opt-in behavior, native-speed/dwell separation, preview phase assumptions, settings and actual mocked dispatch/logging. Numerical curve tests establish implementation consistency only. Physical measurements at intermediate values and synchronized byte/video captures are still needed before claiming close timing agreement. The user approved deployment of this integration for real-light testing after local validation.
+Automated tests check defaults, all 255 legal bytes, anchor ratios, at least two mathematical intermediate samples per observed mode, bounded monotonic curves, fixed/follow cuts, per-mode factors, preference migration, queued cancellation, actual mocked dispatch, independent delivery and calibration logging. Numerical curve tests establish implementation consistency only. Physical measurements at intermediate values and synchronized byte/video captures are still needed before claiming close timing agreement.
 
-Local validation passed: 68 unit tests, 23 Chromium browser tests, strict TypeScript checks, production Vite build, and `git diff --check`. The original video files and the supplied `Animations` package remain unchanged. The Pages workflow repeats validation before publishing the compiled application at the existing production URL.
+The user approved publishing the synchronization update after reviewing its local validation. Validation and remaining physical checks are recorded in [SYNCHRONIZED_TIMING.md](SYNCHRONIZED_TIMING.md). Original video files and the `Animations` package remain unchanged; the existing Pages workflow validates the update before publication.

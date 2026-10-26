@@ -3,6 +3,7 @@ export interface BrowserBLE {
   writes: { side: string; hex: string; at: number }[];
   disconnect: (side: "left" | "right") => void;
   fail: boolean;
+  failSide?: string;
   selection: string[];
 }
 declare global {
@@ -27,7 +28,8 @@ export async function mockBluetooth(page: Page, authorized = false) {
         const char = {
           properties: { writeWithoutResponse: true },
           writeValueWithoutResponse: async (bytes: Uint8Array) => {
-            if (state.fail) throw new Error("Mock radio failure");
+            if (state.fail || state.failSide === side)
+              throw new Error("Mock radio failure");
             writes.push({
               side,
               hex: Array.from(bytes, (x) => x.toString(16).padStart(2, "0"))

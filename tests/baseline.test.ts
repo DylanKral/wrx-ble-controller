@@ -33,10 +33,30 @@ it("preserves original definitions except the requested Custom removals and over
   // Legacy recognition must continue comparing old saved slots to old defaults.
   for (const p of data.initialProfiles)
     expect(legacyFixedProfiles.get(p.id)).toEqual(p);
-  expect(basicProfiles).toEqual(data.basicProfiles);
-  expect(CAL).toEqual(
-    vm.runInNewContext("(" + html.match(/const CAL=(.*);\r?\n/)![1] + ")"),
+  expect(basicProfiles).toEqual(
+    data.basicProfiles.map((p: Profile) => ({
+      ...p,
+      followAnimationSpeed: true,
+      ...(p.id === "basic-10"
+        ? {
+            name: "Mode 10 · Breathe",
+            nativeLoop: true,
+            steps: [{ type: "mode", mode: 10, ms: 3540 }],
+          }
+        : {}),
+    })),
   );
+  const originalCal = vm.runInNewContext(
+    "(" + html.match(/const CAL=(.*);\r?\n/)![1] + ")",
+  );
+  expect(CAL).toEqual({
+    ...originalCal,
+    10: {
+      ms: 3540,
+      kind: "continuous",
+      note: "~3.54s breathing cycle in recordings; preview is only a 2.50s capture",
+    },
+  });
 });
 it("matches every calibration test command, offset and observation from the original source", () => {
   const code = html.slice(

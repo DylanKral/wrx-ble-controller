@@ -134,8 +134,8 @@ export function MainPage({ hidden }: { hidden: boolean }) {
         >
           <p className="home-footnote">
             Factory modes 3–10. One-pass modes are retriggered on a timed loop;
-            internally looping modes continue until stopped. Mode 10 timing is
-            unverified.
+            internally looping modes, including Breathe, continue until stopped.
+            Timing follows native speed using provisional response curves.
           </p>
           <div className="home-grid" id="home-basic-grid">
             {basicProfiles.map((p) => (

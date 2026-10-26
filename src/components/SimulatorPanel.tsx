@@ -53,6 +53,13 @@ export function SimulatorPanel() {
         </select>
       </label>
       <NativeSpeedControls />
+      <p
+        className="delivery-status"
+        aria-label="Playback delivery"
+        aria-live="polite"
+      >
+        {app.output.statusText()}
+      </p>
       {!enabled ? (
         <p>
           Choose Simulation Only to preview without lights, or Combined to
@@ -90,7 +97,10 @@ export function SimulatorPanel() {
             {sample.record && (
               <span>
                 Active native byte: 0x
-                {state.nativeSpeed.toString(16).padStart(2, "0").toUpperCase()}{" "}
+                {state.nativeSpeed
+                  .toString(16)
+                  .padStart(2, "0")
+                  .toUpperCase()}{" "}
                 · preview timing {state.timeFactor.toFixed(3)}×
                 {state.timeFactor !== 1
                   ? ` · estimated window ${sample.wallDuration.toFixed(3)}s`
@@ -184,7 +194,7 @@ export function SimulatorPanel() {
               <input
                 type="checkbox"
                 checked={state.repeat}
-                disabled={!sample.record}
+                disabled={!sample.record || state.mode === 10}
                 onChange={(e) => sim.setRepeat(e.target.checked)}
               />{" "}
               Repeat captured preview window
@@ -202,7 +212,10 @@ export function SimulatorPanel() {
           {state.mode === 10 && (
             <p className="hint">
               This 75-frame preview covers a 2.50s capture, not a verified full
-              breathing cycle (~3.54s at the new reference setting).
+              breathing cycle (~3.54s at the new reference setting). It holds
+              its final frame after the window. Hardware Breathe uses a native
+              loop; check delivery status. The missing waveform is not
+              reconstructed.
             </p>
           )}
           <p className="hint">

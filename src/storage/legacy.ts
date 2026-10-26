@@ -24,6 +24,10 @@ export function fallback(p: { name: string; mode: number }): Favorite {
   };
 }
 export const defaultFavorites = starter.map(fallback);
+// Measured references need not fall on the manual 50ms editing grid.
+export const validFavoriteDuration = (ms: number, mode: number) =>
+  validMs(ms, 50) ||
+  (Number.isInteger(ms) && ms >= 50 && ms <= 60000 && ms === CAL[mode]?.ms);
 export function cleanFavorite(
   value: unknown,
   d: Favorite,
@@ -34,15 +38,17 @@ export function cleanFavorite(
     c = CAL[mode];
   let fullMs = Number(o.fullMs),
     cutMs = Number(o.cutMs);
+  // Mode 10 gained calibration later; retain its existing legacy manual values.
   if (
     legacy &&
     fullMs === 3000 &&
     cutMs === 1250 &&
     o.transition === "finish" &&
-    c
+    c &&
+    mode !== 10
   )
     fullMs = c.ms;
-  if (!validMs(fullMs, 50)) fullMs = c?.ms || 3000;
+  if (!validFavoriteDuration(fullMs, mode)) fullMs = c?.ms || 3000;
   if (!validMs(cutMs, 50) || cutMs >= fullMs)
     cutMs = Math.max(
       50,
