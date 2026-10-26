@@ -11,7 +11,6 @@ import { calibratedRecords } from "../simulation/calibrations";
 import { applyLedColors, mapLedColors } from "../simulation/ledMapping";
 import type { OutputMode } from "../simulation/PlaybackOutput";
 import "../styles/simulator.css";
-import { NativeSpeedControls } from "./NativeSpeedControls";
 
 export function SimulatorPanel() {
   const app = useApp(),
@@ -52,7 +51,6 @@ export function SimulatorPanel() {
           <option value="combined">Combined</option>
         </select>
       </label>
-      <NativeSpeedControls />
       <p
         className="delivery-status"
         aria-label="Playback delivery"

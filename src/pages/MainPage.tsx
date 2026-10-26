@@ -6,6 +6,7 @@ import { useApp } from "../context/AppContext";
 import { useBluetooth } from "../context/BluetoothContext";
 import { stepText } from "../animations/types";
 import { SimulatorPanel } from "../components/SimulatorPanel";
+import { NativeSpeedControls } from "../components/NativeSpeedControls";
 export function MainPage({ hidden }: { hidden: boolean }) {
   const app = useApp(),
     { connected } = useBluetooth(),
@@ -115,6 +116,7 @@ export function MainPage({ hidden }: { hidden: boolean }) {
             </button>
           ))}
         </div>
+        {!hidden && <NativeSpeedControls main />}
         <div
           className={"home-active-step" + (p ? " active" : "")}
           aria-live="off"
