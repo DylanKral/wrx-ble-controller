@@ -49,8 +49,8 @@ export function MainPage({ hidden }: { hidden: boolean }) {
       </section>
       <section className="panel home-static-panel" aria-label="Static RGB control">
         <div className="sectionhead"><h2>Solid color</h2></div>
-        <div className="home-static-controls">
-          <ColorPicker value={app.staticColor} onChange={app.setStaticColor} />
+        <ColorPicker value={app.staticColor} onChange={app.setStaticColor} />
+        <div className="home-static-actions">
           <button type="button" onClick={() => void app.applyColor(app.staticColor)}>Apply color</button>
         </div>
       </section>

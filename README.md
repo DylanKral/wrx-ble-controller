@@ -48,7 +48,7 @@ In Development or Calibration, open **Preview controls and numbered LEDs** for v
 
 See [integration review and validation](docs/CALIBRATED_PREVIEWS.md). The original package is preserved. Modes 4/10 match the approved reference; the other six tracks retain their source data and have not all been visually approved. Browser simulation does not establish physical LED response timing.
 
-Main places the compact calibrated taillights at the top, below left/right connection actions and above Basic/Custom tabs. Speed sits immediately below the tabs, followed by the two-column presets, solid color and output settings. Technical inspection controls remain in Development/Calibration. The global Stop + Red bar follows the visual viewport and every page reserves its measured height. See [UI review, screenshots and validation](docs/ux-review/README.md).
+Main places the compact calibrated taillights at the top, below left/right connection actions and above Basic/Custom tabs. Speed sits immediately below the tabs, followed by the two-column presets, solid color and output settings. Solid color provides ten basic swatches and an expandable custom color wheel with hue, saturation and brightness adjustment; Apply color sends the chosen RGB to the lights. Technical inspection controls remain in Development/Calibration. The global Stop + Red bar follows the visual viewport and every page reserves its measured height. See [UI review, screenshots and validation](docs/ux-review/README.md).
 
 ## Native animation speed
 
