@@ -76,3 +76,9 @@ export async function navigate(page: Page, label: string) {
   await page.getByRole("button", { name: "Open navigation" }).click();
   await page.getByRole("button", { name: label, exact: true }).click();
 }
+export async function chooseSolidColor(page: Page, color: string) {
+  const tools = page.locator("#home-view .custom-color-tools");
+  if ((await tools.getAttribute("open")) === null)
+    await tools.locator("summary").click();
+  await page.getByLabel("Static RGB color", { exact: true }).fill(color);
+}

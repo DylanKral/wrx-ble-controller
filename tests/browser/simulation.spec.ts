@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { mockBluetooth, navigate } from "./mockBluetooth";
+import { mockBluetooth, navigate, chooseSolidColor } from "./mockBluetooth";
 
 async function seek(page: Page, selector: string, seconds: number) {
   await page.locator(selector).evaluate((element, time) => {
@@ -142,7 +142,7 @@ test("Simulation Only never sends Bluetooth for presets, static RGB, favorites, 
   await page
     .getByLabel("Playback output", { exact: true })
     .selectOption("simulation");
-  await page.getByLabel("Static RGB color").fill("#00ff48");
+  await chooseSolidColor(page, "#00ff48");
   await page
     .getByRole("button", { name: "Apply color", exact: true })
     .filter({ visible: true })
@@ -229,7 +229,7 @@ test("preview state and remembered RGB survive navigation and settings survive r
   await page
     .getByLabel("Playback output", { exact: true })
     .selectOption("simulation");
-  await page.getByLabel("Static RGB color").fill("#00ff48");
+  await chooseSolidColor(page, "#00ff48");
   await page.getByRole("tab", { name: "Basic", exact: true }).click();
   await page.locator('[data-profile-id="basic-10"]').click();
   await expect(page.locator(".sim-readout")).toHaveAttribute("data-mode", "10");

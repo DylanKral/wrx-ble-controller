@@ -6,7 +6,7 @@ export default defineConfig({
     { name: "chromium", use: { browserName: "chromium" } },
     ...(process.env.WRX_TEST_WEBKIT === "1" ? [{
       name: "webkit",
-      testMatch: /(?:mobileLayout|mainSpeed|simulation)\.spec\.ts/,
+      testMatch: /(?:mobileLayout|mainSpeed|simulation|colorPicker)\.spec\.ts/,
       use: { browserName: "webkit" as const },
     }] : []),
   ],

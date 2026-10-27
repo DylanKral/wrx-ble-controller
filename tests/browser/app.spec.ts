@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { mockBluetooth, navigate } from "./mockBluetooth";
+import { mockBluetooth, navigate, chooseSolidColor } from "./mockBluetooth";
 import { readFile } from "node:fs/promises";
 
 test("mobile Main retains the fixed preset grid, Basic modes, tabs, colors, and Stop + Red", async ({
@@ -25,7 +25,7 @@ test("mobile Main retains the fixed preset grid, Basic modes, tabs, colors, and 
   await page.getByRole("tab", { name: "Basic", exact: true }).click();
   await expect(page.locator("#home-basic-grid .home-tile")).toHaveCount(8);
   await expect(page.locator("#home-basic-grid")).toBeVisible();
-  await page.getByLabel("Static RGB color").fill("#123456");
+  await chooseSolidColor(page, "#123456");
   await page.reload();
   await expect(page.getByLabel("Static RGB color")).toHaveValue("#123456");
   await expect(
@@ -60,7 +60,7 @@ test("dual controllers connect, show per-side indicators, retain connections acr
     .click();
   await expect(page.getByRole("button", { name: "Disconnect left", exact: true })).toBeVisible();
   await expect(page.locator("#home-view .connection-action .dot.on")).toHaveCount(2);
-  await page.getByLabel("Static RGB color").fill("#0000ff");
+  await chooseSolidColor(page, "#0000ff");
   await page
     .getByRole("button", { name: "Apply color", exact: true })
     .filter({ visible: true })
