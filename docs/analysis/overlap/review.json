@@ -1,0 +1,1693 @@
+{
+  "native_speed_context": {
+    "byte": 129,
+    "source": "User confirmed 129 in both recordings; no synchronized BLE log or speed readout in footage."
+  },
+  "method": "Decode all frames. Track frame-15 analysis points with Lucas-Kanade features outside LEDs and RANSAC partial affine registration. Sample median RGB in 5x5 patches. Detect red onsets sustained >=3 frames at R>120 and R>ratio*G,B, for ratios 1.5/1.8/2.2. Match visually selected homologous wave windows, not Bluetooth events.",
+  "preferred_retrigger_reference_ms": null,
+  "decision": "Retain existing 3500ms Basic defaults; visible wave periods cannot establish a shorter app dispatch interval. Expose independent adjustable Basic reference intervals without rewriting native capture duration or Custom cuts.",
+  "videos": {
+    "IMG_1600.mp4": {
+      "sha256": "2a51e9feed80599f2c19cd05bb955f384d2221e1403bf01c8bdc6a7532ba8c2b",
+      "bytes": 8229272,
+      "width": 512,
+      "height": 910,
+      "fps": 30.0,
+      "declared_frames": 429,
+      "decoded_frames": 429,
+      "duration_s": 14.3,
+      "inferred_mode_from_steady_direction": 7,
+      "direction": "lower inner (19) -> lower outer -> outside corner -> top inner (1)",
+      "note": "Mixed/overexposed opening movement before ~3.8s is excluded from the steady-direction comparison; no mode-switch command is inferred.",
+      "analysis_reference_frame": 15,
+      "analysis_points": [
+        [
+          340,
+          417
+        ],
+        [
+          308,
+          414
+        ],
+        [
+          276,
+          411
+        ],
+        [
+          245,
+          409
+        ],
+        [
+          213,
+          406
+        ],
+        [
+          182,
+          403
+        ],
+        [
+          151,
+          401
+        ],
+        [
+          155,
+          428
+        ],
+        [
+          161,
+          450
+        ],
+        [
+          178,
+          473
+        ],
+        [
+          209,
+          491
+        ],
+        [
+          238,
+          505
+        ],
+        [
+          265,
+          517
+        ],
+        [
+          291,
+          528
+        ],
+        [
+          316,
+          537
+        ],
+        [
+          340,
+          546
+        ],
+        [
+          366,
+          554
+        ],
+        [
+          393,
+          562
+        ],
+        [
+          423,
+          571
+        ]
+      ],
+      "registration_inliers_range": [
+        8,
+        22
+      ],
+      "visually_selected_wave_windows_s": [
+        [
+          3.8,
+          4.8
+        ],
+        [
+          10.0,
+          11.3
+        ]
+      ],
+      "threshold_checks": {
+        "1.5": {
+          "zones": [
+            {
+              "zone": 1,
+              "all_red_onsets_frames": [
+                6,
+                70,
+                134,
+                324
+              ],
+              "matched_frames": [
+                134,
+                324
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 2,
+              "all_red_onsets_frames": [
+                134,
+                324
+              ],
+              "matched_frames": [
+                134,
+                324
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 3,
+              "all_red_onsets_frames": [
+                132,
+                323
+              ],
+              "matched_frames": [
+                132,
+                323
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 4,
+              "all_red_onsets_frames": [
+                131,
+                322
+              ],
+              "matched_frames": [
+                131,
+                322
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 5,
+              "all_red_onsets_frames": [
+                129,
+                321
+              ],
+              "matched_frames": [
+                129,
+                321
+              ],
+              "visible_return_interval_s": 6.4
+            },
+            {
+              "zone": 6,
+              "all_red_onsets_frames": [
+                128,
+                319
+              ],
+              "matched_frames": [
+                128,
+                319
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 7,
+              "all_red_onsets_frames": [
+                127,
+                318
+              ],
+              "matched_frames": [
+                127,
+                318
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 8,
+              "all_red_onsets_frames": [
+                104,
+                126,
+                317
+              ],
+              "matched_frames": [
+                126,
+                317
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 9,
+              "all_red_onsets_frames": [
+                108,
+                126,
+                316
+              ],
+              "matched_frames": [
+                126,
+                316
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 10,
+              "all_red_onsets_frames": [
+                108,
+                125,
+                315
+              ],
+              "matched_frames": [
+                125,
+                315
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 11,
+              "all_red_onsets_frames": [
+                115,
+                314
+              ],
+              "matched_frames": [
+                115,
+                314
+              ],
+              "visible_return_interval_s": 6.633333333333334
+            },
+            {
+              "zone": 12,
+              "all_red_onsets_frames": [
+                121,
+                313
+              ],
+              "matched_frames": [
+                121,
+                313
+              ],
+              "visible_return_interval_s": 6.4
+            },
+            {
+              "zone": 13,
+              "all_red_onsets_frames": [
+                121,
+                313
+              ],
+              "matched_frames": [
+                121,
+                313
+              ],
+              "visible_return_interval_s": 6.4
+            },
+            {
+              "zone": 14,
+              "all_red_onsets_frames": [
+                120,
+                312
+              ],
+              "matched_frames": [
+                120,
+                312
+              ],
+              "visible_return_interval_s": 6.4
+            },
+            {
+              "zone": 15,
+              "all_red_onsets_frames": [
+                120,
+                311
+              ],
+              "matched_frames": [
+                120,
+                311
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 16,
+              "all_red_onsets_frames": [
+                119,
+                310
+              ],
+              "matched_frames": [
+                119,
+                310
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 17,
+              "all_red_onsets_frames": [
+                55,
+                118,
+                309
+              ],
+              "matched_frames": [
+                118,
+                309
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 18,
+              "all_red_onsets_frames": [
+                52,
+                117,
+                308
+              ],
+              "matched_frames": [
+                117,
+                308
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 19,
+              "all_red_onsets_frames": [
+                49,
+                116,
+                307
+              ],
+              "matched_frames": [
+                116,
+                307
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            }
+          ],
+          "median_visible_return_s": 6.366666666666666,
+          "visible_return_range_s": [
+            6.333333333333333,
+            6.633333333333334
+          ],
+          "zone19_minus_zone1_onset_s": [
+            -0.6,
+            -0.5666666666666667
+          ]
+        },
+        "1.8": {
+          "zones": [
+            {
+              "zone": 1,
+              "all_red_onsets_frames": [
+                6,
+                70,
+                134,
+                324
+              ],
+              "matched_frames": [
+                134,
+                324
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 2,
+              "all_red_onsets_frames": [
+                134,
+                324
+              ],
+              "matched_frames": [
+                134,
+                324
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 3,
+              "all_red_onsets_frames": [
+                133,
+                323
+              ],
+              "matched_frames": [
+                133,
+                323
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 4,
+              "all_red_onsets_frames": [
+                131,
+                323
+              ],
+              "matched_frames": [
+                131,
+                323
+              ],
+              "visible_return_interval_s": 6.4
+            },
+            {
+              "zone": 5,
+              "all_red_onsets_frames": [
+                129,
+                321
+              ],
+              "matched_frames": [
+                129,
+                321
+              ],
+              "visible_return_interval_s": 6.4
+            },
+            {
+              "zone": 6,
+              "all_red_onsets_frames": [
+                128,
+                319
+              ],
+              "matched_frames": [
+                128,
+                319
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 7,
+              "all_red_onsets_frames": [
+                127,
+                318
+              ],
+              "matched_frames": [
+                127,
+                318
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 8,
+              "all_red_onsets_frames": [
+                104,
+                126,
+                317
+              ],
+              "matched_frames": [
+                126,
+                317
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 9,
+              "all_red_onsets_frames": [
+                126,
+                316
+              ],
+              "matched_frames": [
+                126,
+                316
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 10,
+              "all_red_onsets_frames": [
+                112,
+                125,
+                315
+              ],
+              "matched_frames": [
+                125,
+                315
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 11,
+              "all_red_onsets_frames": [
+                116,
+                314
+              ],
+              "matched_frames": [
+                116,
+                314
+              ],
+              "visible_return_interval_s": 6.6
+            },
+            {
+              "zone": 12,
+              "all_red_onsets_frames": [
+                122,
+                313
+              ],
+              "matched_frames": [
+                122,
+                313
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 13,
+              "all_red_onsets_frames": [
+                121,
+                313
+              ],
+              "matched_frames": [
+                121,
+                313
+              ],
+              "visible_return_interval_s": 6.4
+            },
+            {
+              "zone": 14,
+              "all_red_onsets_frames": [
+                120,
+                312
+              ],
+              "matched_frames": [
+                120,
+                312
+              ],
+              "visible_return_interval_s": 6.4
+            },
+            {
+              "zone": 15,
+              "all_red_onsets_frames": [
+                120,
+                311
+              ],
+              "matched_frames": [
+                120,
+                311
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 16,
+              "all_red_onsets_frames": [
+                119,
+                310
+              ],
+              "matched_frames": [
+                119,
+                310
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 17,
+              "all_red_onsets_frames": [
+                55,
+                118,
+                309
+              ],
+              "matched_frames": [
+                118,
+                309
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 18,
+              "all_red_onsets_frames": [
+                52,
+                117,
+                308
+              ],
+              "matched_frames": [
+                117,
+                308
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 19,
+              "all_red_onsets_frames": [
+                49,
+                116,
+                307
+              ],
+              "matched_frames": [
+                116,
+                307
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            }
+          ],
+          "median_visible_return_s": 6.366666666666666,
+          "visible_return_range_s": [
+            6.333333333333333,
+            6.6
+          ],
+          "zone19_minus_zone1_onset_s": [
+            -0.6,
+            -0.5666666666666667
+          ]
+        },
+        "2.2": {
+          "zones": [
+            {
+              "zone": 1,
+              "all_red_onsets_frames": [
+                6,
+                70,
+                134,
+                324
+              ],
+              "matched_frames": [
+                134,
+                324
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 2,
+              "all_red_onsets_frames": [
+                134,
+                324
+              ],
+              "matched_frames": [
+                134,
+                324
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 3,
+              "all_red_onsets_frames": [
+                133,
+                323
+              ],
+              "matched_frames": [
+                133,
+                323
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 4,
+              "all_red_onsets_frames": [
+                131,
+                323
+              ],
+              "matched_frames": [
+                131,
+                323
+              ],
+              "visible_return_interval_s": 6.4
+            },
+            {
+              "zone": 5,
+              "all_red_onsets_frames": [
+                130,
+                321
+              ],
+              "matched_frames": [
+                130,
+                321
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 6,
+              "all_red_onsets_frames": [
+                128,
+                320
+              ],
+              "matched_frames": [
+                128,
+                320
+              ],
+              "visible_return_interval_s": 6.4
+            },
+            {
+              "zone": 7,
+              "all_red_onsets_frames": [
+                127,
+                318
+              ],
+              "matched_frames": [
+                127,
+                318
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 8,
+              "all_red_onsets_frames": [
+                126,
+                317
+              ],
+              "matched_frames": [
+                126,
+                317
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 9,
+              "all_red_onsets_frames": [
+                126,
+                316
+              ],
+              "matched_frames": [
+                126,
+                316
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 10,
+              "all_red_onsets_frames": [
+                125,
+                315
+              ],
+              "matched_frames": [
+                125,
+                315
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 11,
+              "all_red_onsets_frames": [
+                119,
+                314
+              ],
+              "matched_frames": [
+                119,
+                314
+              ],
+              "visible_return_interval_s": 6.5
+            },
+            {
+              "zone": 12,
+              "all_red_onsets_frames": [
+                122,
+                314
+              ],
+              "matched_frames": [
+                122,
+                314
+              ],
+              "visible_return_interval_s": 6.4
+            },
+            {
+              "zone": 13,
+              "all_red_onsets_frames": [
+                121,
+                313
+              ],
+              "matched_frames": [
+                121,
+                313
+              ],
+              "visible_return_interval_s": 6.4
+            },
+            {
+              "zone": 14,
+              "all_red_onsets_frames": [
+                121,
+                312
+              ],
+              "matched_frames": [
+                121,
+                312
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 15,
+              "all_red_onsets_frames": [
+                120,
+                311
+              ],
+              "matched_frames": [
+                120,
+                311
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 16,
+              "all_red_onsets_frames": [
+                119,
+                310
+              ],
+              "matched_frames": [
+                119,
+                310
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 17,
+              "all_red_onsets_frames": [
+                118,
+                309
+              ],
+              "matched_frames": [
+                118,
+                309
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            },
+            {
+              "zone": 18,
+              "all_red_onsets_frames": [
+                118,
+                308
+              ],
+              "matched_frames": [
+                118,
+                308
+              ],
+              "visible_return_interval_s": 6.333333333333333
+            },
+            {
+              "zone": 19,
+              "all_red_onsets_frames": [
+                49,
+                116,
+                307
+              ],
+              "matched_frames": [
+                116,
+                307
+              ],
+              "visible_return_interval_s": 6.366666666666666
+            }
+          ],
+          "median_visible_return_s": 6.366666666666666,
+          "visible_return_range_s": [
+            6.333333333333333,
+            6.5
+          ],
+          "zone19_minus_zone1_onset_s": [
+            -0.6,
+            -0.5666666666666667
+          ]
+        }
+      },
+      "uncertainty": "One clean homologous return interval per clip. Nominal one-frame 33.3ms sampling; allow at least +/- two frames (67ms) for intervals plus exposure, threshold, registration and unsynchronized-command uncertainty. These are optical color-front returns, not complete native duration or dispatch timing."
+    },
+    "IMG_1601.mp4": {
+      "sha256": "cc0c35e60635a62746bdc7591ad2db9ac81e15ab08a063907537c2ace6cf1751",
+      "bytes": 6111889,
+      "width": 512,
+      "height": 910,
+      "fps": 30.0,
+      "declared_frames": 347,
+      "decoded_frames": 347,
+      "duration_s": 11.566666666666666,
+      "inferred_mode_from_steady_direction": 8,
+      "direction": "top inner (1) -> top outer -> outside corner -> lower inner (19)",
+      "note": "Two homologous red fronts; many sampled zones describe the same single repeat interval, not independent repeats.",
+      "analysis_reference_frame": 15,
+      "analysis_points": [
+        [
+          347,
+          432
+        ],
+        [
+          315,
+          430
+        ],
+        [
+          282,
+          426
+        ],
+        [
+          247,
+          423
+        ],
+        [
+          212,
+          420
+        ],
+        [
+          180,
+          418
+        ],
+        [
+          149,
+          415
+        ],
+        [
+          153,
+          439
+        ],
+        [
+          160,
+          461
+        ],
+        [
+          178,
+          485
+        ],
+        [
+          210,
+          504
+        ],
+        [
+          241,
+          520
+        ],
+        [
+          270,
+          532
+        ],
+        [
+          297,
+          543
+        ],
+        [
+          323,
+          552
+        ],
+        [
+          347,
+          562
+        ],
+        [
+          373,
+          571
+        ],
+        [
+          401,
+          580
+        ],
+        [
+          432,
+          589
+        ]
+      ],
+      "registration_inliers_range": [
+        12,
+        21
+      ],
+      "visually_selected_wave_windows_s": [
+        [
+          2.0,
+          3.1
+        ],
+        [
+          7.0,
+          8.2
+        ]
+      ],
+      "threshold_checks": {
+        "1.5": {
+          "zones": [
+            {
+              "zone": 1,
+              "all_red_onsets_frames": [
+                66,
+                215
+              ],
+              "matched_frames": [
+                66,
+                215
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 2,
+              "all_red_onsets_frames": [
+                66,
+                216
+              ],
+              "matched_frames": [
+                66,
+                216
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 3,
+              "all_red_onsets_frames": [
+                67,
+                217
+              ],
+              "matched_frames": [
+                67,
+                217
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 4,
+              "all_red_onsets_frames": [
+                69,
+                218
+              ],
+              "matched_frames": [
+                69,
+                218
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 5,
+              "all_red_onsets_frames": [
+                70,
+                219
+              ],
+              "matched_frames": [
+                70,
+                219
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 6,
+              "all_red_onsets_frames": [
+                71,
+                220
+              ],
+              "matched_frames": [
+                71,
+                220
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 7,
+              "all_red_onsets_frames": [
+                72,
+                221
+              ],
+              "matched_frames": [
+                72,
+                221
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 8,
+              "all_red_onsets_frames": [
+                73,
+                222
+              ],
+              "matched_frames": [
+                73,
+                222
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 9,
+              "all_red_onsets_frames": [
+                74,
+                223
+              ],
+              "matched_frames": [
+                74,
+                223
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 10,
+              "all_red_onsets_frames": [
+                75,
+                224
+              ],
+              "matched_frames": [
+                75,
+                224
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 11,
+              "all_red_onsets_frames": [
+                75,
+                225
+              ],
+              "matched_frames": [
+                75,
+                225
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 12,
+              "all_red_onsets_frames": [
+                76,
+                226
+              ],
+              "matched_frames": [
+                76,
+                226
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 13,
+              "all_red_onsets_frames": [
+                77,
+                227
+              ],
+              "matched_frames": [
+                77,
+                227
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 14,
+              "all_red_onsets_frames": [
+                78,
+                228
+              ],
+              "matched_frames": [
+                78,
+                228
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 15,
+              "all_red_onsets_frames": [
+                79,
+                228
+              ],
+              "matched_frames": [
+                79,
+                228
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 16,
+              "all_red_onsets_frames": [
+                80,
+                229
+              ],
+              "matched_frames": [
+                80,
+                229
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 17,
+              "all_red_onsets_frames": [
+                81,
+                230
+              ],
+              "matched_frames": [
+                81,
+                230
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 18,
+              "all_red_onsets_frames": [
+                82,
+                231
+              ],
+              "matched_frames": [
+                82,
+                231
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 19,
+              "all_red_onsets_frames": [
+                83,
+                232
+              ],
+              "matched_frames": [
+                83,
+                232
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            }
+          ],
+          "median_visible_return_s": 4.966666666666667,
+          "visible_return_range_s": [
+            4.966666666666667,
+            5.0
+          ],
+          "zone19_minus_zone1_onset_s": [
+            0.5666666666666667,
+            0.5666666666666667
+          ]
+        },
+        "1.8": {
+          "zones": [
+            {
+              "zone": 1,
+              "all_red_onsets_frames": [
+                66,
+                215
+              ],
+              "matched_frames": [
+                66,
+                215
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 2,
+              "all_red_onsets_frames": [
+                67,
+                216
+              ],
+              "matched_frames": [
+                67,
+                216
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 3,
+              "all_red_onsets_frames": [
+                67,
+                217
+              ],
+              "matched_frames": [
+                67,
+                217
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 4,
+              "all_red_onsets_frames": [
+                69,
+                218
+              ],
+              "matched_frames": [
+                69,
+                218
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 5,
+              "all_red_onsets_frames": [
+                70,
+                219
+              ],
+              "matched_frames": [
+                70,
+                219
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 6,
+              "all_red_onsets_frames": [
+                72,
+                221
+              ],
+              "matched_frames": [
+                72,
+                221
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 7,
+              "all_red_onsets_frames": [
+                73,
+                221
+              ],
+              "matched_frames": [
+                73,
+                221
+              ],
+              "visible_return_interval_s": 4.933333333333334
+            },
+            {
+              "zone": 8,
+              "all_red_onsets_frames": [
+                73,
+                222
+              ],
+              "matched_frames": [
+                73,
+                222
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 9,
+              "all_red_onsets_frames": [
+                74,
+                223
+              ],
+              "matched_frames": [
+                74,
+                223
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 10,
+              "all_red_onsets_frames": [
+                75,
+                224
+              ],
+              "matched_frames": [
+                75,
+                224
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 11,
+              "all_red_onsets_frames": [
+                76,
+                225
+              ],
+              "matched_frames": [
+                76,
+                225
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 12,
+              "all_red_onsets_frames": [
+                76,
+                226
+              ],
+              "matched_frames": [
+                76,
+                226
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 13,
+              "all_red_onsets_frames": [
+                77,
+                227
+              ],
+              "matched_frames": [
+                77,
+                227
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 14,
+              "all_red_onsets_frames": [
+                78,
+                228
+              ],
+              "matched_frames": [
+                78,
+                228
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 15,
+              "all_red_onsets_frames": [
+                79,
+                229
+              ],
+              "matched_frames": [
+                79,
+                229
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 16,
+              "all_red_onsets_frames": [
+                80,
+                229
+              ],
+              "matched_frames": [
+                80,
+                229
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 17,
+              "all_red_onsets_frames": [
+                81,
+                230
+              ],
+              "matched_frames": [
+                81,
+                230
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 18,
+              "all_red_onsets_frames": [
+                82,
+                231
+              ],
+              "matched_frames": [
+                82,
+                231
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 19,
+              "all_red_onsets_frames": [
+                83,
+                232
+              ],
+              "matched_frames": [
+                83,
+                232
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            }
+          ],
+          "median_visible_return_s": 4.966666666666667,
+          "visible_return_range_s": [
+            4.933333333333334,
+            5.0
+          ],
+          "zone19_minus_zone1_onset_s": [
+            0.5666666666666667,
+            0.5666666666666667
+          ]
+        },
+        "2.2": {
+          "zones": [
+            {
+              "zone": 1,
+              "all_red_onsets_frames": [
+                66,
+                215
+              ],
+              "matched_frames": [
+                66,
+                215
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 2,
+              "all_red_onsets_frames": [
+                67,
+                217
+              ],
+              "matched_frames": [
+                67,
+                217
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 3,
+              "all_red_onsets_frames": [
+                68,
+                218
+              ],
+              "matched_frames": [
+                68,
+                218
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 4,
+              "all_red_onsets_frames": [
+                69,
+                218
+              ],
+              "matched_frames": [
+                69,
+                218
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 5,
+              "all_red_onsets_frames": [
+                70,
+                219
+              ],
+              "matched_frames": [
+                70,
+                219
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 6,
+              "all_red_onsets_frames": [
+                72,
+                221
+              ],
+              "matched_frames": [
+                72,
+                221
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 7,
+              "all_red_onsets_frames": [
+                73,
+                222
+              ],
+              "matched_frames": [
+                73,
+                222
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 8,
+              "all_red_onsets_frames": [
+                74,
+                223
+              ],
+              "matched_frames": [
+                74,
+                223
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 9,
+              "all_red_onsets_frames": [
+                74,
+                224
+              ],
+              "matched_frames": [
+                74,
+                224
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 10,
+              "all_red_onsets_frames": [
+                75,
+                224
+              ],
+              "matched_frames": [
+                75,
+                224
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 11,
+              "all_red_onsets_frames": [
+                76,
+                225
+              ],
+              "matched_frames": [
+                76,
+                225
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 12,
+              "all_red_onsets_frames": [
+                77,
+                226
+              ],
+              "matched_frames": [
+                77,
+                226
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 13,
+              "all_red_onsets_frames": [
+                77,
+                227
+              ],
+              "matched_frames": [
+                77,
+                227
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 14,
+              "all_red_onsets_frames": [
+                79,
+                228
+              ],
+              "matched_frames": [
+                79,
+                228
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 15,
+              "all_red_onsets_frames": [
+                80,
+                229
+              ],
+              "matched_frames": [
+                80,
+                229
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 16,
+              "all_red_onsets_frames": [
+                80,
+                230
+              ],
+              "matched_frames": [
+                80,
+                230
+              ],
+              "visible_return_interval_s": 5.0
+            },
+            {
+              "zone": 17,
+              "all_red_onsets_frames": [
+                81,
+                230
+              ],
+              "matched_frames": [
+                81,
+                230
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 18,
+              "all_red_onsets_frames": [
+                82,
+                231
+              ],
+              "matched_frames": [
+                82,
+                231
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            },
+            {
+              "zone": 19,
+              "all_red_onsets_frames": [
+                83,
+                232
+              ],
+              "matched_frames": [
+                83,
+                232
+              ],
+              "visible_return_interval_s": 4.966666666666667
+            }
+          ],
+          "median_visible_return_s": 4.966666666666667,
+          "visible_return_range_s": [
+            4.966666666666667,
+            5.0
+          ],
+          "zone19_minus_zone1_onset_s": [
+            0.5666666666666667,
+            0.5666666666666667
+          ]
+        }
+      },
+      "uncertainty": "One clean homologous return interval per clip. Nominal one-frame 33.3ms sampling; allow at least +/- two frames (67ms) for intervals plus exposure, threshold, registration and unsynchronized-command uncertainty. These are optical color-front returns, not complete native duration or dispatch timing."
+    }
+  }
+}

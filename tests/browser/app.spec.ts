@@ -45,7 +45,7 @@ test("mobile Main retains the fixed preset grid, Basic modes, tabs, colors, and 
   expect(errors).toEqual([]);
 });
 
-test("dual controllers connect, collapse the panel, retain connections across navigation, and send verified packets", async ({
+test("dual controllers connect, show per-side indicators, retain connections across navigation, and send verified packets", async ({
   page,
 }) => {
   await mockBluetooth(page);
@@ -58,10 +58,8 @@ test("dual controllers connect, collapse the panel, retain connections across na
     .getByRole("button", { name: "Connect right", exact: true })
     .filter({ visible: true })
     .click();
-  await expect(page.locator("#home-view .home-connect-panel")).not.toHaveAttribute("open");
-  await expect(page.locator("#home-view .home-status")).toHaveText(
-    "2 of 2 connected",
-  );
+  await expect(page.getByRole("button", { name: "Disconnect left", exact: true })).toBeVisible();
+  await expect(page.locator("#home-view .connection-action .dot.on")).toHaveCount(2);
   await page.getByLabel("Static RGB color").fill("#0000ff");
   await page
     .getByRole("button", { name: "Apply color", exact: true })
@@ -85,7 +83,7 @@ test("dual controllers connect, collapse the panel, retain connections across na
       ),
     )
     .toBe(2);
-  await expect(page.locator(".home-active-step")).toContainText("Mode 4");
+  await expect(page.locator(".global-playbar")).toContainText("Mode 4");
   await navigate(page, "Custom Testing");
   await expect(
     page.getByRole("heading", { name: "Profile studio" }),
@@ -115,9 +113,7 @@ test("authorized-device restore, internally looping mode, disconnect and automat
   await mockBluetooth(page, true);
   await page.goto("./");
   await page.getByLabel("Playback output", { exact: true }).selectOption("hardware");
-  await expect(page.locator("#home-view .home-status")).toHaveText(
-    "2 of 2 connected",
-  );
+  await expect(page.locator("#home-view .connection-action .dot.on")).toHaveCount(2);
   await page.getByRole("tab", { name: "Basic", exact: true }).click();
   await page.locator('[data-profile-id="basic-5"]').click();
   await expect
@@ -126,11 +122,9 @@ test("authorized-device restore, internally looping mode, disconnect and automat
   await page.waitForTimeout(4500);
   expect(await page.evaluate(() => window.__ble.writes.length)).toBe(2);
   await page.evaluate(() => window.__ble.disconnect("left"));
-  await expect(page.locator("#home-view .home-connect-panel")).toHaveAttribute("open", "");
-  await expect(page.locator(".home-active-step")).toContainText("Idle");
-  await expect(page.locator("#home-view .home-status")).toHaveText(
-    "2 of 2 connected",
-  );
+  await expect(page.getByRole("button", { name: "Connect left", exact: true })).toBeVisible();
+  await expect(page.locator(".global-playbar")).toContainText("Ready");
+  await expect(page.locator("#home-view .connection-action .dot.on")).toHaveCount(2);
 });
 
 test("fixed presets stay immutable while duplicate profile editing, step tools and button assignments persist", async ({
@@ -288,6 +282,7 @@ test("unsupported Bluetooth is reported without claiming success", async ({
     .getByRole("button", { name: "Connect left", exact: true })
     .filter({ visible: true })
     .click();
+  await page.getByText("Connection status", { exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Bluetooth unavailable");
 });
 
@@ -297,12 +292,11 @@ test("BLE failure stops playback and reports the failed controller", async ({
   await mockBluetooth(page, true);
   await page.goto("./");
   await page.getByLabel("Playback output", { exact: true }).selectOption("hardware");
-  await expect(page.locator("#home-view .home-status")).toHaveText(
-    "2 of 2 connected",
-  );
+  await expect(page.locator("#home-view .connection-action .dot.on")).toHaveCount(2);
   await page.evaluate(() => (window.__ble.fail = true));
   await page.locator('[data-profile-id="overlap-cut"]').click();
-  await expect(page.locator(".home-active-step")).toContainText("Idle");
+  await expect(page.locator(".global-playbar")).toContainText("Ready");
+  await page.getByText("Connection status", { exact: true }).click();
   await expect(page.getByRole("status")).toContainText("failed");
   expect(await page.evaluate(() => window.__ble.writes.length)).toBe(0);
 });
@@ -323,9 +317,7 @@ test("blocked localStorage keeps Bluetooth controls and editable session profile
   await expect(page.locator("#home-view [role=alert]")).toContainText(
     "Browser storage is unavailable",
   );
-  await expect(page.locator("#home-view .home-status")).toHaveText(
-    "2 of 2 connected",
-  );
+  await expect(page.locator("#home-view .connection-action .dot.on")).toHaveCount(2);
   await navigate(page, "Custom Testing");
   await page.getByRole("button", { name: "New profile", exact: true }).click();
   await page
@@ -421,7 +413,7 @@ test("complete backup downloads raw existing data and restores configuration", a
   );
 });
 
-test("Main retains the original layout and theme with the requested preset removals", async ({
+test("Main preserves preset labels, two columns and navy theme after layout cleanup", async ({
   page,
 }, info) => {
   await mockBluetooth(page);
@@ -453,7 +445,11 @@ test("Main retains the original layout and theme with the requested preset remov
   });
   await page.goto("./");
   await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(10);
-  expect(await measure()).toEqual(original);
+  const updated = await measure();
+  expect(updated.width).toBe(original.width);
+  expect(updated.theme).toBe(original.theme);
+  expect(updated.labels).toEqual(original.labels);
+  expect(updated.columns.split(" ")).toHaveLength(2);
   await page.screenshot({
     path: info.outputPath("react-main.png"),
     fullPage: true,

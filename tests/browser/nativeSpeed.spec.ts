@@ -6,10 +6,8 @@ test("linked speed defaults remain 81 and intermediate requests share the select
   page,
 }) => {
   await mockBluetooth(page, true);
-  await page.goto("./");
-  await expect(page.locator("#home-view .home-status")).toHaveText(
-    "2 of 2 connected",
-  );
+  await page.goto("./#development");
+  await expect(page.locator("#home-view .connection-action .dot.on")).toHaveCount(2);
   await page
     .getByLabel("Playback output", { exact: true })
     .selectOption("combined");
@@ -118,7 +116,7 @@ test("Simulation Only speed changes never write and leave saved manual Custom ti
   expect(await page.evaluate(() => window.__ble.writes)).toEqual([]);
   await page.getByLabel("Native speed mode", { exact: true }).selectOption("7");
   await expect(page.getByTestId("timing-estimate")).toContainText(
-    "Estimated curve · unmeasured mode",
+    "Video-derived provisional curve",
   );
   await expect(
     page.getByLabel("Follow Animation Speed for this profile", { exact: true }),
@@ -132,10 +130,8 @@ test("calibration logs the chosen native byte and locks speed editing during the
   page,
 }) => {
   await mockBluetooth(page, true);
-  await page.goto("./");
-  await expect(page.locator("#home-view .home-status")).toHaveText(
-    "2 of 2 connected",
-  );
+  await page.goto("./#development");
+  await expect(page.locator("#home-view .connection-action .dot.on")).toHaveCount(2);
   await page
     .getByLabel("Playback output", { exact: true })
     .selectOption("combined");
@@ -233,11 +229,16 @@ test("Studio shows live original/effective cuts, keeps old personal profiles fix
   await expect(page.getByTestId("step-2-timing")).toContainText(
     "Effective Cut: 1.300s",
   );
-  await page.getByLabel("Animation speed", { exact: true }).fill("192");
-  await page.getByRole("button", { name: "Save speed", exact: true }).click();
-  for (const step of [1, 2])
+  await page.getByLabel("Animation speed", { exact: true }).fill("75");
+  await page
+    .getByLabel("Animation speed", { exact: true })
+    .dispatchEvent("pointerup");
+  for (const [step, mode] of [
+    [1, 7],
+    [2, 8],
+  ])
     await expect(page.getByTestId(`step-${step}-timing`)).toContainText(
-      `Effective Cut: ${(1.3 * durationFactor(7, 192)).toFixed(3)}s`,
+      `Effective Cut: ${(1.3 * durationFactor(mode, 192)).toFixed(3)}s`,
     );
   await page
     .getByLabel("Automatically adjust preset cut timing", {
@@ -342,16 +343,15 @@ test("active Apply rebases the Custom cut while future edits wait for the next s
   page,
 }) => {
   await mockBluetooth(page, true);
-  await page.goto("./");
-  await expect(page.locator("#home-view .home-status")).toHaveText(
-    "2 of 2 connected",
-  );
+  await page.goto("./#development");
+  await expect(page.locator("#home-view .connection-action .dot.on")).toHaveCount(2);
   // Keep browser actions and CI host load from advancing the deadline under test.
   await page.clock.install({ time: new Date("2026-10-25T12:00:00Z") });
   await page.clock.pauseAt(new Date("2026-10-25T12:01:00Z"));
   await page.getByText("Advanced Settings", { exact: true }).click();
   await page.getByLabel("Native speed mode", { exact: true }).selectOption("7");
-  await page.locator('[data-profile-id="overlap-cut"]').click();
+  await page.getByLabel("Profile to edit", { exact: true }).selectOption("overlap-cut");
+  await page.locator("#dev-editor").getByRole("button", { name: "Play test", exact: true }).click();
   await page.clock.runFor(600);
   await page.getByLabel("Native speed byte", { exact: true }).fill("255");
   expect(
@@ -416,9 +416,7 @@ test("Combined reports independent side failures while Breathe sends once and it
 }) => {
   await mockBluetooth(page, true);
   await page.goto("./");
-  await expect(page.locator("#home-view .home-status")).toHaveText(
-    "2 of 2 connected",
-  );
+  await expect(page.locator("#home-view .connection-action .dot.on")).toHaveCount(2);
   await page.evaluate(() => {
     window.__ble.failSide = "right";
   });
@@ -426,28 +424,24 @@ test("Combined reports independent side failures while Breathe sends once and it
   await page.getByRole("tab", { name: "Basic", exact: true }).click();
   await page.locator('[data-profile-id="basic-10"]').click();
   await page.clock.runFor(10000);
+  await page.getByText("Connection status", { exact: true }).click();
   await expect(
     page.getByLabel("Playback delivery", { exact: true }),
   ).toContainText("Left: sent · Right: error");
   await expect(
     page.getByLabel("Playback delivery", { exact: true }),
   ).toContainText("Mock radio failure");
-  await expect(page.locator(".home-active-step")).toContainText("Breathe");
+  await expect(page.locator(".global-playbar")).toContainText("Breathe");
   const readout = page.locator(".sim-readout");
   await expect(readout).toHaveAttribute("data-mode", "10");
-  await expect(readout).toContainText("2.500 / 2.500s");
+  await expect(readout).toHaveAttribute("data-elapsed", "2.500");
   expect(
     await page.evaluate(
       () =>
         window.__ble.writes.filter((w) => w.hex === "9E0009819800E9").length,
     ),
   ).toBe(1);
-  await page
-    .getByText("Preview controls and numbered LEDs", { exact: true })
-    .click();
-  await expect(
-    page.getByRole("checkbox", { name: "Repeat captured preview window" }),
-  ).toBeDisabled();
+  await expect(page.getByText("Preview controls and numbered LEDs", { exact: true })).toHaveCount(0);
   await page.getByRole("button", { name: "Stop + Red", exact: true }).click();
   await page.evaluate(() => {
     window.__ble.disconnect("left");

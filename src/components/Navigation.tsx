@@ -43,7 +43,7 @@ export function Navigation({
   return (
     <header className="site-nav" ref={ref}>
       <span className="brand">
-        WRX Dream BLE <span style={{ opacity: 0.6, fontWeight: 600 }}>v9</span>
+        WRX <span className="brand-detail">Lighting control</span>
       </span>
       <button
         ref={button}

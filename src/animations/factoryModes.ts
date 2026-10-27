@@ -1,4 +1,5 @@
 import type { Calibration, Profile } from "./types";
+import { BASIC_REPEAT_DEFAULTS } from "./basicRepeatTiming";
 export const CAL: Record<number, Calibration> = {
   "3": {
     ms: 2250,
@@ -151,6 +152,7 @@ export const basicProfiles: readonly Profile[] = [
   },
   {
     id: "basic-7",
+    basicRepeatMode: 7,
     followAnimationSpeed: true,
     name: "Mode 7 · Overlap",
     repeat: true,
@@ -160,12 +162,13 @@ export const basicProfiles: readonly Profile[] = [
       {
         type: "mode",
         mode: 7,
-        ms: 3500,
+        ms: BASIC_REPEAT_DEFAULTS[7],
       },
     ],
   },
   {
     id: "basic-8",
+    basicRepeatMode: 8,
     followAnimationSpeed: true,
     name: "Mode 8 · Reverse Overlap",
     repeat: true,
@@ -175,7 +178,7 @@ export const basicProfiles: readonly Profile[] = [
       {
         type: "mode",
         mode: 8,
-        ms: 3500,
+        ms: BASIC_REPEAT_DEFAULTS[8],
       },
     ],
   },

@@ -37,6 +37,11 @@ it("preserves original definitions except the requested Custom removals and over
     data.basicProfiles.map((p: Profile) => ({
       ...p,
       followAnimationSpeed: true,
+      ...(p.id === "basic-7"
+        ? { basicRepeatMode: 7 }
+        : p.id === "basic-8"
+          ? { basicRepeatMode: 8 }
+          : {}),
       ...(p.id === "basic-10"
         ? {
             name: "Mode 10 · Breathe",

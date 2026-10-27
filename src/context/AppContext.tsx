@@ -32,6 +32,14 @@ import {
 } from "../storage/persistence";
 import type { Profile, Step } from "../animations/types";
 import { durationFactor, resolveStepTiming } from "../animations/timing";
+import {
+  basicRepeatReference,
+  isOverlapMode,
+  validBasicRepeatMs,
+  withBasicRepeatReference,
+  type OverlapMode,
+} from "../animations/basicRepeatTiming";
+import { loadBasicRepeatPreferences } from "../storage/basicRepeatPreferences";
 import { validMode } from "../animations/types";
 import { validNativeSpeed } from "../animations/nativeSpeed";
 import {
@@ -55,10 +63,6 @@ function useApplication() {
   const [autoRestore, setAutoState] = useState(
     () => readText(storage, keys.autoRestore) !== "off",
   );
-  const [staticColor, setStaticState] = useState(() => {
-    const c = readText(storage, keys.staticColor);
-    return /^#[0-9a-f]{6}$/i.test(c) ? c : "#ff0000";
-  });
   const [tab, setTabState] = useState<"basic" | "custom">(() =>
     readText(storage, keys.tab) === "basic" ? "basic" : "custom",
   );
@@ -70,6 +74,16 @@ function useApplication() {
     loadNativeSpeedPreferences(storage),
   );
   const speedPreferencesRef = useRef(nativeSpeedPreferences);
+  const [basicRepeatPreferences, setBasicRepeatPreferences] = useState(() =>
+    loadBasicRepeatPreferences(storage),
+  );
+  const basicRepeatPreferencesRef = useRef(basicRepeatPreferences);
+  function getBasicRepeatMs(mode: OverlapMode) {
+    return basicRepeatReference(
+      mode,
+      basicRepeatPreferencesRef.current.referenceMs,
+    );
+  }
   function getNativeSpeed(mode: number) {
     return nativeSpeedFor(speedPreferencesRef.current, mode);
   }
@@ -78,7 +92,11 @@ function useApplication() {
   }
   function getStepTiming(step: Step, profile: Profile) {
     return resolveStepTiming(
-      step,
+      withBasicRepeatReference(
+        step,
+        profile,
+        basicRepeatPreferencesRef.current.referenceMs,
+      ),
       profile,
       getNativeSpeed,
       getSpeedTimeFactor,
@@ -102,6 +120,7 @@ function useApplication() {
   const [output] = useState(
     () => new PlaybackOutput(manager, simulator, outputMode),
   );
+  const simulation = useSyncExternalStore(simulator.subscribe, simulator.getSnapshot);
   const [scheduler] = useState(
     () =>
       new Scheduler(
@@ -130,9 +149,7 @@ function useApplication() {
     calibration.subscribe,
     calibration.getSnapshot,
   );
-  const [message, setMessage] = useState(
-    "v9 ready: Basic/Custom tabs, saved custom presets, solid RGB, and compact Bluetooth connections.",
-  );
+  const [message, setMessage] = useState("Ready.");
   const [activity, setActivity] = useState<string[]>(["Ready."]);
   function notify(msg: string) {
     setMessage(msg);
@@ -206,6 +223,17 @@ function useApplication() {
   function setSpeedScope(scope: NativeSpeedPreferences["scope"]) {
     saveSpeedPreferences({ ...speedPreferencesRef.current, scope });
   }
+  function changeNativeSpeed(fallbackMode: number, speed: number) {
+    if (calibration.state.running) return;
+    const state = scheduler.state;
+    const step = state?.current;
+    const mode = step?.type === "mode" ? step.mode : fallbackMode;
+    if (getNativeSpeed(mode) !== speed) setNativeSpeed(mode, speed);
+    // Only the scheduler may reissue an active effect. Idle, Color and Wait
+    // selections prepare future commands without starting or interrupting one.
+    if (step?.type === "mode" && state?.timing?.speed !== speed)
+      scheduler.restartCurrentMode();
+  }
   function setBundledFollow(bundledFollow: boolean) {
     saveSpeedPreferences({ ...speedPreferencesRef.current, bundledFollow });
   }
@@ -225,12 +253,30 @@ function useApplication() {
       },
     });
   }
+  function setBasicRepeatMs(mode: number, ms: number) {
+    if (!isOverlapMode(mode) || !validBasicRepeatMs(ms)) return;
+    const next = {
+      ...basicRepeatPreferencesRef.current,
+      referenceMs: {
+        ...basicRepeatPreferencesRef.current.referenceMs,
+        [mode]: ms,
+      },
+    };
+    basicRepeatPreferencesRef.current = next;
+    setBasicRepeatPreferences(next);
+    try {
+      writeJSON(storage, keys.basicRepeat, next);
+    } catch {
+      notify(
+        "Basic repeat settings could not be saved; export a backup before closing.",
+      );
+    }
+  }
   function setRainbow(color: string) {
     preference(keys.rainbow, color);
     setColorRevision((r) => r + 1);
   }
   function setStaticColor(color: string) {
-    setStaticState(color);
     simulator.setSelectedColor(color);
     preference(keys.staticColor, color);
   }
@@ -304,8 +350,10 @@ function useApplication() {
         scheduler.stop("Bluetooth " + side + " disconnected.");
       calibration.abort("Bluetooth " + side + " disconnected during test.");
     });
+    let wasHidden = document.hidden;
     const visibility = () => {
       if (document.hidden) {
+        wasHidden = true;
         output.cancelPending();
         simulator.pause();
         scheduler.stop(
@@ -314,12 +362,17 @@ function useApplication() {
         calibration.abort(
           "Page hidden; test stopped to avoid inaccurate timing.",
         );
+      } else if (wasHidden) {
+        wasHidden = false;
+        notify("Browser active. Playback remains stopped; select a preset to play.");
       }
     };
     document.addEventListener("visibilitychange", visibility);
+    window.addEventListener("pageshow", visibility);
     return () => {
       off();
       document.removeEventListener("visibilitychange", visibility);
+      window.removeEventListener("pageshow", visibility);
       scheduler.stop();
       calibration.dispose();
       manager.dispose();
@@ -391,11 +444,14 @@ function useApplication() {
     nativeSpeedPreferences,
     getNativeSpeed,
     setNativeSpeed,
+    changeNativeSpeed,
     setSpeedScope,
     setBundledFollow,
     setTimingCorrection,
     getSpeedTimeFactor,
     getStepTiming,
+    getBasicRepeatMs,
+    setBasicRepeatMs,
     delivery,
     output,
     applyNativeSpeed,
@@ -413,7 +469,7 @@ function useApplication() {
     updateLegacy,
     autoRestore,
     setAutoRestore,
-    staticColor,
+    staticColor: simulation.selectedColor,
     setStaticColor,
     tab,
     setTab,

@@ -11,6 +11,7 @@ export const keys = {
   outputMode: "wrx-playback-output-v1",
   selectedColor: "wrx-simulator-selected-color-v1",
   nativeSpeed: "wrx-native-speed-preferences-v1",
+  basicRepeat: "wrx-basic-repeat-calibration-v1",
   oldFixedBackup: "wrx-dream-before-fixed-v8.2",
   migrationBackup: "wrx-dream-before-react-v9",
   schema: "wrx-dream-schema-version",

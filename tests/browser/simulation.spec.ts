@@ -44,7 +44,7 @@ test("Mode 4 and Mode 10 match approved HTML colors for red, blue and green at m
         await seek(page, "#timeline", time);
         samples.push({ mode, color, time, colors: await ledColors(page) });
       }
-  await page.goto("./");
+  await page.goto("./#development");
   await page
     .getByLabel("Playback output", { exact: true })
     .selectOption("simulation");
@@ -83,7 +83,7 @@ test("all eight tracks render all 38 LED regions and numbered indicators consist
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await mockBluetooth(page);
-  await page.goto("./");
+  await page.goto("./#development");
   await page
     .getByLabel("Playback output", { exact: true })
     .selectOption("simulation");
@@ -138,9 +138,7 @@ test("Simulation Only never sends Bluetooth for presets, static RGB, favorites, 
 }) => {
   await mockBluetooth(page, true);
   await page.goto("./");
-  await expect(page.locator("#home-view .home-status")).toHaveText(
-    "2 of 2 connected",
-  );
+  await expect(page.locator("#home-view .connection-action .dot.on")).toHaveCount(2);
   await page
     .getByLabel("Playback output", { exact: true })
     .selectOption("simulation");
@@ -188,9 +186,7 @@ test("Combined previews and writes unchanged commands, while Hardware Only does 
 }) => {
   await mockBluetooth(page, true);
   await page.goto("./");
-  await expect(page.locator("#home-view .home-status")).toHaveText(
-    "2 of 2 connected",
-  );
+  await expect(page.locator("#home-view .connection-action .dot.on")).toHaveCount(2);
   await page
     .getByLabel("Playback output", { exact: true })
     .selectOption("combined");

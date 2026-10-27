@@ -1,6 +1,18 @@
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import {
+  SPEED_POSITIONS,
+  nativeSpeedToPercent,
+  percentToNativeSpeed,
+  snapSpeedPercent,
+  nextSpeedPercent,
+} from "../animations/speedPosition";
 import { speedObservations } from "../animations/nativeSpeed";
 import { timingSource } from "../animations/timing";
+import {
+  BASIC_REPEAT_DEFAULTS,
+  isOverlapMode,
+  validBasicRepeatMs,
+} from "../animations/basicRepeatTiming";
 import { useApp } from "../context/AppContext";
 import {
   calibratedRecords,
@@ -13,39 +25,62 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
     id = useId();
   const [mode, setMode] = useState(4),
     [draft, setDraft] = useState<number | null>(null);
+  const draftRef = useRef<number | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const pointerActive = useRef(false);
+  const latest = useRef({ app, mode });
+  latest.current = { app, mode };
   const locked = app.calibrationState.running,
     prefs = app.nativeSpeedPreferences;
   const current = app.playback?.current;
   const playingMode = current?.type === "mode" ? current.mode : null;
   const targetMode = playingMode ?? mode;
-  const speed = draft ?? app.getNativeSpeed(targetMode);
+  const percent = draft ?? nativeSpeedToPercent(app.getNativeSpeed(targetMode));
+  const speed =
+    draft === null
+      ? app.getNativeSpeed(targetMode)
+      : percentToNativeSpeed(draft);
   const advancedSpeed = app.getNativeSpeed(mode);
   const factor = app.getSpeedTimeFactor(mode, advancedSpeed),
     capture = calibrationByMode.get(mode)!.cycleSeconds;
   const observed = speedObservations[mode];
 
-  function applySpeed() {
-    // Read the runner at the deliberate action, not at the start of a drag:
-    // a short Custom cut may have changed modes while the slider was moving.
-    const step = app.scheduler.state?.current;
-    const activeMode = step?.type === "mode" ? step.mode : null;
-    const target = activeMode ?? mode;
-    const value = draft ?? app.getNativeSpeed(target);
-    app.setNativeSpeed(target, value);
+  function clearDraft() {
+    clearTimeout(timer.current);
+    draftRef.current = null;
     setDraft(null);
-    if (activeMode !== null) void app.applyNativeSpeed(activeMode);
-    else app.notify("Animation speed saved for future Mode steps.");
+  }
+  function chooseSpeed(value: number) {
+    const next = snapSpeedPercent(value);
+    if (draftRef.current === next) return;
+    draftRef.current = next;
+    setDraft(next);
+    clearTimeout(timer.current);
+    timer.current = setTimeout(applySpeed, 180);
+  }
+  useEffect(() => {
+    if (locked) clearDraft();
+  }, [locked]);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  useEffect(clearDraft, [app.outputMode, prefs.scope, app.playback?.profileId]);
+  function applySpeed() {
+    const chosen = draftRef.current;
+    if (chosen === null) return;
+    clearDraft();
+    const { app: currentApp, mode: currentMode } = latest.current;
+    currentApp.changeNativeSpeed(currentMode, percentToNativeSpeed(chosen));
   }
 
   const cutTiming = (
     <label className="speed-cut-timing">
       <input
         type="checkbox"
+        aria-label="Automatically adjust preset cut timing"
         checked={prefs.bundledFollow}
         disabled={locked}
         onChange={(e) => app.setBundledFollow(e.target.checked)}
       />
-      <span>Automatically adjust preset cut timing</span>
+      <span>{main ? "Sync cut timing" : "Automatically adjust preset cut timing"}</span>
     </label>
   );
   return (
@@ -60,8 +95,7 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
           {prefs.scope === "per-mode" ? ` · Mode ${targetMode}` : ""}
         </label>
         <span className="speed-value" data-testid="selected-speed">
-          {speed}
-          {speed === 129 ? " · Reference" : ""}
+          {Math.round(percent)}%{speed === 129 ? " · Default" : ""}
         </span>
       </div>
       <div className="speed-slider-row">
@@ -70,34 +104,87 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
           className="native-speed-range"
           type="range"
           aria-label="Animation speed"
-          min={1}
-          max={255}
+          min={0}
+          max={100}
           step={1}
-          aria-valuetext={`${speed}${speed === 129 ? ", reference setting" : ""}`}
-          value={speed}
+          list={`${id}-positions`}
+          aria-valuetext={`${Math.round(percent)}% slider position${speed === 129 ? ", default" : ""}`}
+          value={Math.round(percent)}
           disabled={locked}
-          onChange={(e) => setDraft(Number(e.target.value))}
+          onChange={(e) => {
+            const value = Number(e.target.value);
+            // Assistive technologies can adjust the native range directly,
+            // without a key or pointer event. Small adjustments must reach the
+            // next stop instead of snapping back indefinitely.
+            const position = Math.round(percent);
+            chooseSpeed(
+              !pointerActive.current && value !== position &&
+              snapSpeedPercent(value) === snapSpeedPercent(position)
+                ? nextSpeedPercent(position, value > position ? 1 : -1)
+                : value,
+            );
+          }}
+          onPointerDown={() => { pointerActive.current = true; }}
+          onPointerUp={() => { pointerActive.current = false; applySpeed(); }}
+          onPointerCancel={() => { pointerActive.current = false; clearDraft(); }}
+          onLostPointerCapture={() => { pointerActive.current = false; clearDraft(); }}
+          onBlur={() => { pointerActive.current = false; clearDraft(); }}
+          onKeyDown={(e) => {
+            const right = ["ArrowRight", "ArrowUp", "PageUp"].includes(e.key),
+              left = ["ArrowLeft", "ArrowDown", "PageDown"].includes(e.key);
+            if (right || left || e.key === "Home" || e.key === "End") {
+              e.preventDefault();
+              const current =
+                draftRef.current ??
+                Math.round(nativeSpeedToPercent(
+                  app.getNativeSpeed(
+                    app.scheduler.state?.current?.type === "mode"
+                      ? app.scheduler.state.current.mode
+                      : mode,
+                  ),
+                ));
+              chooseSpeed(
+                e.key === "Home"
+                  ? 0
+                  : e.key === "End"
+                    ? 100
+                    : nextSpeedPercent(current, right ? 1 : -1),
+              );
+            } else if (e.key === "Escape") clearDraft();
+          }}
+          onKeyUp={(e) => {
+            if (
+              [
+                "ArrowRight",
+                "ArrowUp",
+                "PageUp",
+                "ArrowLeft",
+                "ArrowDown",
+                "PageDown",
+                "Home",
+                "End",
+              ].includes(e.key)
+            )
+              applySpeed();
+          }}
         />
-        <button
-          type="button"
-          disabled={locked || (playingMode !== null && !app.canPlay)}
-          onClick={applySpeed}
-        >
-          {playingMode !== null ? "Apply speed" : "Save speed"}
-        </button>
+        <datalist id={`${id}-positions`}>
+          {SPEED_POSITIONS.map((stop) => (
+            <option key={stop} value={stop} label={`${stop}%`} />
+          ))}
+        </datalist>
       </div>
       <div className="speed-scale" aria-hidden="true">
         <span>Slow</span>
-        <span>129 · Reference</span>
+        <span>Default</span>
         <span>Fast</span>
       </div>
-      <p className="speed-hint">
-        {draft !== null ? "Not applied yet. " : ""}
+      {!main && <p className="speed-hint">
+        Slider position. {draft !== null ? "Applying automatically. " : ""}
         {prefs.scope === "global"
           ? "Same speed for all animations."
           : "Individual speed per animation."}
-        {playingMode !== null ? " Apply updates the current animation." : ""}
-      </p>
+      </p>}
       {main && app.tab === "custom" && cutTiming}
       <details className="speed-advanced">
         <summary>Advanced Settings</summary>
@@ -108,7 +195,7 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
             value={prefs.scope}
             disabled={locked}
             onChange={(e) => {
-              setDraft(null);
+              clearDraft();
               app.setSpeedScope(e.target.value as typeof prefs.scope);
             }}
           >
@@ -116,11 +203,11 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
             <option value="per-mode">Individual speed per animation</option>
           </select>
         </label>
-        <p>
+        {!main && <p>
           {prefs.scope === "global"
             ? "The shared speed applies to every Mode step. Individual speeds remain saved."
             : "Each Mode step uses its own saved speed. The main slider applies to the current animation, or the selected animation when idle."}
-        </p>
+        </p>}
         <label className="field">
           Animation for individual settings and calibration
           <select
@@ -129,7 +216,7 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
             disabled={locked}
             onChange={(e) => {
               setMode(Number(e.target.value));
-              setDraft(null);
+              clearDraft();
             }}
           >
             {calibratedRecords.map((record) => (
@@ -139,6 +226,7 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
             ))}
           </select>
         </label>
+        {!main && <>
         <label className="field">
           {prefs.scope === "global" ? "Shared" : `Mode ${mode}`} speed byte
           (1–255)
@@ -151,7 +239,7 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
             value={advancedSpeed}
             disabled={locked}
             onChange={(e) => {
-              setDraft(null);
+              clearDraft();
               app.setNativeSpeed(mode, Number(e.target.value));
             }}
           />
@@ -207,6 +295,65 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
             the window.
           </p>
         )}
+        {isOverlapMode(mode) && (
+          <details className="basic-repeat-tools">
+            <summary>Basic repeat calibration</summary>
+            <label className="field">
+              Basic Mode {mode} retrigger interval at speed 129 (seconds)
+              <input
+                key={`${mode}-${app.getBasicRepeatMs(mode)}`}
+                type="number"
+                aria-label="Basic repeat reference interval"
+                min={0.5}
+                max={10}
+                step={0.05}
+                disabled={locked}
+                defaultValue={(app.getBasicRepeatMs(mode) / 1000).toFixed(2)}
+                onBlur={(e) => {
+                  const value = Number(e.target.value) * 1000,
+                    ms = Math.round(value);
+                  if (Math.abs(ms - value) < 0.0001 && validBasicRepeatMs(ms))
+                    app.setBasicRepeatMs(mode, ms);
+                  else {
+                    e.target.value = (
+                      app.getBasicRepeatMs(mode) / 1000
+                    ).toFixed(2);
+                    app.notify(
+                      "Use 0.50–10.00 seconds in 0.05-second increments for Basic repeat timing.",
+                    );
+                  }
+                }}
+              />
+            </label>
+            <p data-testid="basic-repeat-timing">
+              Basic retrigger reference:{" "}
+              {(app.getBasicRepeatMs(mode) / 1000).toFixed(2)}s · effective:{" "}
+              {((app.getBasicRepeatMs(mode) * factor) / 1000).toFixed(3)}s.
+              Approved capture: {capture.toFixed(2)}s.
+            </p>
+            <button
+              type="button"
+              disabled={locked}
+              onClick={() =>
+                app.setBasicRepeatMs(mode, BASIC_REPEAT_DEFAULTS[mode])
+              }
+            >
+              Restore Basic repeat default
+            </button>
+            <p>
+              Basic playback only. Saved for future intervals; use Reissue above
+              to restart the current Mode step now. Custom cuts and native
+              animation data are unchanged.
+            </p>
+            <p className="hint">
+              The new recordings were confirmed at speed 129, but visible color
+              returns do not establish command times. The existing 3.50s
+              defaults are retained until synchronized dispatch evidence
+              supports a change. Shorter intervals intentionally restart the
+              effect early.
+            </p>
+          </details>
+        )}
         <details>
           <summary>Timing model correction</summary>
           <label className="field">
@@ -234,6 +381,8 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
           All byte anchors are tentative. Physical startup latency, restart
           behavior and phase alignment still need testing.
         </p>
+        </>}
+        {main && <p className="hint">Exact speed and timing calibration are available in Development.</p>}
       </details>
     </div>
   );
