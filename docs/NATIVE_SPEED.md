@@ -1,5 +1,7 @@
 # Native speed calibration and local integration
 
+The later [native Mode 7/8 review](NATIVE_OVERLAP_SPEED.md) adds independent phase-response measurements and automatic percentage-slider application. It preserves the original reference assets, Mode 4/10 curves and independent Basic retrigger settings. The native recordings are analyzed separately from the earlier app-controlled clips.
+
 Mode packets accept a native speed byte: `9E 00 [mode−1] [speed] 98 00 E9`, speed 1–255, default `81` (129). With no new settings the verified Mode 4 packet remains `9E0003819800E9`. RGB packets, reference cut values, fixed profile definitions and approved LED colors/brightness are unchanged. Effective playback timing now uses the shared resolver described in [SYNCHRONIZED_TIMING.md](SYNCHRONIZED_TIMING.md).
 
 ## Evidence and uncertainty
@@ -52,9 +54,9 @@ The simulator uses an absolute monotonic clock and the factor captured with each
 
 ## Controls, persistence and logs
 
-Main now shows **Animation speed** directly below the Presets tabs, with value and reference 129 visible. Slider edits prepare a local selection; **Apply speed** saves it and safely restarts/rebases the Mode step playing at the time of the action. **Save speed** while idle prepares future playback without starting an effect. On Custom, **Automatically adjust preset cut timing** controls the existing bundled timing preference. Details: [MAIN_SPEED_CONTROLS.md](MAIN_SPEED_CONTROLS.md).
+Main shows **Animation speed** below Basic/Custom tabs. It saves and applies a discrete stop automatically after 180ms of stable input or on release; no Save/Apply button is needed. Stops are 0, 15, 30, 45, 50, 60, 75, 90 and 100 percent of slider position, with 50 mapping exactly to native byte 129. Idle and Color/Wait changes prepare future Mode steps without starting or interrupting an effect. Current Mode changes use the existing scheduler generation cancellation and dispatch-based deadline rebase. On Custom, **Sync cut timing** retains the existing bundled timing preference. Details: [MAIN_SPEED_CONTROLS.md](MAIN_SPEED_CONTROLS.md).
 
-**Advanced Settings**, outside Animation preview on each active view, contains scope (**Same speed for all animations** or **Individual speed per animation**), selected mode, exact byte entry and timing corrections. Advanced byte edits save for future steps without changing the active deadline. **Apply speed and reissue mode** requests the selected mode: during playback it must match the current Mode step and uses the scheduler's cancellation/rebase mechanism. With no active sequence, this advanced testing action requests the selected mode once. Simulation Only routes requests solely to the preview. Speed controls are locked during physical calibration runs.
+**Advanced Settings** on Main retains scope and the individual-mode selector. Development/Calibration provide exact byte entry, timing corrections and Basic repeat calibration. Their explicit **Apply speed and reissue mode** diagnostic action requests the selected mode: during playback it must match the current Mode step. Advanced byte editing continues saving for future steps. Simulation Only routes requests solely to the preview. All speed controls are locked during a physical calibration run.
 
 Version 2 preferences use the existing `wrx-native-speed-preferences-v1` key. Version 1 independent speeds migrate in memory without rewriting source data; old preview flags are retained for backup compatibility but no longer split the clocks. Clean installs default to global 129. Bundled cuts follow speed by default; existing personal profiles stay fixed unless opted in. Original reference values and optional profile/step timing fields survive import/export. Malformed settings are not overwritten on initialization. The complete configuration backup includes these preferences automatically.
 

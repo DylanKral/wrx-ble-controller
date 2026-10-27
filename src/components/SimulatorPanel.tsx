@@ -12,7 +12,19 @@ import { applyLedColors, mapLedColors } from "../simulation/ledMapping";
 import type { OutputMode } from "../simulation/PlaybackOutput";
 import "../styles/simulator.css";
 
-export function SimulatorPanel() {
+export function OutputSelector() {
+  const app = useApp();
+  return <label className="field output-setting">Playback output
+    <select aria-label="Playback output" value={app.outputMode}
+      onChange={(e) => app.setOutputMode(e.target.value as OutputMode)}>
+      <option value="simulation">Simulation Only</option>
+      <option value="hardware">Hardware Only</option>
+      <option value="combined">Combined</option>
+    </select>
+  </label>;
+}
+
+export function SimulatorPanel({ compact = false }: { compact?: boolean }) {
   const app = useApp(),
     sim = app.simulator;
   const state = useSyncExternalStore(sim.subscribe, sim.getSnapshot);
@@ -34,42 +46,31 @@ export function SimulatorPanel() {
     if (art.current) applyLedColors(art.current, sample.colors);
   }, [enabled, sample.colors]);
   return (
-    <section className="panel simulator-panel" aria-label="Animation preview">
+    <section className={"panel simulator-panel" + (compact ? " sim-compact" : "")} aria-label="Animation preview">
       <div className="sectionhead">
-        <h2>Animation preview</h2>
-        <span className="pill">Calibrated · 19 LEDs</span>
+        <h2>{compact ? app.playback?.name ?? "Taillights" : "Animation preview"}</h2>
+        {compact ? <span className="preview-status"><i className={"dot" + (app.playback ? " on" : "")} />{app.outputMode === "hardware" ? "Hardware" : app.outputMode === "simulation" ? "Preview only" : "Combined"}</span> : <span className="pill">Calibrated · 19 LEDs</span>}
       </div>
-      <label className="field">
-        Playback output
-        <select
-          aria-label="Playback output"
-          value={app.outputMode}
-          onChange={(e) => app.setOutputMode(e.target.value as OutputMode)}
-        >
-          <option value="simulation">Simulation Only</option>
-          <option value="hardware">Hardware Only</option>
-          <option value="combined">Combined</option>
-        </select>
-      </label>
-      <p
+      {!compact && <OutputSelector />}
+      {!compact && <p
         className="delivery-status"
         aria-label="Playback delivery"
         aria-live="polite"
       >
         {app.output.statusText()}
-      </p>
+      </p>}
       {!enabled ? (
-        <p>
+        <p>{compact ? "Hardware output" : <>
           Choose Simulation Only to preview without lights, or Combined to
           preview while controlling connected lights.
-        </p>
+        </>}</p>
       ) : (
         <>
-          <p>
+          {!compact && <p>
             {app.outputMode === "simulation"
               ? "Simulation Only · Bluetooth commands are disabled."
               : "Combined · Preview plus Bluetooth commands to connected lights."}
-          </p>
+          </p>}
           <div
             className="sim-art"
             ref={art}
@@ -79,20 +80,23 @@ export function SimulatorPanel() {
             className="sim-readout"
             data-mode={state.mode ?? "static"}
             data-frame={sample.frame?.frame ?? ""}
+            data-native-speed={state.nativeSpeed}
+            data-time-factor={state.timeFactor}
+            data-elapsed={sample.elapsed.toFixed(3)}
           >
-            <strong>
+            {!compact && <strong>
               {sample.record
                 ? `Mode ${sample.record.mode} · ${sample.record.name}`
                 : state.mode === null
                   ? "Static RGB"
                   : `Mode ${state.mode} · no calibrated track supplied`}
-            </strong>
-            <span>
+            </strong>}
+            {!compact && <span>
               {sample.record
                 ? `${sample.elapsed.toFixed(3)} / ${sample.duration.toFixed(3)}s · frame ${sample.frame?.frame} · ${sample.record.frames.length} captured frames`
                 : state.selectedColor.toUpperCase()}
-            </span>
-            {sample.record && (
+            </span>}
+            {!compact && sample.record && (
               <span>
                 Active native byte: 0x
                 {state.nativeSpeed
@@ -106,7 +110,7 @@ export function SimulatorPanel() {
               </span>
             )}
           </div>
-          <details className="sim-tools">
+          {!compact && <details className="sim-tools">
             <summary>Preview controls and numbered LEDs</summary>
             <label className="field">
               Preview factory mode
@@ -139,7 +143,7 @@ export function SimulatorPanel() {
                 type="color"
                 aria-label="Preview RGB color"
                 value={state.selectedColor}
-                onChange={(e) => sim.setSelectedColor(e.target.value)}
+                onChange={(e) => app.setStaticColor(e.target.value)}
               />
               <span>{state.selectedColor.toUpperCase()}</span>
             </label>
@@ -206,8 +210,8 @@ export function SimulatorPanel() {
                 </li>
               ))}
             </ol>
-          </details>
-          {state.mode === 10 && (
+          </details>}
+          {!compact && state.mode === 10 && (
             <p className="hint">
               This 75-frame preview covers a 2.50s capture, not a verified full
               breathing cycle (~3.54s at the new reference setting). It holds
@@ -216,10 +220,10 @@ export function SimulatorPanel() {
               reconstructed.
             </p>
           )}
-          <p className="hint">
+          {!compact && <p className="hint">
             Video-derived preview. Mode 4 and Mode 10 match the approved
             reference. Browser timing does not confirm physical LED response.
-          </p>
+          </p>}
         </>
       )}
     </section>

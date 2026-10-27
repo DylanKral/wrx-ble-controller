@@ -4,6 +4,7 @@ import { App } from "./App";
 import { BluetoothProvider } from "./context/BluetoothContext";
 import { ApplicationProvider } from "./context/AppContext";
 import "./styles/app.css";
+import "./styles/controller.css";
 class ErrorBoundary extends Component<
   { children: ReactNode },
   { error: string }

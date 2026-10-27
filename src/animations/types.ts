@@ -9,6 +9,8 @@ export interface Profile {
   experimental: boolean;
   nativeLoop?: boolean;
   followAnimationSpeed?: boolean;
+  // Internal Basic-only policy; never migrated into user-created profiles.
+  basicRepeatMode?: 7 | 8;
   steps: Step[];
 }
 export interface PresetButton {

@@ -20,18 +20,10 @@ export function PresetButton({
           (playback?.profileId === profile.id ? " playing" : "")
         }
         title={"Play " + label}
+        aria-pressed={playback?.profileId === profile.id}
         onClick={() => play(profile)}
       >
         <strong>{label}</strong>
-        <small>
-          {profile.nativeLoop
-            ? "Native loop"
-            : profile.repeat
-              ? "Timed repeat"
-              : "One pass"}{" "}
-          · {profile.steps.length} step{profile.steps.length === 1 ? "" : "s"}
-          {profile.experimental ? " · TEST" : ""}
-        </small>
       </button>
       {profile.id === "rainbow-blue" && (
         <label className="home-color-inline">

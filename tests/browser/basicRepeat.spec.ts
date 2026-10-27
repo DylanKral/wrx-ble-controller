@@ -1,0 +1,38 @@
+import { test, expect } from "@playwright/test";
+import { mockBluetooth, navigate } from "./mockBluetooth";
+import { durationFactor } from "../../src/animations/timing";
+
+test("Development preserves Basic repeat calibration and Main automatically rebases its separate interval", async ({ page }) => {
+  await mockBluetooth(page, true);
+  await page.goto("./#development");
+  await expect(page.locator("#controller-view .status .dot.on")).toHaveCount(2);
+  await page.getByText("Advanced Settings", { exact: true }).click();
+  await page.getByLabel("Native speed mode", { exact: true }).selectOption("7");
+  await page.getByText("Basic repeat calibration", { exact: true }).click();
+  await expect(page.getByLabel("Basic repeat reference interval", { exact: true })).toHaveValue("3.50");
+  await page.getByLabel("Basic repeat reference interval", { exact: true }).fill("3.00");
+  await page.getByLabel("Basic repeat reference interval", { exact: true }).blur();
+  await page.reload();
+  await page.getByText("Advanced Settings", { exact: true }).click();
+  await page.getByLabel("Native speed mode", { exact: true }).selectOption("7");
+  await page.getByText("Basic repeat calibration", { exact: true }).click();
+  await expect(page.getByLabel("Basic repeat reference interval", { exact: true })).toHaveValue("3.00");
+  await page.getByLabel("Profile to edit", { exact: true }).selectOption("overlap-cut");
+  await expect(page.getByTestId("step-1-timing")).toContainText("Original Cut: 1.30s · Effective Cut: 1.300s");
+  await navigate(page, "Main presets");
+  await expect(page.locator(".connection-action .dot.on")).toHaveCount(2);
+  await page.clock.install();
+  await page.clock.pauseAt(new Date(Date.now() + 1000));
+  await page.getByRole("tab", { name: "Basic", exact: true }).click();
+  await page.locator('[data-profile-id="basic-7"]').click();
+  await page.clock.runFor(600);
+  await page.getByRole("slider", { name: "Animation speed", exact: true }).press("End");
+  await page.clock.runFor(1);
+  const duration = 3000 * durationFactor(7, 255);
+  await page.clock.runFor(Math.floor(duration) - 3);
+  expect(await page.evaluate(() => window.__ble.writes.filter(w => w.hex === "9E0006FF9800E9").length)).toBe(2);
+  await page.clock.runFor(5);
+  expect(await page.evaluate(() => window.__ble.writes.filter(w => w.hex === "9E0006FF9800E9").length)).toBe(4);
+  await expect(page.locator(".sim-readout")).toHaveAttribute("data-mode", "7");
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("wrx-basic-repeat-calibration-v1")!))).toEqual({ version: 1, referenceMs: { 7: 3000 } });
+});

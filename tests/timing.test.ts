@@ -75,8 +75,8 @@ describe("shared timing and non-destructive preferences", () => {
         }
       }
     }
-    expect(durationFactor(7, 1)).toBeCloseTo(estimatedAnchors.slow, 12);
-    expect(durationFactor(7, 255)).toBeCloseTo(estimatedAnchors.fast, 12);
+    expect(durationFactor(3, 1)).toBeCloseTo(estimatedAnchors.slow, 12);
+    expect(durationFactor(3, 255)).toBeCloseTo(estimatedAnchors.fast, 12);
     for (const value of [0, 256, 1.1, NaN, Infinity])
       expect(() => durationFactor(4, value)).toThrow();
     for (const value of [0, 5, NaN])

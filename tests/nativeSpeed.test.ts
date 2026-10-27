@@ -38,7 +38,7 @@ describe("native speed protocol and provisional model", () => {
     for (const speed of [0, 256, -1, 1.5, NaN, Infinity])
       expect(() => modeBytes(4, speed)).toThrow();
   });
-  it.each([4, 10])(
+  it.each([4, 7, 8, 10])(
     "uses tentative anchors and log-duration interpolation for Mode %s",
     (mode) => {
       const observed = speedObservations[mode];
@@ -67,10 +67,10 @@ describe("native speed protocol and provisional model", () => {
     },
   );
   it("is opt-in per mode and leaves all unmeasured modes at their original preview timing", () => {
-    for (const mode of [4, 10])
+    for (const mode of [4, 7, 8, 10])
       for (const speed of [1, 65, 129, 192, 255])
         expect(provisionalDurationFactor(mode, speed)).toBe(1);
-    for (const mode of [3, 5, 6, 7, 8, 9, 255])
+    for (const mode of [3, 5, 6, 9, 255])
       for (const speed of [1, 255])
         expect(provisionalDurationFactor(mode, speed, true)).toBe(1);
   });

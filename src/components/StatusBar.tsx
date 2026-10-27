@@ -1,29 +1,34 @@
+import { useLayoutEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useApp } from "../context/AppContext";
-import { stepText } from "../animations/types";
+import { attachPlaybackBar } from "../layout/playbackBar";
 export function StatusBar({ development }: { development: boolean }) {
   const app = useApp(),
     p = app.playback,
     current =
       app.profiles.find((p) => p.id === app.studio.selectedId) ??
       app.profiles[0];
-  return (
+  const ref = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => attachPlaybackBar(ref.current!), []);
+  return createPortal(
     <div
+      ref={ref}
+      data-mode={p?.current?.type === "mode" ? p.current.mode : "static"}
+      data-profile={p?.profileId ?? ""}
       className="global-playbar"
       role="region"
       aria-label="Playback controls"
     >
-      <div className="playing-caption">
+      <div className="playing-caption" aria-live="polite">
         <strong>
           {app.calibrationState.running
             ? "Calibration · " + app.calibrationState.label
             : p
-              ? "Playing · " + p.name
-              : "Idle · Ready"}
+              ? p.name
+              : "Ready"}
         </strong>
-        <small role="status">
-          {p?.current
-            ? `Step ${p.step + 1}/${p.total} · ${stepText(p.current)} · ${((p.timing?.effectiveMs ?? p.current.ms) / 1000).toFixed(2)}s effective`
-            : app.message}
+        <small>
+          {app.calibrationState.running ? "Recording" : p ? "Playing" : "Select a preset"}
         </small>
       </div>
       {development && (
@@ -42,6 +47,6 @@ export function StatusBar({ development }: { development: boolean }) {
       >
         Stop + Red
       </button>
-    </div>
+    </div>, document.body
   );
 }

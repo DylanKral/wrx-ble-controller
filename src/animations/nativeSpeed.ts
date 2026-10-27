@@ -6,7 +6,10 @@ export const speedObservations: Readonly<
   Record<
     number,
     {
-      metric: "illuminated transition" | "full breathing cycle";
+      metric:
+        | "illuminated transition"
+        | "full breathing cycle"
+        | "red-to-cyan phase interval";
       slow: number;
       reference: number;
       fast: number;
@@ -24,6 +27,21 @@ export const speedObservations: Readonly<
     slow: 6.3,
     reference: 3.54,
     fast: 0.54,
+  },
+  // Independent lower-zone measurements from IMG_1602 / IMG_1603.
+  // One clean sweep per setting; optical transitions, not full cycles.
+  // Tentative byte anchors remain 01/81/FF. See NATIVE_OVERLAP_SPEED.md.
+  7: {
+    metric: "red-to-cyan phase interval",
+    slow: 139 / 30,
+    reference: 59 / 30,
+    fast: 21 / 30,
+  },
+  8: {
+    metric: "red-to-cyan phase interval",
+    slow: 139 / 30,
+    reference: 58 / 30,
+    fast: 21 / 30,
   },
 };
 export const tentativeAnchorBytes = [1, DEFAULT_NATIVE_SPEED, 255] as const;

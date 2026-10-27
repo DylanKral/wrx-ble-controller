@@ -34,14 +34,7 @@
   padding: 0;
   accent-color: #86c5ff;
 }
-.speed-slider-row button {
-  flex-shrink: 0;
-  min-height: 40px;
-  padding: 8px 10px;
-  font-size: 12px;
-}
 .speed-scale {
-  margin-right: 92px;
   gap: 4px;
   font-size: 9px;
   white-space: nowrap;
