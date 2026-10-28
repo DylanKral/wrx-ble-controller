@@ -12,7 +12,7 @@ import type { DispatchOptions } from "../src/animations/dispatch";
 import { Simulator } from "../src/simulation/Simulator";
 import { PlaybackOutput } from "../src/simulation/PlaybackOutput";
 import { BLEManager } from "../src/bluetooth/BLEManager";
-import { colorBytes, modeBytes } from "../src/bluetooth/commands";
+import { colorBytes, modeBytes, hex } from "../src/bluetooth/commands";
 import { calibrationByMode } from "../src/simulation/calibrations";
 import { cleanProfile, migrateStudio } from "../src/storage/migrations";
 import {
@@ -415,6 +415,71 @@ function device(
   }) as unknown as BluetoothDevice;
 }
 describe("dispatch anchoring and independent delivery", () => {
+  for (const id of ["breathe-to-overlap", "black-blue-chase"])
+    for (const speed of [1, 129, 255])
+      it(`${id} at byte ${speed}: preserves ordered commands on both controllers for three cycles`, async () => {
+        vi.useFakeTimers();
+        const ble = new BLEManager(() => undefined), sim = new Simulator("#0000ff");
+        const writes: Record<string, string[]> = { left: [], right: [] };
+        for (const side of ["left", "right"] as const)
+          await ble.linkDevice(side, device(side === "left" ? "Dream-CF4B" : "Dream-A90F", async b => { writes[side].push(hex(b)); }));
+        const output = new PlaybackOutput(ble, sim, "combined");
+        const samples: { packet: string; mode: number | null; color: string; elapsed: number; at: number }[] = [];
+        const start = performance.now();
+        const scheduler = new Scheduler((b, valid, options) => output.send(b, valid, {
+          ...options, onDispatch: at => {
+            options?.onDispatch?.(at);
+            samples.push({ packet: hex(b), mode: sim.state.mode, color: sim.state.selectedColor, elapsed: sim.sample(at).elapsed, at: at - start });
+          },
+        }), undefined, () => speed);
+        const p = initialProfiles.find(p => p.id === id)!;
+        const run = scheduler.start(p, 3);
+        const timings = p.steps.map(step => resolveStepTiming(step, p, () => speed).effectiveMs);
+        await vi.advanceTimersByTimeAsync(Math.ceil(timings.reduce((a, b) => a + b, 0) * 3) + 20);
+        await run;
+        const packets = p.steps.map(s => hex(s.type === "mode" ? modeBytes(s.mode, speed) : colorBytes(s.type === "color" ? s.color : "#000000")));
+        for (const side of ["left", "right"]) expect(writes[side]).toEqual([...packets, ...packets, ...packets]);
+        expect(samples).toHaveLength(12);
+        for (let i = 0; i < samples.length; i++) {
+          const step = p.steps[i % 4], sample = samples[i];
+          expect(sample.mode).toBe(step.type === "mode" ? step.mode : null);
+          // This is the existing commanded preview model, not proof of a physical phase reset.
+          expect(sample.elapsed).toBe(0);
+          if (step.type === "color") expect(sample.color).toBe(step.color);
+          if (i) expect(Math.abs(sample.at - samples[i - 1].at - timings[(i - 1) % 4])).toBeLessThan(1.1);
+        }
+        expect(output.state.left.status).toBe("sent");
+        expect(output.state.right.status).toBe("sent");
+      });
+
+  it("cancels a Chase color transition queued behind both controllers without a stale preview restart", async () => {
+    vi.useFakeTimers();
+    const ble = new BLEManager(() => undefined), sim = new Simulator("#0000ff");
+    const writes: Record<string, string[]> = { left: [], right: [] };
+    const releases: (() => void)[] = [];
+    for (const side of ["left", "right"] as const)
+      await ble.linkDevice(side, device(side === "left" ? "Dream-CF4B" : "Dream-A90F", async b => {
+        writes[side].push(hex(b));
+        if (hex(b) === hex(colorBytes("#00ff00"))) await new Promise<void>(resolve => releases.push(resolve));
+      }));
+    const output = new PlaybackOutput(ble, sim, "combined");
+    const scheduler = new Scheduler((b, valid, options) => output.send(b, valid, options));
+    const run = scheduler.start(initialProfiles.find(p => p.id === "black-blue-chase")!);
+    await flush();
+    const blocked = [ble.writeSide("left", colorBytes("#00ff00")), ble.writeSide("right", colorBytes("#00ff00"))];
+    await vi.advanceTimersByTimeAsync(700);
+    expect(scheduler.state?.current?.type).toBe("color");
+    expect(sim.state.mode).toBe(4);
+    scheduler.stop();
+    output.cancelPending();
+    const red = output.send(colorBytes("#ff0000"));
+    releases.forEach(release => release());
+    await Promise.all([...blocked, red, run]);
+    await vi.advanceTimersByTimeAsync(5000);
+    for (const side of ["left", "right"]) expect(writes[side]).toEqual([hex(modeBytes(4)), hex(colorBytes("#00ff00")), hex(colorBytes("#ff0000"))]);
+    expect(sim.state.mode).toBeNull();
+    expect(sim.state.selectedColor).toBe("#ff0000");
+  });
   it("anchors simulator and transition at actual dispatch after a blocked BLE queue", async () => {
     vi.useFakeTimers();
     let release!: () => void;

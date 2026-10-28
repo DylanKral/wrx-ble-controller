@@ -69,3 +69,18 @@ export function nativeSpeedFor(
     ? preferences.globalSpeed
     : (preferences.speeds[mode] ?? DEFAULT_NATIVE_SPEED);
 }
+
+// A single immutable update lets callers persist a whole profile atomically.
+export function withNativeSpeeds(
+  preferences: NativeSpeedPreferences,
+  modes: readonly number[],
+  speed: number,
+): NativeSpeedPreferences {
+  if (!validNativeSpeed(speed)) return preferences;
+  const unique = [...new Set(modes.filter(validMode))];
+  if (!unique.length || unique.every((mode) => nativeSpeedFor(preferences, mode) === speed))
+    return preferences;
+  return preferences.scope === "global"
+    ? { ...preferences, globalSpeed: speed }
+    : { ...preferences, speeds: { ...preferences.speeds, ...Object.fromEntries(unique.map((mode) => [mode, speed])) } };
+}

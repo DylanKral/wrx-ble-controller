@@ -24,12 +24,39 @@ export function OutputSelector() {
   </label>;
 }
 
-export function SimulatorPanel({ compact = false }: { compact?: boolean }) {
+export function SimulatorPanel({ compact = false, sticky = false }: { compact?: boolean; sticky?: boolean }) {
   const app = useApp(),
     sim = app.simulator;
   const state = useSyncExternalStore(sim.subscribe, sim.getSnapshot);
   const [now, setNow] = useState(() => performance.now());
   const art = useRef<HTMLDivElement>(null);
+  const anchor = useRef<HTMLDivElement>(null);
+  const [minimized, setMinimized] = useState(false);
+  useEffect(() => {
+    if (!compact && !sticky) return;
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
+      const top = anchor.current?.getBoundingClientRect().top;
+      const navBottom = document.querySelector(".site-nav")?.getBoundingClientRect().bottom ?? 0;
+      // The panel's normal 14px top margin separates it from this stable anchor.
+      if (top !== undefined) setMinimized(top + 14 <= navBottom);
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(measure); };
+    measure();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    window.visualViewport?.addEventListener("resize", schedule);
+    const observer = new ResizeObserver(schedule);
+    if (anchor.current?.parentElement) observer.observe(anchor.current.parentElement);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      window.visualViewport?.removeEventListener("resize", schedule);
+      observer.disconnect();
+    };
+  }, [compact, sticky]);
   const enabled = app.outputMode !== "hardware",
     sample = sim.sample(now);
   useEffect(() => {
@@ -45,8 +72,18 @@ export function SimulatorPanel({ compact = false }: { compact?: boolean }) {
   useLayoutEffect(() => {
     if (art.current) applyLedColors(art.current, sample.colors);
   }, [enabled, sample.colors]);
+  const artwork = <div className="sim-art" ref={art} dangerouslySetInnerHTML={{ __html: approvedSvg }} />;
   return (
-    <section className={"panel simulator-panel" + (compact ? " sim-compact" : "")} aria-label="Animation preview">
+    <>
+    {(compact || sticky) && <div ref={anchor} className="sim-sticky-anchor" aria-hidden="true" />}
+    {sticky && <section className={"panel simulator-panel sim-compact" + (minimized ? " sim-minimized" : "")} aria-label="Animation preview">
+      <div className="sectionhead">
+        <h2>{app.playback?.name ?? "Taillights"}</h2>
+        <span className="preview-status"><i className={"dot" + (app.playback ? " on" : "")} />{app.outputMode === "hardware" ? "Hardware" : app.outputMode === "simulation" ? "Preview only" : "Combined"}</span>
+      </div>
+      {enabled ? artwork : <p>Hardware output</p>}
+    </section>}
+    <section className={"panel simulator-panel" + (compact ? " sim-compact" + (minimized ? " sim-minimized" : "") : "")} aria-label={sticky ? "Simulator controls" : "Animation preview"}>
       <div className="sectionhead">
         <h2>{compact ? app.playback?.name ?? "Taillights" : "Animation preview"}</h2>
         {compact ? <span className="preview-status"><i className={"dot" + (app.playback ? " on" : "")} />{app.outputMode === "hardware" ? "Hardware" : app.outputMode === "simulation" ? "Preview only" : "Combined"}</span> : <span className="pill">Calibrated · 19 LEDs</span>}
@@ -71,11 +108,7 @@ export function SimulatorPanel({ compact = false }: { compact?: boolean }) {
               ? "Simulation Only · Bluetooth commands are disabled."
               : "Combined · Preview plus Bluetooth commands to connected lights."}
           </p>}
-          <div
-            className="sim-art"
-            ref={art}
-            dangerouslySetInnerHTML={{ __html: approvedSvg }}
-          />
+          {!sticky && artwork}
           <div
             className="sim-readout"
             data-mode={state.mode ?? "static"}
@@ -227,5 +260,6 @@ export function SimulatorPanel({ compact = false }: { compact?: boolean }) {
         </>
       )}
     </section>
+    </>
   );
 }

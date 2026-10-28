@@ -5,6 +5,7 @@ import { resolveStepTiming, type StepTiming } from "./timing";
 import type { DispatchOptions } from "./dispatch";
 export interface Playback {
   profileId: string;
+  modeIds: readonly number[];
   name: string;
   step: number;
   total: number;
@@ -121,6 +122,7 @@ export class Scheduler {
     const valid = () => this.run === run && !run.token.signal.aborted;
     this.state = {
       profileId: profile.id,
+      modeIds: [...new Set(profile.steps.flatMap((s) => s.type === "mode" ? [s.mode] : []))],
       name: profile.name,
       step: 0,
       total: profile.steps.length,

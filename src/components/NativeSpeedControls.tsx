@@ -34,7 +34,10 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
     prefs = app.nativeSpeedPreferences;
   const current = app.playback?.current;
   const playingMode = current?.type === "mode" ? current.mode : null;
-  const targetMode = playingMode ?? mode;
+  const profileModes = app.playback?.modeIds;
+  const custom = app.playback && app.profiles.some((p) => p.id === app.playback!.profileId);
+  const targetMode = (custom ? profileModes?.[0] : playingMode) ?? mode;
+  const mixed = draft === null && custom && profileModes!.some((m) => app.getNativeSpeed(m) !== app.getNativeSpeed(targetMode));
   const percent = draft ?? nativeSpeedToPercent(app.getNativeSpeed(targetMode));
   const speed =
     draft === null
@@ -92,10 +95,10 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
       <div className="speed-heading">
         <label htmlFor={id}>
           Animation speed
-          {prefs.scope === "per-mode" ? ` · Mode ${targetMode}` : ""}
+          {custom ? " · Preset" : prefs.scope === "per-mode" ? ` · Mode ${targetMode}` : ""}
         </label>
         <span className="speed-value" data-testid="selected-speed">
-          {Math.round(percent)}%{speed === 129 ? " · Default" : ""}
+          {mixed ? "Mixed speeds" : <>{Math.round(percent)}%{speed === 129 ? " · Default" : ""}</>}
         </span>
       </div>
       <div className="speed-slider-row">
@@ -108,9 +111,9 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
           max={100}
           step={1}
           list={`${id}-positions`}
-          aria-valuetext={`${Math.round(percent)}% slider position${speed === 129 ? ", default" : ""}`}
+          aria-valuetext={mixed ? "Mixed preset speeds; adjust to set all included modes" : `${Math.round(percent)}% slider position${speed === 129 ? ", default" : ""}`}
           value={Math.round(percent)}
-          disabled={locked}
+          disabled={locked || (custom && !profileModes?.length) || false}
           onChange={(e) => {
             const value = Number(e.target.value);
             // Assistive technologies can adjust the native range directly,
@@ -137,11 +140,7 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
               const current =
                 draftRef.current ??
                 Math.round(nativeSpeedToPercent(
-                  app.getNativeSpeed(
-                    app.scheduler.state?.current?.type === "mode"
-                      ? app.scheduler.state.current.mode
-                      : mode,
-                  ),
+                  app.getNativeSpeed(targetMode),
                 ));
               chooseSpeed(
                 e.key === "Home"
@@ -179,6 +178,10 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
         <span>Default</span>
         <span>Fast</span>
       </div>
+      {custom && prefs.scope === "per-mode" && <p className="speed-hint">
+        {profileModes?.length ? `Applies to preset modes ${profileModes.join(", ")}.` : "This preset has no factory modes."}
+        {mixed && " Saved speeds differ; adjust to synchronize."}
+      </p>}
       {!main && <p className="speed-hint">
         Slider position. {draft !== null ? "Applying automatically. " : ""}
         {prefs.scope === "global"
@@ -206,7 +209,7 @@ export function NativeSpeedControls({ main = false }: { main?: boolean }) {
         {!main && <p>
           {prefs.scope === "global"
             ? "The shared speed applies to every Mode step. Individual speeds remain saved."
-            : "Each Mode step uses its own saved speed. The main slider applies to the current animation, or the selected animation when idle."}
+            : "The slider updates every mode in the running preset, or the selected animation when idle."}
         </p>}
         <label className="field">
           Animation for individual settings and calibration

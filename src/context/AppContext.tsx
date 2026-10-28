@@ -45,6 +45,7 @@ import { validNativeSpeed } from "../animations/nativeSpeed";
 import {
   loadNativeSpeedPreferences,
   nativeSpeedFor,
+  withNativeSpeeds,
   type NativeSpeedPreferences,
 } from "../storage/nativeSpeedPreferences";
 
@@ -224,11 +225,14 @@ function useApplication() {
     saveSpeedPreferences({ ...speedPreferencesRef.current, scope });
   }
   function changeNativeSpeed(fallbackMode: number, speed: number) {
-    if (calibration.state.running) return;
+    if (calibration.state.running || !validNativeSpeed(speed)) return;
     const state = scheduler.state;
     const step = state?.current;
     const mode = step?.type === "mode" ? step.mode : fallbackMode;
-    if (getNativeSpeed(mode) !== speed) setNativeSpeed(mode, speed);
+    // Use the running snapshot, including Color/Wait steps and edited profiles.
+    const current = speedPreferencesRef.current;
+    const next = withNativeSpeeds(current, state ? state.modeIds : [mode], speed);
+    if (next !== current) saveSpeedPreferences(next);
     // Only the scheduler may reissue an active effect. Idle, Color and Wait
     // selections prepare future commands without starting or interrupting one.
     if (step?.type === "mode" && state?.timing?.speed !== speed)

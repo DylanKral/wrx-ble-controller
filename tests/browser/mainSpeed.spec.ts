@@ -91,7 +91,7 @@ for (const output of ["simulation", "hardware", "combined"])
       if (output !== "simulation") expect(await page.evaluate(() => window.__ble.writes.slice(-2).map(w => w.hex))).toEqual(["56FF000000F0AA", "56FF000000F0AA"]);
     });
 
-test("exact preferences survive rendering and per-mode selection commits to the current step", async ({ page }) => {
+test("exact preferences survive rendering and per-mode selection commits to the whole running preset", async ({ page }) => {
   await mockBluetooth(page, true);
   const original = { version: 2, scope: "per-mode", globalSpeed: 201, speeds: { 4: 73, 7: 129, 8: 129 }, corrections: { 4: 1.25, 8: 1.5 }, bundledFollow: true, previewTiming: { 4: true } };
   await page.addInitScript(value => { if (!localStorage.getItem("seed")) { localStorage.setItem("seed", "yes"); localStorage.setItem("wrx-native-speed-preferences-v1", JSON.stringify(value)); } }, original);
@@ -110,7 +110,7 @@ test("exact preferences survive rendering and per-mode selection commits to the 
   await page.clock.runFor(100); // Move to Mode 8 before committing.
   await slider.dispatchEvent("pointerup");
   await page.clock.runFor(1);
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("wrx-native-speed-preferences-v1")!))).toMatchObject({ ...original, speeds: { 4: 73, 7: 129, 8: 192 } });
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("wrx-native-speed-preferences-v1")!))).toMatchObject({ ...original, speeds: { 4: 73, 7: 192, 8: 192 } });
   await page.getByRole("button", { name: "Stop + Red", exact: true }).click();
   await navigate(page, "Custom Testing");
   await page.getByText("Advanced Settings", { exact: true }).click();

@@ -4,11 +4,14 @@
   --muted: #a9b9ce;
   --playbar-height: calc(66px + env(safe-area-inset-bottom, 0px));
   --playbar-clearance: var(--playbar-height);
+  /* Navigation: 42px button + 20px padding + 1px border, plus safe area. */
+  --site-nav-height: calc(63px + env(safe-area-inset-top, 0px));
 }
 html {
   background: var(--bg);
   scroll-padding-bottom: calc(var(--playbar-clearance) + 16px);
 }
+html:has(#home-view:not([hidden]), #controller-view:not([hidden])) { scroll-padding-top: calc(var(--site-nav-height) + 150px); }
 body { padding-bottom: 0; background: var(--bg); min-height: 100svh; }
 [hidden] { display: none !important; }
 main, #home-view {
@@ -61,7 +64,20 @@ summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
 .sim-compact .sectionhead h2 { font-size: 13px; font-weight: 600; }
 .preview-status { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
 .sim-compact .sim-art { margin-top: 9px; border: 0; background: transparent; border-radius: 6px; }
-.sim-compact .sim-art svg { max-height: 90px; }
+.sim-sticky-anchor { height: 0; }
+.sim-compact .sim-art svg { height: clamp(150px, 35vw, 220px); }
+.sim-compact.sim-minimized .sim-art svg { height: 90px; }
+#home-view > .sim-compact,
+#controller-view > .sim-compact {
+  position: sticky;
+  top: var(--site-nav-height);
+  z-index: 17;
+  padding: 8px 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 12px #0003;
+}
+.sim-compact .sectionhead h2 { min-width: 0; overflow-wrap: anywhere; }
 .sim-compact .sim-readout { display: none; }
 .sim-compact .sim-readout strong { font-weight: 500; }
 .home-static-panel .sectionhead h2 { font-size: 13px; }

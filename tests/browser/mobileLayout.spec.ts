@@ -17,7 +17,7 @@ for (const width of [320, 375, 390, 430, 768])
     const grid = page.locator("#home-custom-grid");
     await expect(grid.locator(".home-tile")).toHaveCount(10);
     expect((await grid.evaluate(el => getComputedStyle(el).gridTemplateColumns)).split(" ")).toHaveLength(2);
-    expect((await grid.boundingBox())!.y).toBeLessThan(600);
+    expect((await grid.boundingBox())!.y + 66).toBeLessThan((await page.locator(".global-playbar").boundingBox())!.y);
     for (const view of ["Main presets", "Custom Testing", "Calibration Mode"]) {
       if (view !== "Main presets") await navigate(page, view);
       for (const [position, fraction] of [["top", 0], ["middle", .5], ["bottom", 1]] as const) {
@@ -54,6 +54,37 @@ test("visual viewport toolbar and keyboard changes move the bar without accumula
   }
   await page.getByRole("button", { name: "Stop + Red", exact: true }).click();
 });
+
+for (const width of [320, 375, 390, 430, 768])
+  test(`compact preview sticks below navigation at ${width}px without restarting animation`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("./");
+    await page.getByLabel("Playback output", { exact: true }).selectOption("simulation");
+    await page.getByRole("tab", { name: "Basic", exact: true }).click();
+    await page.locator('[data-profile-id="basic-5"]').click();
+    const preview = page.locator(".sim-compact"), art = preview.locator("svg");
+    await art.evaluate(el => { (window as any).__previewSvg = el; });
+    for (const viewport of [{ width, height: 844 }, { width, height: 640 }, { width: 844, height: width }]) {
+      await page.setViewportSize(viewport);
+      for (const fraction of [.5, 1]) {
+        await page.evaluate(f => window.scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * f), fraction);
+        await expect.poll(async () => preview.evaluate(el => Math.abs(el.getBoundingClientRect().top - document.querySelector(".site-nav")!.getBoundingClientRect().bottom))).toBeLessThanOrEqual(1);
+        await expect(art).toHaveCSS("height", "90px");
+        const box = (await art.boundingBox())!;
+        expect(box.height).toBe(90);
+        expect(box.x).toBeGreaterThanOrEqual(0);
+        expect(box.x + box.width).toBeLessThanOrEqual(viewport.width);
+        expect(box.y + box.height).toBeLessThan((await page.locator(".global-playbar").boundingBox())!.y);
+        expect(await art.evaluate(el => el === (window as any).__previewSvg)).toBe(true);
+        await anchored(page);
+      }
+    }
+    const slider = page.getByRole("slider", { name: "Animation speed", exact: true });
+    await slider.scrollIntoViewIfNeeded();
+    await slider.press("ArrowRight");
+    await expect(slider).toHaveValue("60");
+    await expect(page.locator(".sim-readout")).toHaveAttribute("data-mode", "5");
+  });
 
 test("returning to the browser clears the hidden-page status and never resumes hardware playback", async ({ page }) => {
   await mockBluetooth(page, true);

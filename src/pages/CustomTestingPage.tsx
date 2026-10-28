@@ -34,7 +34,7 @@ export function CustomTestingPage({ hidden }: { hidden: boolean }) {
         verify factory lights before driving.
       </div>
       <ConnectionPanel />
-      {!hidden && <SimulatorPanel />}
+      {!hidden && <SimulatorPanel sticky />}
       {!hidden && <NativeSpeedControls />}
       {app.warning && (
         <div className="note" role="alert">
