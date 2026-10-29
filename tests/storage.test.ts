@@ -31,11 +31,39 @@ const custom = {
   ],
 };
 describe("non-destructive migrations", () => {
-  it("always supplies exactly 10 fixed profiles, separately from user profiles", () => {
+  it("always supplies exactly 11 fixed profiles, separately from user profiles", () => {
     const s = new MemoryStorage();
-    expect(initialProfiles).toHaveLength(10);
+    expect(initialProfiles).toHaveLength(11);
     expect(loadStudio(s).studio.profiles).toEqual([]);
-    expect(fixedProfiles(s)).toHaveLength(10);
+    expect(fixedProfiles(s)).toHaveLength(11);
+  });
+  it("retires saved Spectrum definitions and buttons while preserving user copies and assignments", () => {
+    const storage = new MemoryStorage();
+    const retired = {
+      id: "rainbow-chase-spectrum", name: "Rainbow Chase Spectrum",
+      repeat: true, experimental: false,
+      steps: [{ type: "color", color: "#ff0000", ms: 100 }, { type: "mode", mode: 3, ms: 700 }, { type: "mode", mode: 4, ms: 600 }],
+    };
+    const copy = { ...retired, id: "profile-personal-copy", name: "My Spectrum copy" };
+    const assignment = { id: "my-button", label: "My copy", profileId: copy.id };
+    const raw = JSON.stringify({ version: 9, profiles: [retired, copy, custom], buttons: [
+      { id: "btn-rainbow-chase-spectrum", label: retired.name, profileId: retired.id },
+      { id: "extra-spectrum", label: "Old Spectrum", profileId: retired.id },
+      assignment,
+    ], selectedId: retired.id });
+    storage.setItem(keys.studio, raw);
+    storage.setItem(keys.staticColor, "#123456");
+    const { studio, warning } = loadStudio(storage);
+    expect(warning).toBe("");
+    expect(storage.getItem(keys.studio)).toBe(raw);
+    expect(storage.getItem(keys.staticColor)).toBe("#123456");
+    expect(studio.profiles).toEqual([copy, custom]);
+    expect(studio.buttons).toContainEqual(assignment);
+    expect(studio.buttons.some(b => b.profileId === retired.id || b.id === "btn-rainbow-chase-spectrum")).toBe(false);
+    expect(studio.selectedId).toBe("overlap-double");
+    expect(fixedProfiles(storage).some(p => p.id === retired.id)).toBe(false);
+    saveStudio(storage, studio);
+    expect(loadStudio(storage).studio).toEqual(studio);
   });
   it.each([6, 7, 8, 9])(
     "retains v%s custom timing, selected profile, assignments, ordering, and original source",
@@ -102,7 +130,7 @@ describe("non-destructive migrations", () => {
         },
       ],
     });
-    expect(s.buttons).toHaveLength(11);
+    expect(s.buttons).toHaveLength(initialProfiles.length + 1);
     expect(s.buttons[0].profileId).toBe("mine");
     expect(
       s.buttons.find((b) => b.id === curatedButtons[0].id)?.profileId,
@@ -121,7 +149,7 @@ describe("non-destructive migrations", () => {
         selectedId: "blue-overlap",
       });
       expect(studio.profiles).toEqual([custom]);
-      expect(studio.buttons).toHaveLength(11);
+      expect(studio.buttons).toHaveLength(initialProfiles.length + 1);
       expect(
         studio.buttons.some((b) =>
           ["blue-overlap", "basic-chase", "flash"].includes(b.profileId),

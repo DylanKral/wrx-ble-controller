@@ -29,7 +29,7 @@ it("preserves original definitions except the requested Custom removals and over
           }
         : p,
     );
-  expect(initialProfiles).toEqual(expected);
+  expect(initialProfiles.filter((p) => p.id !== "velocity-full-spectrum")).toEqual(expected);
   // Legacy recognition must continue comparing old saved slots to old defaults.
   for (const p of data.initialProfiles)
     expect(legacyFixedProfiles.get(p.id)).toEqual(p);

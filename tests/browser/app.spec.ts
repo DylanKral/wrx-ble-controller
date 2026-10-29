@@ -2,6 +2,34 @@ import { expect, test } from "@playwright/test";
 import { mockBluetooth, navigate, chooseSolidColor } from "./mockBluetooth";
 import { readFile } from "node:fs/promises";
 
+test("retired Spectrum does not return from saved browser data", async ({ page }) => {
+  await mockBluetooth(page);
+  await page.addInitScript(() => {
+    localStorage.setItem("wrx-dream-studio-v7", JSON.stringify({
+      version: 9,
+      selectedId: "rainbow-chase-spectrum",
+      profiles: [
+        { id: "rainbow-chase-spectrum", name: "Rainbow Chase Spectrum", repeat: true, experimental: false,
+          steps: [{ type: "color", color: "#ff0000", ms: 100 }, { type: "mode", mode: 3, ms: 700 }, { type: "mode", mode: 4, ms: 600 }] },
+        { id: "profile-personal-copy", name: "My copy", repeat: true, experimental: false,
+          steps: [{ type: "mode", mode: 4, ms: 600 }] },
+      ],
+      buttons: [
+        { id: "btn-rainbow-chase-spectrum", label: "Rainbow Chase Spectrum", profileId: "rainbow-chase-spectrum" },
+        { id: "my-button", label: "My copy", profileId: "profile-personal-copy" },
+      ],
+    }));
+  });
+  await page.goto("./");
+  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(12);
+  await expect(page.locator('#home-custom-grid [data-profile-id="rainbow-chase-spectrum"]')).toHaveCount(0);
+  await expect(page.locator('#home-custom-grid [data-profile-id="profile-personal-copy"]')).toHaveCount(1);
+  await navigate(page, "Custom Testing");
+  await expect(page.getByLabel("Profile to edit")).toHaveValue("overlap-double");
+  await expect(page.getByLabel("Profile to edit").locator('option[value="rainbow-chase-spectrum"]')).toHaveCount(0);
+  await expect(page.getByLabel("Profile to edit").locator('option[value="profile-personal-copy"]')).toHaveCount(1);
+});
+
 test("mobile Main retains the fixed preset grid, Basic modes, tabs, colors, and Stop + Red", async ({
   page,
 }, info) => {
@@ -13,7 +41,7 @@ test("mobile Main retains the fixed preset grid, Basic modes, tabs, colors, and 
   await expect(
     page.getByRole("heading", { name: "Lighting presets" }),
   ).toBeVisible();
-  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(10);
+  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(11);
   for (const id of ["blue-overlap", "basic-chase", "flash"]) {
     await expect(
       page.locator(`#home-custom-grid [data-profile-id="${id}"]`),
@@ -159,7 +187,7 @@ test("fixed presets stay immutable while duplicate profile editing, step tools a
     "0.15",
   );
   await navigate(page, "Main presets");
-  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(11);
+  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(12);
   await expect(
     page.locator('[data-profile-id="overlap-double"] strong'),
   ).toHaveText("Infinite Overlap");
@@ -203,7 +231,7 @@ test("existing v7 data, calibration history and user button labels survive initi
     }
   });
   await page.goto("./");
-  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(11);
+  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(12);
   await expect(
     page.getByRole("button", { name: /My old button/ }),
   ).toBeVisible();
@@ -313,7 +341,7 @@ test("blocked localStorage keeps Bluetooth controls and editable session profile
     }),
   );
   await page.goto("./");
-  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(10);
+  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(11);
   await expect(page.locator("#home-view [role=alert]")).toContainText(
     "Browser storage is unavailable",
   );
@@ -444,11 +472,11 @@ test("Main preserves preset labels, two columns and navy theme after layout clea
     fullPage: true,
   });
   await page.goto("./");
-  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(10);
+  await expect(page.locator("#home-custom-grid .home-tile")).toHaveCount(11);
   const updated = await measure();
   expect(updated.width).toBe(original.width);
   expect(updated.theme).toBe(original.theme);
-  expect(updated.labels).toEqual(original.labels);
+  expect(updated.labels).toEqual([...original.labels, "Velocity — Full Spectrum"]);
   expect(updated.columns.split(" ")).toHaveLength(2);
   await page.screenshot({
     path: info.outputPath("react-main.png"),

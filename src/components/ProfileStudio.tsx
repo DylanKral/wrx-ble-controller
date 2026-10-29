@@ -195,6 +195,7 @@ export function ProfileStudio() {
         <input
           type="checkbox"
           aria-label="Follow Animation Speed for this profile"
+          disabled={fixed && p.followAnimationSpeed !== undefined}
           checked={followsAnimationSpeed(
             p,
             app.nativeSpeedPreferences.bundledFollow,
@@ -207,7 +208,9 @@ export function ProfileStudio() {
         />
         <span>
           Follow Animation Speed
-          {fixed
+          {fixed && p.followAnimationSpeed !== undefined
+            ? " · Duplicate profile to change"
+            : fixed
             ? " · applies to bundled Custom presets"
             : " · linked step timing"}
         </span>

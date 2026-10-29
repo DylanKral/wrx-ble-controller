@@ -15,7 +15,7 @@ for (const width of [320, 375, 390, 430, 768])
     await page.setViewportSize({ width, height: 844 });
     await page.goto("./");
     const grid = page.locator("#home-custom-grid");
-    await expect(grid.locator(".home-tile")).toHaveCount(10);
+    await expect(grid.locator(".home-tile")).toHaveCount(11);
     expect((await grid.evaluate(el => getComputedStyle(el).gridTemplateColumns)).split(" ")).toHaveLength(2);
     expect((await grid.boundingBox())!.y + 66).toBeLessThan((await page.locator(".global-playbar").boundingBox())!.y);
     for (const view of ["Main presets", "Custom Testing", "Calibration Mode"]) {

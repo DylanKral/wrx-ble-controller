@@ -18,6 +18,9 @@ import {
   type StorageLike,
 } from "./persistence";
 import { legacyFixedButtons, legacyFixedProfiles } from "./legacyFixedProfiles";
+// Saved exports may contain retired bundled definitions; their user-created
+// duplicates have separate IDs and remain ordinary editable profiles.
+const retiredBundledIds = new Set(["rainbow-chase-spectrum"]);
 export interface Studio {
   version: 9;
   profiles: Profile[];
@@ -112,7 +115,7 @@ export function migrateStudio(raw: unknown): Studio {
   if (prior.some((p) => !p))
     throw new Error("Invalid saved profile; original storage retained.");
   const profiles = prior as Profile[],
-    extras = profiles.filter((p) => !legacyFixedProfiles.has(p.id)),
+    extras = profiles.filter((p) => !legacyFixedProfiles.has(p.id) && !retiredBundledIds.has(p.id)),
     archived: Profile[] = [];
   if (Number(data.version ?? 6) < 8)
     for (const p of profiles.filter((p) => legacyFixedProfiles.has(p.id))) {
@@ -151,7 +154,8 @@ export function migrateStudio(raw: unknown): Studio {
       )
         continue;
       let id = b.id.slice(0, 80);
-      const pinned = legacyFixedButtons.find((p) => p.id === id);
+      const pinned = legacyFixedButtons.find((p) => p.id === id)
+        ?? curatedButtons.find((p) => p.id === id);
       // Preserve old reassigned/renamed buttons as extra assignments, while fixed presets always exist.
       if (
         pinned &&

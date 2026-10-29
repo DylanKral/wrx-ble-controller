@@ -207,6 +207,23 @@ export const initialProfiles: readonly Profile[] = [
       },
     ],
   },
+  {
+    id: "velocity-full-spectrum",
+    name: "Velocity — Full Spectrum",
+    repeat: true,
+    experimental: false,
+    followAnimationSpeed: true,
+    nativeLoop: false,
+    // Chase inherits the selected RGB color; do not interrupt with RGB writes.
+    steps: [
+      { type: "mode", mode: 4, ms: 2200 },
+      { type: "mode", mode: 7, ms: 3200 },
+      { type: "mode", mode: 8, ms: 3200 },
+      { type: "mode", mode: 3, ms: 2250 },
+      { type: "mode", mode: 5, ms: 4100 },
+      { type: "mode", mode: 9, ms: 1000 },
+    ],
+  },
 ];
 export const curatedIds = new Set(initialProfiles.map((p) => p.id));
 export const curatedButtons = initialProfiles.map((p) => ({

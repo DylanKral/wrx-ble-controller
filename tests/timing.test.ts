@@ -98,7 +98,9 @@ describe("shared timing and non-destructive preferences", () => {
         expect(
           resolveStepTiming(step, p, getSpeed, durationFactor, false)
             .effectiveMs,
-        ).toBe(step.ms);
+        ).toBe(p.followAnimationSpeed
+          ? resolveStepTiming(step, p, getSpeed).effectiveMs
+          : step.ms);
       }
     expect(JSON.stringify(initialProfiles)).toBe(original);
   });
